@@ -202,8 +202,8 @@ public class ArrayIndexedCollection extends Collection {
 	 */
 	@Override
 	public Object[] toArray() {
-		Object[] array = new Object[elements.length];
-		for (int i = 0; i < elements.length; i++) {
+		Object[] array = new Object[this.size];
+		for (int i = 0; i < this.size; i++) {
 			array[i] = elements[i];
 		}
 		return array;

@@ -9,12 +9,16 @@ class ArrayIndexedCollectionTest {
 
 	@Test
 	public void testDefaultConstrucor() {
-		assertArrayEquals(new Object[16], new ArrayIndexedCollection().toArray());
+		array = new ArrayIndexedCollection();
+		assertEquals(0, array.size());
+		assertArrayEquals(new Object[] {}, array.toArray());
 	}
 	
 	@Test
 	public void testConstructorCustomInitialCapacity() {
-		assertArrayEquals(new Object[8], new ArrayIndexedCollection(8).toArray());
+		array = new ArrayIndexedCollection(8);
+		assertEquals(0, array.size());
+		assertArrayEquals(new Object[] {}, array.toArray());
 	}
 	
 	@Test
@@ -30,7 +34,9 @@ class ArrayIndexedCollectionTest {
 	@Test
 	public void testConstructorOtherEmptyCollection() {
 		ArrayIndexedCollection other = new ArrayIndexedCollection(8);
-		assertArrayEquals(new Object[8], new ArrayIndexedCollection(other).toArray());
+		array = new ArrayIndexedCollection(other);
+		assertEquals(0, array.size());
+		assertArrayEquals(new Object[] {}, array.toArray());
 	}
 	
 	@Test
@@ -39,7 +45,7 @@ class ArrayIndexedCollectionTest {
 		other.add(Integer.valueOf(1));
 		other.add(Integer.valueOf(2));
 
-		Object[] expected = {1, 2, null, null};
+		Object[] expected = {1, 2};
 		assertArrayEquals(expected, new ArrayIndexedCollection(other).toArray());
 	}
 
@@ -49,7 +55,7 @@ class ArrayIndexedCollectionTest {
 		other.add(Integer.valueOf(1));
 		other.add(Integer.valueOf(2));
 
-		Object[] expected = {1, 2, null, null, null};
+		Object[] expected = {1, 2};
 		assertArrayEquals(expected, new ArrayIndexedCollection(other, 5).toArray());
 
 	}
@@ -60,7 +66,7 @@ class ArrayIndexedCollectionTest {
 		other.add(Integer.valueOf(1));
 		other.add(Integer.valueOf(2));
 
-		Object[] expected = {1, 2, null, null, null};
+		Object[] expected = {1, 2};
 		assertArrayEquals(expected, new ArrayIndexedCollection(other, 3).toArray());
 
 	}
@@ -108,7 +114,7 @@ class ArrayIndexedCollectionTest {
 		array.add(Integer.valueOf(3));
 
 		assertEquals(3, array.size());
-		assertArrayEquals(new Object[] {1, 2, 3, null}, array.toArray());
+		assertArrayEquals(new Object[] {1, 2, 3}, array.toArray());
 	}
 
 	@Test
@@ -141,7 +147,7 @@ class ArrayIndexedCollectionTest {
 		array.clear();
 
 		assertEquals(0, array.size());
-		assertArrayEquals(new Object[] {null, null}, array.toArray());
+		assertArrayEquals(new Object[] {}, array.toArray());
 	}
 
 	@Test
@@ -181,7 +187,7 @@ class ArrayIndexedCollectionTest {
 		array.add(Integer.valueOf(1));
 		array.add(Integer.valueOf(2));
 		array.insert(Integer.valueOf(5), 0);
-		Object[] expected = {5, 1, 2, null, null};
+		Object[] expected = {5, 1, 2};
 		assertEquals(3, array.size());
 		assertArrayEquals(expected, array.toArray());
 	}
@@ -192,7 +198,7 @@ class ArrayIndexedCollectionTest {
 		array.add(Integer.valueOf(1));
 		array.add(Integer.valueOf(2));
 		array.insert(Integer.valueOf(5), 2);
-		Object[] expected = {1, 2, 5, null, null};
+		Object[] expected = {1, 2, 5};
 		assertEquals(3, array.size());
 		assertArrayEquals(expected, array.toArray());
 	}
@@ -245,7 +251,7 @@ class ArrayIndexedCollectionTest {
 		array.add(Integer.valueOf(1));
 		array.add(Integer.valueOf(2));
 		array.remove(2);
-		Object[] expected = {1, 2, 2, null, null};
+		Object[] expected = {1, 2, 2};
 		assertEquals(3, array.size());
 		assertArrayEquals(expected, array.toArray());
 	}
@@ -258,7 +264,7 @@ class ArrayIndexedCollectionTest {
 		array.add(Integer.valueOf(1));
 		array.add(Integer.valueOf(2));
 		array.remove(0);
-		Object[] expected = {2, 1, 2, null, null};
+		Object[] expected = {2, 1, 2};
 		assertEquals(3, array.size());
 		assertArrayEquals(expected, array.toArray());
 	}
@@ -271,7 +277,7 @@ class ArrayIndexedCollectionTest {
 		array.add(Integer.valueOf(1));
 		array.add(Integer.valueOf(2));
 		array.remove(3);
-		Object[] expected = {1, 2, 1, null, null};
+		Object[] expected = {1, 2, 1};
 		assertArrayEquals(expected, array.toArray());
 	}
 }

@@ -12,10 +12,10 @@ public class StackDemo {
 
         try {
             for (String s : elements) {
-                if (isNumber(s)) {
-                    stack.push(s);
-                } else if (Character.isWhitespace(s.charAt(0))) {
+                if (s.length() == 0 || Character.isWhitespace(s.charAt(0))) {
                     continue;
+                } else if (isNumber(s)) {
+                    stack.push(s);
                 } else {
                     int first = Integer.parseInt((String) stack.pop());
                     int second = Integer.parseInt((String) stack.pop());
@@ -49,10 +49,11 @@ public class StackDemo {
     }
 
     private static boolean isNumber(String s) {
-        for (char c : s.toCharArray()) {
-            if (!Character.isDigit(c) && c != '-')
-                return false;
+        try {
+            int a = Integer.parseInt(s);
+            return true;
+        } catch (Exception e) {
+            return false;
         }
-        return true;
     }
 }
