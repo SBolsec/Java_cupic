@@ -1,7 +1,5 @@
 package hr.fer.oprpp1.custom.collections;
 
-import java.util.List;
-
 /**
  * Linked list-backed collection of objects which extends class <code>Collection</code>
  * Duplicate elements are allowed (each of those element will be held in different
@@ -62,15 +60,7 @@ public class LinkedListIndexedCollection extends Collection {
     public LinkedListIndexedCollection(Collection other) {
         this();
 
-        class AddProcessor extends Processor {
-            @Override
-            public void process(Object value) {
-                if (value != null)
-                    add(value);
-            }
-        }
-
-        other.forEach(new AddProcessor());
+        this.addAll(other);
     }
 
     @Override

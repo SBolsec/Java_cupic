@@ -50,7 +50,7 @@ public class StackDemo {
 
     private static boolean isNumber(String s) {
         try {
-            int a = Integer.parseInt(s);
+            Integer.parseInt(s);
             return true;
         } catch (Exception e) {
             return false;

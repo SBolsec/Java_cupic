@@ -64,16 +64,9 @@ public class ArrayIndexedCollection extends Collection {
 	public ArrayIndexedCollection(Collection other, int initialCapacity) {
 		if (initialCapacity < 1) throw new IllegalArgumentException("The initial capacity can not be less than 1!");
 		
-		int length = 0;
-		for (Object o : other.toArray()) {
-			length++;
-		}
-		int capacity = initialCapacity < length ? length : initialCapacity;
+		int capacity = initialCapacity < other.size() ? other.size() : initialCapacity;
 		elements = new Object[capacity];
-		for (Object o : other.toArray()) {
-			if (o != null)
-				add(o);
-		}
+		this.addAll(other);
 	}
 	
 	@Override
