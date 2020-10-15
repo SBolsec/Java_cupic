@@ -71,24 +71,22 @@ public class ComplexNumber {
      */
     public static ComplexNumber parse(String s) {
         int indexI = s.indexOf('i');
-        if (indexI == -1)
-            return fromReal(Double.parseDouble(s));
 
-        if (s.length() == 1 || (s.length() == 2 && s.charAt(0) == '+'))
-            return fromImaginary(1);
-
-        if (s.length() == 2 && s.charAt(0) == '-')
-            return fromImaginary(-1);
+        if (indexI == -1) return fromReal(Double.parseDouble(s));
+        if (s.length() == 1 || (s.length() == 2 && s.charAt(0) == '+')) return fromImaginary(1);
+        if (s.length() == 2 && s.charAt(0) == '-') return fromImaginary(-1);
 
         int indexPlus = s.lastIndexOf('+');
         int indexMinus = s.lastIndexOf('-');
         int separator = indexPlus < indexMinus ? indexMinus : indexPlus;
 
         if (separator <= 0) {
+            if (indexI != s.length() - 1) throw new IllegalArgumentException("There are elements after 'i': " + s.substring(indexI+1, s.length()));
             return fromImaginary(Double.parseDouble(s.substring(0, s.length()-1)));
         }
 
         if (separator < indexI) {
+            if (indexI != s.length() - 1) throw new IllegalArgumentException("There are elements after 'i': " + s.substring(indexI+1, s.length()));
             double r = Double.parseDouble(s.substring(0, separator));
             double i = 0;
             if (separator + 1 == indexI) {
@@ -98,21 +96,20 @@ public class ComplexNumber {
                 i = Double.parseDouble(s.substring(separator, s.length()-1));
             }
             return new ComplexNumber(r, i);
-        } else {
-            double i = 0;
-            if (indexI == 0) {
-                i = 1;
-            } else if (indexI == 1) {
-                if (s.charAt(0) == '-') i = -1;
-                else if (s.charAt(0) == '+') i = 1;
-                else i = Double.parseDouble(s.substring(0, separator-1));
-            } else {
-                i = Double.parseDouble(s.substring(0, separator-1));
-            }
-
-            double r = Double.parseDouble(s.substring(separator, s.length()));
-            return new ComplexNumber(r, i);
         }
+        if (indexI + 1 != separator) throw new IllegalArgumentException("There are elements after 'i': " + s.substring(indexI+1, separator));
+        double i = 0;
+        if (indexI == 0) {
+            i = 1;
+        } else if (indexI == 1) {
+            if (s.charAt(0) == '-') i = -1;
+            else if (s.charAt(0) == '+') i = 1;
+            else i = Double.parseDouble(s.substring(0, separator-1));
+        } else {
+            i = Double.parseDouble(s.substring(0, separator-1));
+        }
+        double r = Double.parseDouble(s.substring(separator, s.length()));
+        return new ComplexNumber(r, i);
     }
 
     /**

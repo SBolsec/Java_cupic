@@ -132,6 +132,22 @@ public class ComplexNumberTest {
     }
 
     @Test
+    public void testParseCase9() {
+        assertThrows(IllegalArgumentException.class, () -> ComplexNumber.parse("-1+i+"));
+    }
+
+    @Test
+    public void testParseCase10() {
+        assertThrows(IllegalArgumentException.class, () -> ComplexNumber.parse("i2"));
+    }
+
+    @Test
+    public void testParseCase11() {
+        assertThrows(IllegalArgumentException.class, () -> ComplexNumber.parse("-2.71+-3.15i"));
+    }
+
+
+    @Test
     public void testAdd() {
         ComplexNumber a = new ComplexNumber(1,1);
         ComplexNumber b = new ComplexNumber(5,-3);
