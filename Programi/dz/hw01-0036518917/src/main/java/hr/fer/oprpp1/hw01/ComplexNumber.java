@@ -68,6 +68,7 @@ public class ComplexNumber {
      * Parses a string into a complex number.
      * @param s input string
      * @return parsed complex number
+     * @throws IllegalArgumentException passed string could not be parsed as complex number
      */
     public static ComplexNumber parse(String s) {
         int indexI = s.indexOf('i');

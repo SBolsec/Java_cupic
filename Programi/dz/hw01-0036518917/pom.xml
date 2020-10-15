@@ -7,18 +7,6 @@
 	<groupId>hr.fer.oprpp1.jmbag0036518917</groupId>
 	<artifactId>hw01-0036518917</artifactId>
 	<version>1.0</version>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>14</source>
-                    <target>14</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
     <packaging>jar</packaging>
 
@@ -31,9 +19,6 @@
 		<junit.jupiter.version>5.7.0</junit.jupiter.version>
 	</properties>
 
-	<!-- za upravljanje ovisnostima a posebno za "scope" vidi:
-	     https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html
-	-->
 	<dependencies>
 		<dependency>
     			<groupId>org.junit.jupiter</groupId>
