@@ -98,7 +98,9 @@ public class ComplexNumber {
             }
             return new ComplexNumber(r, i);
         }
+        
         if (indexI + 1 != separator) throw new IllegalArgumentException("There are elements after 'i': " + s.substring(indexI+1, separator));
+        
         double i = 0;
         if (indexI == 0) {
             i = 1;

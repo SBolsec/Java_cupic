@@ -6,19 +6,14 @@ package hr.fer.oprpp1.custom.collections;
  * @author sbolsec
  *
  */
-public class Collection {
-
-	/**
-	 * Creates a new insance of the Collection class
-	 */
-	protected Collection() {}
+public interface Collection {
 	
 	/**
 	 * Returns true if collection contains no objects and false otherwise.
 	 * 
 	 * @return true if collection contains no objects and false otherwise
 	 */
-	public boolean isEmpty() {
+	default boolean isEmpty() {
 		return this.size() == 0;
 	}
 	
@@ -27,18 +22,15 @@ public class Collection {
 	 * 
 	 * @return number of objects in the collection
 	 */
-	public int size() {
-		return 0;
-	}
+	int size();
 	
 	/**
 	 * Adds the given object into this collection.
 	 * 
 	 * @param value object to be added into this collection
+	 * @throws NullPointerException <code>null</code> can not be added to the collection
 	 */
-	public void add(Object value) {
-		// Does nothing
-	}
+	void add(Object value);
 	
 	/**
 	 * Returns true only if the collection contains given value, as determined by equals method.
@@ -46,20 +38,15 @@ public class Collection {
 	 * @param value object to be tested
 	 * @return true if the object is in this collection, false otherwise
 	 */
-	public boolean contains(Object value) {
-		return false;
-	}
-	
+	boolean contains(Object value);
 	/**
 	 * Returns true only if the collection contains given value as determined by equals method and 
-	 * removes one occurrence of it (in this class it is not specified which one).
+	 * removes one occurrence of it.
 	 * 
 	 * @param value object to be removed from the collection
 	 * @return returns true if the collection contains the object and removes it, false otherwise
 	 */
-	public boolean remove(Object value) {
-		return false;
-	}
+	boolean remove(Object value);
 	
 	/**
 	 * Allocates new array with size equals to the size of this collection, fills it with collection
@@ -67,17 +54,19 @@ public class Collection {
 	 * 
 	 * @return array made from the collection
 	 */
-	public Object[] toArray() {
-		throw new UnsupportedOperationException();
-	}
+	Object[] toArray();
 	
 	/**
 	 * Method calls processor.process(.) for each element of this collection. 
-	 * The order in which elements will be sent is undefined in this class.
 	 * 
 	 * @param processor processor which will be used to process all of the items in the collection
 	 */
-	public void forEach(Processor processor) {}
+	default void forEach(Processor processor) {
+		ElementsGetter getter = createElementsGetter();
+		while (getter.hasNextElement()) {
+			processor.process(getter.getNextElement());
+		}
+	}
 	
 	/**
 	 * Method adds into the current collection all elements from the given collection.
@@ -85,8 +74,8 @@ public class Collection {
 	 * 
 	 * @param other collection whose items will be added to this collection
 	 */
-	public void addAll(Collection other) {
-		class AddProcessor extends Processor {
+	default void addAll(Collection other) {
+		class AddProcessor implements Processor {
 			@Override
 			public void process(Object value) {
 				add(value);
@@ -99,5 +88,29 @@ public class Collection {
 	/**
 	 * Removes all elements from this collection.
 	 */
-	public void clear() {}
+	void clear();
+	
+	/**
+	 * Creates a new ElementsGetter for this collection which allows you to iterate through this 
+	 * collection element by element.
+	 * 
+	 * @return returns object which allows to iterate through collection
+	 */
+	ElementsGetter createElementsGetter();
+	
+	/**
+	 * Adds the elements from the given collection only if they are acceptable by the given tester.
+	 * 
+	 * @param col collection to be added
+	 * @param tester will test which elements of the collection to add
+	 */
+	default void addAllSatisfying(Collection col, Tester tester) {
+		ElementsGetter getter = col.createElementsGetter();
+		while (getter.hasNextElement()) {
+			Object el = getter.getNextElement();
+			if (tester.test(el)) {
+				add(el);
+			}
+		}
+	}
 }

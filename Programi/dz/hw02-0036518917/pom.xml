@@ -5,12 +5,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>hr.fer.oprpp1.jmbag0036518917</groupId>
-	<artifactId>hw01-0036518917</artifactId>
+	<artifactId>hw02-0036518917</artifactId>
 	<version>1.0</version>
 
 	<packaging>jar</packaging>
 
-	<name>Homework01</name>
+	<name>Homework02</name>
      
 	<properties>
 		<maven.compiler.source>15</maven.compiler.source>
