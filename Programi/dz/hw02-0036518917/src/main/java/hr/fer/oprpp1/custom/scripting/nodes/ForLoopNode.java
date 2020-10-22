@@ -82,6 +82,13 @@ public class ForLoopNode extends Node {
 				|| (this.stepExpression != null && other.stepExpression == null)) {
 			return false;
 		}
+		if ((this.children == null && other.children != null) ||
+				(this.children != null && other.children == null)) {
+			return false;
+		}
+		if (this.children == null && other.children == null) {
+			return true;
+		}
 		if (this.children.size() != other.children.size()) {
 			return false;
 		}

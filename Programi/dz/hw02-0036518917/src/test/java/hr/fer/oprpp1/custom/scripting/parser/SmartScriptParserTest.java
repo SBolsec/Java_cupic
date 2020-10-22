@@ -51,6 +51,22 @@ public class SmartScriptParserTest {
     }
 
     @Test
+    public void testForNodeNoChildren() {
+        String text = "{$ FOR i -1 10 1 $}{$ END $}";
+        SmartScriptParser parser = new SmartScriptParser(text);
+        DocumentNode documentNode = parser.getDocumentNode();
+
+        Node expected1 = new ForLoopNode(
+                new ElementVariable("i"),
+                new ElementConstantInteger(-1),
+                new ElementConstantInteger(10),
+                new ElementConstantInteger(1));
+
+        assertEquals(1, documentNode.numberOfChildren());
+        assertEquals(expected1, documentNode.getChild(0));
+    }
+
+    @Test
     public void testForNode1() {
         String text = "{$ FOR i -1 10 1 $} {$ END $}";
         SmartScriptParser parser = new SmartScriptParser(text);
