@@ -65,7 +65,14 @@ public class ForLoopNode extends Node {
 	public Element getStepExpression() {
 		return stepExpression;
 	}
-	
+
+	@Override
+	public int numberOfChildren() {
+		if (this.children == null)
+			return 0;
+		return this.children.size();
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof ForLoopNode)) return false;

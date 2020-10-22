@@ -64,6 +64,7 @@ public class SmartScriptParserTest {
 
         assertEquals(1, documentNode.numberOfChildren());
         assertEquals(expected1, documentNode.getChild(0));
+        assertEquals(0, documentNode.getChild(0).numberOfChildren());
     }
 
     @Test
