@@ -119,6 +119,18 @@ public class SmartScriptLexerTest {
 	}
 	
 	@Test
+	public void testJohnLongSmith() {
+		SmartScriptLexer SmartScriptLexer = new SmartScriptLexer("\"John\\\"Long\\\" Smith\"");
+		
+		SmartScriptLexer.setState(SmartScriptLexerState.TAG);
+		
+		SmartScriptToken correctData[] = {
+			new SmartScriptToken(SmartScriptTokenType.STRING, new ElementString("John\"Long\" Smith"))
+		};
+		checkSmartScriptTokenStream(SmartScriptLexer, correctData);
+	}
+	
+	@Test
 	public void testFoundTag() {
 		SmartScriptLexer SmartScriptLexer = new SmartScriptLexer("Example {$");
 
@@ -399,7 +411,7 @@ public class SmartScriptLexerTest {
 	private String readExample(int n) {
 		try(InputStream is = this.getClass().getClassLoader().getResourceAsStream("extra/primjer"+n+".txt")) {
 			if(is==null) throw new RuntimeException("Datoteka extra/primjer"+n+".txt je nedostupna.");
-		    byte[] data = this.getClass().getClassLoader().getResourceAsStream("extra/primjer"+n+".txt").readAllBytes();
+		    byte[] data = is.readAllBytes();
 		    String text = new String(data, StandardCharsets.UTF_8);
 		    return text;
 		} catch(IOException ex) {

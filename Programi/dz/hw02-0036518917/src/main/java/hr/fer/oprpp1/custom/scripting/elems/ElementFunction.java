@@ -24,6 +24,6 @@ public class ElementFunction extends Element {
 	 * @return name returns name
 	 */
 	public String asText() {
-		return name;
+		return "@" + name;
 	}
 }

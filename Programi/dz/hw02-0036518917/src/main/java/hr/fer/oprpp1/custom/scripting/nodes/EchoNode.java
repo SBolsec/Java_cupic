@@ -29,13 +29,31 @@ public class EchoNode extends Node {
 		return elements;
 	}
 	
-//	@Override
-//	public boolean equals(Object obj) {
-//		
-//	}
-//	
-//	@Override
-//	public String toString() {
-//		
-//	}
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof EchoNode)) return false;
+		EchoNode other = (EchoNode) obj;
+		if (this.elements.length != other.elements.length)
+			return false;
+		for (int i = 0; i < elements.length; i++) {
+			if (!this.elements[i].equals(other.elements[i])) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("{$= ");
+		for (int i = 0; i < elements.length; i++) {
+			sb.append(elements[i].asText());
+			if (i != elements.length - 1) {
+				sb.append(' ');
+			}
+		}
+		sb.append(" $}");
+		return sb.toString();
+	}
 }

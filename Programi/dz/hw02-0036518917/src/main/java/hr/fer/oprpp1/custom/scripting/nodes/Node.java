@@ -8,7 +8,7 @@ import hr.fer.oprpp1.custom.collections.ArrayIndexedCollection;
  * @author sbolsec
  *
  */
-public class Node {
+public abstract class Node {
 	
 	/** Stores the children of this node **/
 	protected ArrayIndexedCollection children;
@@ -18,7 +18,8 @@ public class Node {
 	 * @param child node to be added as a child to this node
 	 */
 	public void addChildNode(Node child) {
-		children = new ArrayIndexedCollection();
+		if (children == null)
+			children = new ArrayIndexedCollection();
 		children.add(child);
 	}
 	

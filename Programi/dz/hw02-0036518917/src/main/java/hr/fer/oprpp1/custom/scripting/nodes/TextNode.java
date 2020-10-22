@@ -26,13 +26,15 @@ public class TextNode extends Node {
 		return text;
 	}
 	
-//	@Override
-//	public boolean equals(Object obj) {
-//		
-//	}
-//	
-//	@Override
-//	public String toString() {
-//		
-//	}
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof TextNode)) return false;
+		TextNode other = (TextNode) obj;
+		return this.text.equals(other.text);
+	}
+	
+	@Override
+	public String toString() {
+		return getText();
+	}
 }

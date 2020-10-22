@@ -13,7 +13,7 @@ public class ElementOperator extends Element {
 	
 	/**
 	 * Constructor which sets the symbol property
-	 * @param name will be assigned to the property symbol
+	 * @param symbol will be assigned to the property symbol
 	 */
 	public ElementOperator(String symbol) {
 		this.symbol = symbol;
@@ -21,7 +21,7 @@ public class ElementOperator extends Element {
 	
 	/**
 	 * Returns the symbol.
-	 * @return name returns symbol
+	 * @return symbol returns symbol
 	 */
 	public String asText() {
 		return symbol;

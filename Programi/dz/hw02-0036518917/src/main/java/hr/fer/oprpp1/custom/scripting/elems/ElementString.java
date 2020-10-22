@@ -13,7 +13,7 @@ public class ElementString extends Element {
 	
 	/**
 	 * Constructor which sets the value property
-	 * @param name will be assigned to the property value
+	 * @param value will be assigned to the property value
 	 */
 	public ElementString(String value) {
 		this.value = value;
@@ -21,7 +21,7 @@ public class ElementString extends Element {
 	
 	/**
 	 * Returns the value.
-	 * @return name returns value
+	 * @return value returns value
 	 */
 	public String asText() {
 		return value;
