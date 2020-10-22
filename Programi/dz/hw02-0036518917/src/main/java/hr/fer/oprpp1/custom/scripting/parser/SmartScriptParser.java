@@ -3,8 +3,7 @@ package hr.fer.oprpp1.custom.scripting.parser;
 import hr.fer.oprpp1.custom.collections.ArrayIndexedCollection;
 import hr.fer.oprpp1.custom.collections.List;
 import hr.fer.oprpp1.custom.collections.ObjectStack;
-import hr.fer.oprpp1.custom.scripting.elems.Element;
-import hr.fer.oprpp1.custom.scripting.elems.ElementVariable;
+import hr.fer.oprpp1.custom.scripting.elems.*;
 import hr.fer.oprpp1.custom.scripting.lexer.SmartScriptLexer;
 import hr.fer.oprpp1.custom.scripting.lexer.SmartScriptLexerException;
 import hr.fer.oprpp1.custom.scripting.lexer.SmartScriptLexerState;
@@ -36,25 +35,29 @@ public class SmartScriptParser {
 	 */
 	public SmartScriptParser(String docBody) {
 		try {
+			if (docBody.isEmpty()) {
+				throw new SmartScriptParserException("Input can not be empty!");
+			}
 			tree = new ObjectStack();
 			DocumentNode docNode = new DocumentNode();
 			tree.push(docNode);
 			lexer = new SmartScriptLexer(docBody);
 			tokens = new ArrayIndexedCollection();
 			startParsing();
-		} catch (SmartScriptLexerException e) {
+			if (tree.size() != 1) {
+				throw new SmartScriptParserException("Was expecting one node on stack, there were: " + tree.size());
+			}
+		} catch (Exception e) {
 			throw new SmartScriptParserException(e.getMessage());
 		}
 	}
 	
 	/**
 	 * Returns the document node which is the start of the generated tree
-	 * @return
+	 * @return document node which contains created tree
 	 */
 	public DocumentNode getDocumentNode() {
-		if (tree.size() != 1)
-			throw new SmartScriptParserException("There were more nodes on the stack than expected, was expecting 1, there were: " + tree.size() + ".");
-		return (DocumentNode) tree.pop();
+		return (DocumentNode) tree.peek();
 	}
 	
 	/**
@@ -70,7 +73,8 @@ public class SmartScriptParser {
 			Node lastNodeOnStack = (Node) tree.peek();
 			
 			if (type == SmartScriptTokenType.STRING) {
-				Node node = new TextNode(token.getValue().asText());
+				String text = generateStringOutsideTag(token.getValue().asText());
+				Node node = new TextNode(text);
 				lastNodeOnStack.addChildNode(node);
 				continue;
 			}
@@ -98,6 +102,16 @@ public class SmartScriptParser {
 							&& start.getType() != SmartScriptTokenType.DOUBLE) {
 						throw new SmartScriptParserException("Wrong element in for-tag as start! Allowed elements are variables, numbers and string!");
 					}
+					if (start.getValue() instanceof ElementString) {
+						int indexOfMinus = start.getValue().toString().indexOf('.');
+						if (indexOfMinus != -1) {
+							double num = parseDoubleFromString(start.getValue().toString());
+							start = new SmartScriptToken(SmartScriptTokenType.DOUBLE, new ElementConstantDouble(num));
+						} else {
+							int num = parseIntegerFromString(start.getValue().toString());
+							start = new SmartScriptToken(SmartScriptTokenType.INTEGER, new ElementConstantInteger(num));
+						}
+					}
 					
 					// Third element of for-tag must be a variable, string or number
 					if (i + 1 >= n) throw new SmartScriptParserException();
@@ -107,6 +121,16 @@ public class SmartScriptParser {
 							&& end.getType() != SmartScriptTokenType.INTEGER
 							&& end.getType() != SmartScriptTokenType.DOUBLE) {
 						throw new SmartScriptParserException("Wrong element in for-tag as end! Allowed elements are variables, numbers and string!");
+					}
+					if (end.getValue() instanceof ElementString) {
+						int indexOfMinus = start.getValue().toString().indexOf('.');
+						if (indexOfMinus != -1) {
+							double num = parseDoubleFromString(end.getValue().toString());
+							end = new SmartScriptToken(SmartScriptTokenType.DOUBLE, new ElementConstantDouble(num));
+						} else {
+							int num = parseIntegerFromString(end.getValue().toString());
+							end = new SmartScriptToken(SmartScriptTokenType.INTEGER, new ElementConstantInteger(num));
+						}
 					}
 					
 					// For-tag can have a optional fourth element which must be a variable, string or number; or it ends at three elements
@@ -124,6 +148,16 @@ public class SmartScriptParser {
 							&& stepOrTagEnd.getType() != SmartScriptTokenType.DOUBLE) {
 						throw new SmartScriptParserException("Wrong element in for-tag as step! Allowed elements are variables, numbers and string!");
 					}
+					if (stepOrTagEnd.getValue() instanceof ElementString) {
+						int indexOfMinus = start.getValue().toString().indexOf('.');
+						if (indexOfMinus != -1) {
+							double num = parseDoubleFromString(stepOrTagEnd.getValue().toString());
+							stepOrTagEnd = new SmartScriptToken(SmartScriptTokenType.DOUBLE, new ElementConstantDouble(num));
+						} else {
+							int num = parseIntegerFromString(stepOrTagEnd.getValue().toString());
+							stepOrTagEnd = new SmartScriptToken(SmartScriptTokenType.INTEGER, new ElementConstantInteger(num));
+						}
+					}
 					
 					// If there was four elements, the next token must be a closing tag
 					if (i + 1 >= n) throw new SmartScriptParserException();
@@ -139,7 +173,13 @@ public class SmartScriptParser {
 					SmartScriptToken newToken = null;
 					List echoElements = new ArrayIndexedCollection();
 					while (i + 1 < n && (newToken = (SmartScriptToken) tokens.get(++i)).getType() != SmartScriptTokenType.TAG_CLOSED && newToken.getType() != SmartScriptTokenType.EOF) {
-						echoElements.add(newToken.getValue());
+						Element el = newToken.getValue();
+						// If the element is a string, return the escaping characters
+						if (el instanceof ElementString) {
+							String text = generateStringInsideTag(el.asText());
+							el = new ElementString(text);
+						}
+						echoElements.add(el);
 					}
 					if (newToken == null) {
 						Node node = new EchoNode(null);
@@ -192,6 +232,72 @@ public class SmartScriptParser {
 			}
 		} catch (SmartScriptLexerException e) {
 			throw new SmartScriptParserException("There was an error while generating the tokens with the lexer.");
+		}
+	}
+
+	/**
+	 * Generates the escaping characters so that the text follows the escaping rules outside the tag
+	 * @param input text to be examined
+	 * @return generated text
+	 */
+	private String generateStringOutsideTag(String input) {
+		StringBuilder sb = new StringBuilder();
+		char[] elements = input.toCharArray();
+		for (int i = 0, n = elements.length; i < n; i++) {
+			char c = elements[i];
+			if ((c == '{' && i+1 < n && elements[i+1] == '$') || c == '\\') {
+				sb.append('\\');
+			}
+			sb.append(c);
+		}
+		return sb.toString();
+	}
+
+	/**
+	 * Generates the escaping characters so that the text follows the escaping rules inside the tag
+	 * @param input text to be examined
+	 * @return generated text
+	 */
+	private String generateStringInsideTag(String input) {
+		StringBuilder sb = new StringBuilder();
+		char[] elements = input.toCharArray();
+		sb.append('"');
+		for (int i = 0, n = elements.length; i < n; i++) {
+			char c = elements[i];
+			if (c == '\\' || c == '"') {
+				sb.append('\\');
+			}
+			sb.append(c);
+		}
+		sb.append('"');
+		return sb.toString();
+	}
+
+	/**
+	 * Tries to parse an integer from given string
+	 * @param input string to parse
+	 * @return parsed integer
+	 * @throws SmartScriptParserException if integer could not be parsed
+	 */
+	private int parseIntegerFromString(String input) {
+		try {
+			return Integer.parseInt(input);
+		} catch (NumberFormatException e) {
+			throw new SmartScriptParserException("Invalid string! Could not parse number!");
+		}
+	}
+
+	/**
+	 * Tries to parse a double from given string
+	 * @param input string to parse
+	 * @return parsed double
+	 * @throws SmartScriptParserException if double could not be parsed
+	 */
+	private double parseDoubleFromString(String input) {
+		try {
+			return Double.parseDouble(input);
+		} catch (NumberFormatException e) {
+			throw new SmartScriptParserException("Invalid string! Could not parse number!");
 		}
 	}
 }

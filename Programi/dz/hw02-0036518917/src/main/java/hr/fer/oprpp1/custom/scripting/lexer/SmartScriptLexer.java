@@ -304,7 +304,7 @@ public class SmartScriptLexer {
 	
 	/**
 	 * Checks for escaped characters in the input text.
-	 * @throws LexerException if the input was wrong
+	 * @throws SmartScriptLexerException if the input was wrong
 	 */
 	private void escapedCharacterInsideTag() {
 		if (currentIndex + 1 < data.length) {

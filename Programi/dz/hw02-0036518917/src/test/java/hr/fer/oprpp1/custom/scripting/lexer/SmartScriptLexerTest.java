@@ -39,12 +39,12 @@ public class SmartScriptLexerTest {
 
 	@Test
 	public void testGetReturnsLastNext() {
-		// Calling getSmartScriptToken once or several times after calling nextToken must return each time what nextToken returned...
+		// Calling getToken once or several times after calling nextToken must return each time what nextToken returned...
 		SmartScriptLexer SmartScriptLexer = new SmartScriptLexer("");
 		
 		SmartScriptToken SmartScriptToken = SmartScriptLexer.nextToken();
-		assertEquals(SmartScriptToken, SmartScriptLexer.getToken(), "getSmartScriptToken returned different SmartScriptToken than nextToken.");
-		assertEquals(SmartScriptToken, SmartScriptLexer.getToken(), "getSmartScriptToken returned different SmartScriptToken than nextToken.");
+		assertEquals(SmartScriptToken, SmartScriptLexer.getToken(), "getToken returned different SmartScriptToken than nextToken.");
+		assertEquals(SmartScriptToken, SmartScriptLexer.getToken(), "getToken returned different SmartScriptToken than nextToken.");
 	}
 
 	@Test
@@ -482,18 +482,6 @@ public class SmartScriptLexerTest {
 		String text = readExample(6);
 		SmartScriptLexer SmartScriptLexer = new SmartScriptLexer(text);
 		
-		SmartScriptToken correctData[] = {
-			new SmartScriptToken(SmartScriptTokenType.STRING, new ElementString("Ovo je OK ${ = \"String ide\nu više redaka\nčak tri\" $}\n")),
-			new SmartScriptToken(SmartScriptTokenType.EOF, null)
-		};
-		checkSmartScriptTokenStream(SmartScriptLexer, correctData);
-	}
-	
-	@Test
-	public void testExample61() {
-		String text = readExample(61);
-		SmartScriptLexer SmartScriptLexer = new SmartScriptLexer(text);
-		
 		SmartScriptToken correctData1[] = {
 			new SmartScriptToken(SmartScriptTokenType.STRING, new ElementString("Ovo je OK ")),
 			new SmartScriptToken(SmartScriptTokenType.TAG_OPENED, null)
@@ -514,14 +502,6 @@ public class SmartScriptLexerTest {
 	@Test
 	public void testExample7() {
 		String text = readExample(7);
-		SmartScriptLexer SmartScriptLexer = new SmartScriptLexer(text);
-		
-		assertThrows(SmartScriptLexerException.class, () -> SmartScriptLexer.nextToken());
-	}
-	
-	@Test
-	public void testExample7Tag() {
-		String text = readExample(71);
 		SmartScriptLexer SmartScriptLexer = new SmartScriptLexer(text);
 		
 		SmartScriptToken correctData1[] = {
@@ -546,18 +526,6 @@ public class SmartScriptLexerTest {
 		String text = readExample(8);
 		SmartScriptLexer SmartScriptLexer = new SmartScriptLexer(text);
 		
-		SmartScriptToken correctData[] = {
-			new SmartScriptToken(SmartScriptTokenType.STRING, new ElementString("Ovo se ruši ${ = \"String ide\nu više {$ redaka\nčak tri\" $}\n")),
-			new SmartScriptToken(SmartScriptTokenType.EOF, null)
-		};
-		checkSmartScriptTokenStream(SmartScriptLexer, correctData);
-	}
-	
-	@Test
-	public void testExample81() {
-		String text = readExample(81);
-		SmartScriptLexer SmartScriptLexer = new SmartScriptLexer(text);
-		
 		SmartScriptToken correctData1[] = {
 			new SmartScriptToken(SmartScriptTokenType.STRING, new ElementString("Ovo se ruši ")),
 			new SmartScriptToken(SmartScriptTokenType.TAG_OPENED, null)
@@ -574,18 +542,9 @@ public class SmartScriptLexerTest {
 		assertThrows(SmartScriptLexerException.class, () -> SmartScriptLexer.nextToken());
 	}
 	
-	
 	@Test
 	public void testExample9() {
 		String text = readExample(9);
-		SmartScriptLexer SmartScriptLexer = new SmartScriptLexer(text);
-		
-		assertThrows(SmartScriptLexerException.class, () -> SmartScriptLexer.nextToken());
-	}
-	
-	@Test
-	public void testExample91() {
-		String text = readExample(91);
 		SmartScriptLexer SmartScriptLexer = new SmartScriptLexer(text);
 		
 		SmartScriptToken correctData1[] = {
