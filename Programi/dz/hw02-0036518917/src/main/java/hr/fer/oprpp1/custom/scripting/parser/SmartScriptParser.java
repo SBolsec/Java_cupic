@@ -102,16 +102,6 @@ public class SmartScriptParser {
 							&& start.getType() != SmartScriptTokenType.DOUBLE) {
 						throw new SmartScriptParserException("Wrong element in for-tag as start! Allowed elements are variables, numbers and string!");
 					}
-					if (start.getValue() instanceof ElementString) {
-						int indexOfMinus = start.getValue().toString().indexOf('.');
-						if (indexOfMinus != -1) {
-							double num = parseDoubleFromString(start.getValue().toString());
-							start = new SmartScriptToken(SmartScriptTokenType.DOUBLE, new ElementConstantDouble(num));
-						} else {
-							int num = parseIntegerFromString(start.getValue().toString());
-							start = new SmartScriptToken(SmartScriptTokenType.INTEGER, new ElementConstantInteger(num));
-						}
-					}
 					
 					// Third element of for-tag must be a variable, string or number
 					if (i + 1 >= n) throw new SmartScriptParserException();
@@ -121,16 +111,6 @@ public class SmartScriptParser {
 							&& end.getType() != SmartScriptTokenType.INTEGER
 							&& end.getType() != SmartScriptTokenType.DOUBLE) {
 						throw new SmartScriptParserException("Wrong element in for-tag as end! Allowed elements are variables, numbers and string!");
-					}
-					if (end.getValue() instanceof ElementString) {
-						int indexOfMinus = start.getValue().toString().indexOf('.');
-						if (indexOfMinus != -1) {
-							double num = parseDoubleFromString(end.getValue().toString());
-							end = new SmartScriptToken(SmartScriptTokenType.DOUBLE, new ElementConstantDouble(num));
-						} else {
-							int num = parseIntegerFromString(end.getValue().toString());
-							end = new SmartScriptToken(SmartScriptTokenType.INTEGER, new ElementConstantInteger(num));
-						}
 					}
 					
 					// For-tag can have a optional fourth element which must be a variable, string or number; or it ends at three elements
@@ -147,16 +127,6 @@ public class SmartScriptParser {
 							&& stepOrTagEnd.getType() != SmartScriptTokenType.INTEGER
 							&& stepOrTagEnd.getType() != SmartScriptTokenType.DOUBLE) {
 						throw new SmartScriptParserException("Wrong element in for-tag as step! Allowed elements are variables, numbers and string!");
-					}
-					if (stepOrTagEnd.getValue() instanceof ElementString) {
-						int indexOfMinus = start.getValue().toString().indexOf('.');
-						if (indexOfMinus != -1) {
-							double num = parseDoubleFromString(stepOrTagEnd.getValue().toString());
-							stepOrTagEnd = new SmartScriptToken(SmartScriptTokenType.DOUBLE, new ElementConstantDouble(num));
-						} else {
-							int num = parseIntegerFromString(stepOrTagEnd.getValue().toString());
-							stepOrTagEnd = new SmartScriptToken(SmartScriptTokenType.INTEGER, new ElementConstantInteger(num));
-						}
 					}
 					
 					// If there was four elements, the next token must be a closing tag
@@ -271,33 +241,5 @@ public class SmartScriptParser {
 		}
 		sb.append('"');
 		return sb.toString();
-	}
-
-	/**
-	 * Tries to parse an integer from given string
-	 * @param input string to parse
-	 * @return parsed integer
-	 * @throws SmartScriptParserException if integer could not be parsed
-	 */
-	private int parseIntegerFromString(String input) {
-		try {
-			return Integer.parseInt(input);
-		} catch (NumberFormatException e) {
-			throw new SmartScriptParserException("Invalid string! Could not parse number!");
-		}
-	}
-
-	/**
-	 * Tries to parse a double from given string
-	 * @param input string to parse
-	 * @return parsed double
-	 * @throws SmartScriptParserException if double could not be parsed
-	 */
-	private double parseDoubleFromString(String input) {
-		try {
-			return Double.parseDouble(input);
-		} catch (NumberFormatException e) {
-			throw new SmartScriptParserException("Invalid string! Could not parse number!");
-		}
 	}
 }
