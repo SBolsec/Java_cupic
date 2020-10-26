@@ -1,6 +1,7 @@
 package hr.fer.oprpp1.custom.scripting.nodes;
 
 import hr.fer.oprpp1.custom.scripting.elems.Element;
+import hr.fer.oprpp1.custom.scripting.elems.ElementString;
 import hr.fer.oprpp1.custom.scripting.elems.ElementVariable;
 
 /**
@@ -110,17 +111,31 @@ public class ForLoopNode extends Node {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("{$ FOR ").append(variable).append(' ').append(startExpression).append(' ').append(endExpression).append(' ');
-		if (stepExpression != null) sb.append(stepExpression).append(' ');
+		sb.append("{$ FOR ").append(variable).append(' ');
+		
+		// If there is a string, insert the escaping characters
+		if (startExpression instanceof ElementString) {
+			sb.append(generateStringInsideTag(startExpression.toString())).append(' ');
+		} else {
+			sb.append(startExpression).append(' ');
+		}
+		if (endExpression instanceof ElementString) {
+			sb.append(generateStringInsideTag(endExpression.toString())).append(' ');
+		} else {
+			sb.append(endExpression).append(' ');
+		}
+		if (stepExpression != null) {
+			if (stepExpression instanceof ElementString) {
+				sb.append(generateStringInsideTag(stepExpression.toString())).append(' ');
+			} else {
+				sb.append(stepExpression).append(' ');
+			}
+		}
 		sb.append("$}");
 		if (!children.isEmpty()) {
 			for (int i = 0, n = children.size(); i < n; i++) {
 				sb.append(children.get(i).toString());
-//				if (i != n - 1) {
-//					sb.append(' ');
-//				}
 			}
-//			sb.append('\n');
 		}
 		sb.append("{$ END $}");
 		return sb.toString();

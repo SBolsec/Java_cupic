@@ -40,4 +40,24 @@ public abstract class Node {
 	public Node getChild(int index) {
 		return (Node) children.get(index);
 	}
+	
+	/**
+	 * Generates the escaping characters so that the text follows the escaping rules inside the tag
+	 * @param input text to be examined
+	 * @return generated text
+	 */
+	protected String generateStringInsideTag(String input) {
+		StringBuilder sb = new StringBuilder();
+		char[] elements = input.toCharArray();
+		sb.append('"');
+		for (int i = 0, n = elements.length; i < n; i++) {
+			char c = elements[i];
+			if (c == '\\' || c == '"') {
+				sb.append('\\');
+			}
+			sb.append(c);
+		}
+		sb.append('"');
+		return sb.toString();
+	}
 }

@@ -35,6 +35,24 @@ public class TextNode extends Node {
 	
 	@Override
 	public String toString() {
-		return getText();
+		return generateStringWithEscapedCharacters(getText());
+	}
+	
+	/**
+	 * Generates the escaping characters so that the text follows the escaping rules outside the tag
+	 * @param input text to be examined
+	 * @return generated text
+	 */
+	private String generateStringWithEscapedCharacters(String input) {
+		StringBuilder sb = new StringBuilder();
+		char[] elements = input.toCharArray();
+		for (int i = 0, n = elements.length; i < n; i++) {
+			char c = elements[i];
+			if ((c == '{' && i+1 < n && elements[i+1] == '$') || c == '\\') {
+				sb.append('\\');
+			}
+			sb.append(c);
+		}
+		return sb.toString();
 	}
 }

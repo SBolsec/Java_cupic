@@ -39,7 +39,7 @@ public class SmartScriptParserTest {
         SmartScriptParser parser = new SmartScriptParser(text);
         DocumentNode documentNode = parser.getDocumentNode();
 
-        Node expected = new TextNode(" This is an example. \\{$ This is fine \\\\");
+        Node expected = new TextNode(" This is an example. {$ This is fine \\");
 
         assertEquals(1, documentNode.numberOfChildren());
         assertEquals(expected, documentNode.getChild(0));
@@ -198,7 +198,7 @@ public class SmartScriptParserTest {
                 new ElementOperator("*"),
                 new ElementFunction("sin"),
                 new ElementVariable("word"),
-                new ElementString("\"Test \\\\ \""),
+                new ElementString("Test \\ "),
                 new ElementConstantInteger(10),
                 new ElementConstantDouble(1.35)
         };
@@ -286,7 +286,7 @@ public class SmartScriptParserTest {
         SmartScriptParser parser = new SmartScriptParser(text);
         DocumentNode documentNode = parser.getDocumentNode();
 
-        Node expected = new TextNode("Ovo je \nsve jedan \\{$ text node\n");
+        Node expected = new TextNode("Ovo je \nsve jedan {$ text node\n");
 
         assertEquals(1, documentNode.numberOfChildren());
         assertEquals(expected, documentNode.getChild(0));
@@ -299,7 +299,7 @@ public class SmartScriptParserTest {
         SmartScriptParser parser = new SmartScriptParser(text);
         DocumentNode documentNode = parser.getDocumentNode();
 
-        Node expected = new TextNode("Ovo je \nsve jedan \\\\\\{$text node\n");
+        Node expected = new TextNode("Ovo je \nsve jedan \\{$text node\n");
 
         assertEquals(1, documentNode.numberOfChildren());
         assertEquals(expected, documentNode.getChild(0));
@@ -328,7 +328,7 @@ public class SmartScriptParserTest {
 
         Node expected1 = new TextNode("Ovo je OK ");
         Element[] elements = {
-            new ElementString("\"String ide\nu više redaka\nčak tri\"")
+            new ElementString("String ide\nu više redaka\nčak tri")
         };
         Node expected2 = new EchoNode(elements);
         Node expected3 = new TextNode("\n");
@@ -348,9 +348,9 @@ public class SmartScriptParserTest {
 
         Node expected1 = new TextNode("Ovo je isto OK ");
         Element[] elements = {
-                new ElementString("\"String ide\n" +
-                        "u \\\"više\\\" \nredaka\n" +
-                        "ovdje a stvarno četiri\"")
+                new ElementString("String ide\n" +
+                        "u \"više\" \nredaka\n" +
+                        "ovdje a stvarno četiri")
         };
         Node expected2 = new EchoNode(elements);
         Node expected3 = new TextNode("\n");

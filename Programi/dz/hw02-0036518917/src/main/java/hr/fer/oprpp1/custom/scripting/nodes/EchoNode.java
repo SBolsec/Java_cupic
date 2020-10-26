@@ -1,6 +1,7 @@
 package hr.fer.oprpp1.custom.scripting.nodes;
 
 import hr.fer.oprpp1.custom.scripting.elems.Element;
+import hr.fer.oprpp1.custom.scripting.elems.ElementString;
 
 /**
  * A node representing a command which generates some textual output dynamically.
@@ -48,7 +49,12 @@ public class EchoNode extends Node {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{$= ");
 		for (int i = 0; i < elements.length; i++) {
-			sb.append(elements[i].asText());
+			Element element = (Element) elements[i];
+			if (element instanceof ElementString) {
+				sb.append(this.generateStringInsideTag(element.asText()));
+			} else {
+				sb.append(elements[i].asText());
+			}
 			if (i != elements.length - 1) {
 				sb.append(' ');
 			}
