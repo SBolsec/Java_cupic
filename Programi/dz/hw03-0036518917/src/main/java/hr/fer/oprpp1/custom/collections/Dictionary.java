@@ -1,5 +1,7 @@
 package hr.fer.oprpp1.custom.collections;
 
+import java.util.Map;
+
 /**
  * Stores key-value pairs
  * 
@@ -35,13 +37,14 @@ public class Dictionary<K, V> {
 			this.value = value;
 		}
 		
+		@SuppressWarnings("unchecked")
 		@Override
 		public boolean equals(Object obj) {
 			if (!(obj instanceof DictionaryEntry<?, ?>))
 				return false;
 			DictionaryEntry<K, V> other = (DictionaryEntry<K, V>) obj;
 			
-			return this.key.equals(other.key);
+			return this.key==null ? other.key==null : this.key.equals(other.key);
 		}
 	}
 	
@@ -100,6 +103,7 @@ public class Dictionary<K, V> {
 	 * @param key key from which to return value
 	 * @return value from the given key or null if the key does not exist
 	 */
+	@SuppressWarnings("unchecked")
 	public V get(Object key) {
 		DictionaryEntry<K, V> entry = new DictionaryEntry<>((K) key, null);
 		int index = elements.indexOf(entry);
