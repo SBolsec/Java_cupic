@@ -184,7 +184,7 @@ public class SimpleHashtable<K, V> implements Iterable<SimpleHashtable.TableEntr
 					sb.append(", ");
 				}
 			}
-			if (i+1 < table.length && table[i+1] != null) {
+			if (table[i] != null && i+1 < table.length && table[i+1] != null) {
 				sb.append(", ");
 			}
 		}
@@ -330,6 +330,11 @@ public class SimpleHashtable<K, V> implements Iterable<SimpleHashtable.TableEntr
 		return new IteratorImpl();
 	}
 	
+	/**
+	 * Models an iterator which iterates over the table
+	 * @author sbolsec
+	 *
+	 */
 	private class IteratorImpl implements Iterator<SimpleHashtable.TableEntry<K, V>> {
 
 		/** Number of modifications done at the time of creating this iterator **/
@@ -341,6 +346,9 @@ public class SimpleHashtable<K, V> implements Iterable<SimpleHashtable.TableEntr
 		/** Next element to return **/
 		private TableEntry<K, V> next;
 		
+		/**
+		 * Initializes the iterator
+		 */
 		public IteratorImpl() {
 			currentModificationsCount = modificationCount;
 			current = next = null;
@@ -354,6 +362,10 @@ public class SimpleHashtable<K, V> implements Iterable<SimpleHashtable.TableEntr
 			}
 		}
 		
+		/**
+		 * Checks whether there is a next element to iterate to.
+		 * @throws ConcurrentModificationException if there were modifications to the table from outside of the iterator
+		 */
 		@Override
 		public boolean hasNext() {
 			if (modificationCount != currentModificationsCount)
@@ -362,6 +374,11 @@ public class SimpleHashtable<K, V> implements Iterable<SimpleHashtable.TableEntr
 			return next != null;
 		}
 
+		/**
+		 * Returns the next element in the table or throws an exception if there is no more items.
+		 * @throws ConcurrentModificationException if there were modifications to the table from outside of the iterator
+		 * @throws NoSuchElementException if there is no more elements in the table
+		 */
 		@Override
 		public SimpleHashtable.TableEntry<K, V> next() {
 			if (modificationCount != currentModificationsCount)
@@ -378,7 +395,11 @@ public class SimpleHashtable<K, V> implements Iterable<SimpleHashtable.TableEntr
 			return res;
 		}
 		
-		
+		/**
+		 * Deletes the current element in the table.
+		 * @throws ConcurrentModificationException if there were modifications to the table from outside of the iterator
+		 * @throws IllegalStateException if there is no element to delete
+		 */
 		public void remove() {
 			if (current == null)
 				throw new IllegalStateException("No element to delete!");
