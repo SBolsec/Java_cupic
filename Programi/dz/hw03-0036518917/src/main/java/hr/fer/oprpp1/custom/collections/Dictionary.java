@@ -1,7 +1,5 @@
 package hr.fer.oprpp1.custom.collections;
 
-import java.util.Map;
-
 /**
  * Stores key-value pairs
  * 

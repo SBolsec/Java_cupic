@@ -58,9 +58,7 @@ public class SimpleHashtableTest {
 
     @Test
     public void testRemove() {
-        // create collection:
         SimpleHashtable<String, Integer> examMarks = new SimpleHashtable<>(4);
-        // fill data:
         examMarks.put("Ivana", 2);
         examMarks.put("Ante", 3);
         examMarks.put("Jasna", 4);
@@ -78,9 +76,7 @@ public class SimpleHashtableTest {
 
     @Test
     public void testRemoveNull() {
-        // create collection:
         SimpleHashtable<String, Integer> examMarks = new SimpleHashtable<>(4);
-        // fill data:
         examMarks.put("Ivana", 2);
         examMarks.put("Ante", 3);
         examMarks.put("Jasna", 4);
@@ -94,9 +90,7 @@ public class SimpleHashtableTest {
 
     @Test
     public void testRemoveNonexistent() {
-        // create collection:
         SimpleHashtable<String, Integer> examMarks = new SimpleHashtable<>(4);
-        // fill data:
         examMarks.put("Ivana", 2);
         examMarks.put("Ante", 3);
         examMarks.put("Jasna", 4);
@@ -110,9 +104,7 @@ public class SimpleHashtableTest {
 
     @Test
     public void testContainsKey() {
-        // create collection:
         SimpleHashtable<String, Integer> examMarks = new SimpleHashtable<>(4);
-        // fill data:
         examMarks.put("Ivana", 2);
         examMarks.put("Ante", 3);
         examMarks.put("Jasna", 4);
@@ -122,9 +114,7 @@ public class SimpleHashtableTest {
 
     @Test
     public void testDoesNotContainKey() {
-        // create collection:
         SimpleHashtable<String, Integer> examMarks = new SimpleHashtable<>(4);
-        // fill data:
         examMarks.put("Ivana", 2);
         examMarks.put("Ante", 3);
         examMarks.put("Jasna", 4);
@@ -134,9 +124,7 @@ public class SimpleHashtableTest {
 
     @Test
     public void testContainsValue() {
-        // create collection:
         SimpleHashtable<String, Integer> examMarks = new SimpleHashtable<>(4);
-        // fill data:
         examMarks.put("Ivana", 2);
         examMarks.put("Ante", 3);
         examMarks.put("Jasna", 4);
@@ -146,9 +134,7 @@ public class SimpleHashtableTest {
 
     @Test
     public void testDoesNotContainValue() {
-        // create collection:
         SimpleHashtable<String, Integer> examMarks = new SimpleHashtable<>(4);
-        // fill data:
         examMarks.put("Ivana", 2);
         examMarks.put("Ante", 3);
         examMarks.put("Jasna", 4);
@@ -158,7 +144,6 @@ public class SimpleHashtableTest {
 
     @Test
     public void testIsEmptyTrue() {
-        // create collection:
         SimpleHashtable<String, Integer> examMarks = new SimpleHashtable<>(4);
 
         assertTrue(examMarks.isEmpty());
@@ -166,7 +151,6 @@ public class SimpleHashtableTest {
 
     @Test
     public void testIsEmptyFalse() {
-        // create collection:
         SimpleHashtable<String, Integer> examMarks = new SimpleHashtable<>(4);
         examMarks.put("Ante", 3);
 
@@ -175,9 +159,7 @@ public class SimpleHashtableTest {
 
     @Test
     public void testToArray() {
-        // create collection:
         SimpleHashtable<String, Integer> examMarks = new SimpleHashtable<>(16);
-        // fill data:
         examMarks.put("Ivana", 2);
         examMarks.put("Ante", 2);
         examMarks.put("Jasna", 2);
@@ -196,9 +178,7 @@ public class SimpleHashtableTest {
 
     @Test
     public void testExpansion() { //only achievable using compiler
-        // create collection:
         SimpleHashtable<String, Integer> examMarks = new SimpleHashtable<>(2);
-        // fill data:
         examMarks.put("Ivana", 2);
         examMarks.put("Ante", 2);
         examMarks.put("Jasna", 2);
@@ -222,7 +202,6 @@ public class SimpleHashtableTest {
 
     @Test
     public void testClear() {
-        // create collection:
         SimpleHashtable<String, Integer> examMarks = new SimpleHashtable<>(4);
         examMarks.put("Ivana", 2);
         examMarks.put("Ante", 2);
@@ -239,71 +218,21 @@ public class SimpleHashtableTest {
 
     @Test
     public void testFunctionality() {
-            // create collection:
             SimpleHashtable<String, Integer> examMarks = new SimpleHashtable<>(2);
-            // fill data:
             examMarks.put("Ivana", 2);
             examMarks.put("Ante", 2);
             examMarks.put("Jasna", 2);
             examMarks.put("Kristina", 5);
             examMarks.put("Ivana", 5); // overwrites old grade for Ivana
-            // query collection:
-            Integer kristinaGrade = examMarks.get("Kristina");
-            System.out.println("Kristina's exam grade is: " + kristinaGrade); // writes: 5
-            // What is collection's size? Must be four!
-            System.out.println("Number of stored pairs: " + examMarks.size()); // writes: 4
-
+            
+            assertEquals(5, examMarks.get("Kristina"));
+            assertEquals(4, examMarks.size());
             assertEquals("[Ante=2, Ivana=5, Jasna=2, Kristina=5]", examMarks.toString());
     }
 
     @Test
-    public void testIteratorNormalOutput() { // important console output
-        // create collection:
+    public void testIteratorRemove() { 
         SimpleHashtable<String,Integer> examMarks = new SimpleHashtable<>(2);
-        // fill data:
-        examMarks.put("Ivana", 2);
-        examMarks.put("Ante", 2);
-        examMarks.put("Jasna", 2);
-        examMarks.put("Kristina", 5);
-        examMarks.put("Ivana", 5); // overwrites old grade for Ivana
-        for(SimpleHashtable.TableEntry<String,Integer> pair : examMarks) {
-            System.out.printf("%s => %d%n", pair.getKey(), pair.getValue());
-        }
-    }
-
-    @Test
-    public void testParallelIterator() { //Cartesie (spelling!)
-        SimpleHashtable<String,Integer> examMarks = new SimpleHashtable<>(2);
-        // fill data:
-        examMarks.put("Ivana", 2);
-        examMarks.put("Ante", 2);
-        examMarks.put("Jasna", 2);
-        examMarks.put("Kristina", 5);
-        examMarks.put("Ivana", 5); // overwrites old grade for Ivana
-        for(SimpleHashtable.TableEntry<String,Integer> pair1 : examMarks) {
-            for(SimpleHashtable.TableEntry<String,Integer> pair2 : examMarks) {
-                System.out.printf(
-                        "(%s => %d) - (%s => %d)%n",
-                        pair1.getKey(), pair1.getValue(),
-                        pair2.getKey(), pair2.getValue()
-                        );
-            }
-        }
-    }
-
-    @Test
-    public void testIteratorEmptyTable() {
-        // create collection:
-        SimpleHashtable<String,Integer> examMarks = new SimpleHashtable<>(2);
-        for(SimpleHashtable.TableEntry<String,Integer> pair : examMarks) {
-            System.out.printf("%s => %d%n", pair.getKey(), pair.getValue());
-        }
-    }
-
-    @Test
-    public void testIteratorRemove() { //Cartesie (spelling!)
-        SimpleHashtable<String,Integer> examMarks = new SimpleHashtable<>(2);
-        // fill data:
         examMarks.put("Ivana", 2);
         examMarks.put("Ante", 2);
         examMarks.put("Jasna", 2);
@@ -320,9 +249,8 @@ public class SimpleHashtableTest {
     }
 
     @Test
-    public void testIteratorDoubleRemove() { //Cartesie (spelling!)
+    public void testIteratorDoubleRemove() {
         SimpleHashtable<String,Integer> examMarks = new SimpleHashtable<>(2);
-        // fill data:
         examMarks.put("Ivana", 2);
         examMarks.put("Ante", 2);
         examMarks.put("Jasna", 2);
@@ -340,9 +268,8 @@ public class SimpleHashtableTest {
     }
 
     @Test
-    public void testIteratorOuterRemove() { //Cartesie (spelling!)
+    public void testIteratorOuterRemove() {
         SimpleHashtable<String,Integer> examMarks = new SimpleHashtable<>(2);
-        // fill data:
         examMarks.put("Ivana", 2);
         examMarks.put("Ante", 2);
         examMarks.put("Jasna", 2);
@@ -357,23 +284,5 @@ public class SimpleHashtableTest {
             }
         }
         assertThrows(ConcurrentModificationException.class, () -> iter.hasNext());
-    }
-
-    @Test
-    public void testFinalOutput() {
-        SimpleHashtable<String,Integer> examMarks = new SimpleHashtable<>(2);
-        // fill data:
-        examMarks.put("Ivana", 2);
-        examMarks.put("Ante", 2);
-        examMarks.put("Jasna", 2);
-        examMarks.put("Kristina", 5);
-        examMarks.put("Ivana", 5); // overwrites old grade for Ivana
-        Iterator<SimpleHashtable.TableEntry<String,Integer>> iter = examMarks.iterator();
-        while(iter.hasNext()) {
-            SimpleHashtable.TableEntry<String,Integer> pair = iter.next();
-            System.out.printf("%s => %d%n", pair.getKey(), pair.getValue());
-            iter.remove();
-        }
-        System.out.printf("Veličina: %d%n", examMarks.size());
     }
 }
