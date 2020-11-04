@@ -129,9 +129,6 @@ public class LSystemBuilderImpl implements LSystemBuilder {
 				}
 			}
 		}
-		
-		
-		
 		return this;
 	}
 
