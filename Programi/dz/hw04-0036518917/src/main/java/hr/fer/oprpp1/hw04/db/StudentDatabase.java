@@ -16,6 +16,9 @@ public class StudentDatabase {
 		jmbagIndex = new HashMap<>();
 		
 		for (String s : list) {
+			if (s.isBlank())
+				continue;
+			
 			try (Scanner sc = new Scanner(s)) {
 				if (!sc.hasNext()) throw new IllegalArgumentException("There was no jmbag!");
 				String jmbag = sc.next();
@@ -32,6 +35,8 @@ public class StudentDatabase {
 				if (!sc.hasNextInt()) throw new IllegalArgumentException("There was no final grade!");
 				int grade = sc.nextInt();
 				if (grade < 1 || grade > 5) throw new IllegalArgumentException("Final grade must be in range (1, 5), it was: " + grade + ".");
+				
+				if (sc.hasNext()) throw new IllegalArgumentException("There was data after final grade!");
 				
 				String firstName;
 				String lastName;

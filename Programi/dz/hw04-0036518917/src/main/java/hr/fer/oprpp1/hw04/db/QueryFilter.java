@@ -38,5 +38,4 @@ public class QueryFilter implements IFilter {
 		}
 		return true;
 	}
-
 }

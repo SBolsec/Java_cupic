@@ -34,13 +34,6 @@ public class StudentRecord {
 		return jmbag;
 	}
 
-	/**
-	 * Sets student's jmbag.
-	 * @param jmbag jmbag to be set
-	 */
-	public void setJmbag(String jmbag) {
-		this.jmbag = jmbag;
-	}
 
 	/**
 	 * Returns student's last name
@@ -48,14 +41,6 @@ public class StudentRecord {
 	 */
 	public String getLastName() {
 		return lastName;
-	}
-
-	/**
-	 * Sets student's last name.
-	 * @param lastName last name to be set
-	 */
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
 	}
 
 	/**
@@ -67,27 +52,11 @@ public class StudentRecord {
 	}
 
 	/**
-	 * Sets student's first name.
-	 * @param firstName first name to be set
-	 */
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	/**
 	 * Returns student's final grade.
 	 * @return student's final grade
 	 */
 	public int getFinalGrade() {
 		return finalGrade;
-	}
-
-	/**
-	 * Sets students' final grade.
-	 * @param finalGrade final grade to be set
-	 */
-	public void setFinalGrade(int finalGrade) {
-		this.finalGrade = finalGrade;
 	}
 
 	/**

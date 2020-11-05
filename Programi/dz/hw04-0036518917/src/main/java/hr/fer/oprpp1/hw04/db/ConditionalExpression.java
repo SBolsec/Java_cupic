@@ -50,6 +50,4 @@ public class ConditionalExpression {
 	public IComparisonOperator getComparisonOperator() {
 		return comparisonOperator;
 	}
-	
-	
 }
