@@ -63,7 +63,7 @@ public class StudentDB {
 				}
 				
 				// If command is does not start with query
-				if (!command.trim().split("\s+")[0].equals("query")) {
+				if (!command.trim().startsWith("query")) {
 					System.out.println("Command has to start either with the keyword 'query' or 'exit'!");
 					continue;
 				}
