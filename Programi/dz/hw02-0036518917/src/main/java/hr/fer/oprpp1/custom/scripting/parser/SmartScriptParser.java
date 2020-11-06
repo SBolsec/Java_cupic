@@ -198,42 +198,4 @@ public class SmartScriptParser {
 			throw new SmartScriptParserException("There was an error while generating the tokens with the lexer.");
 		}
 	}
-
-//	/**
-//	 * Generates the escaping characters so that the text follows the escaping rules outside the tag
-//	 * @param input text to be examined
-//	 * @return generated text
-//	 */
-//	private String generateStringOutsideTag(String input) {
-//		StringBuilder sb = new StringBuilder();
-//		char[] elements = input.toCharArray();
-//		for (int i = 0, n = elements.length; i < n; i++) {
-//			char c = elements[i];
-//			if ((c == '{' && i+1 < n && elements[i+1] == '$') || c == '\\') {
-//				sb.append('\\');
-//			}
-//			sb.append(c);
-//		}
-//		return sb.toString();
-//	}
-
-//	/**
-//	 * Generates the escaping characters so that the text follows the escaping rules inside the tag
-//	 * @param input text to be examined
-//	 * @return generated text
-//	 */
-//	private String generateStringInsideTag(String input) {
-//		StringBuilder sb = new StringBuilder();
-//		char[] elements = input.toCharArray();
-//		sb.append('"');
-//		for (int i = 0, n = elements.length; i < n; i++) {
-//			char c = elements[i];
-//			if (c == '\\' || c == '"') {
-//				sb.append('\\');
-//			}
-//			sb.append(c);
-//		}
-//		sb.append('"');
-//		return sb.toString();
-//	}
 }

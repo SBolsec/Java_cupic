@@ -2,6 +2,11 @@ package hr.fer.oprpp1.custom.collections;
 
 import java.util.Arrays;
 
+/**
+ * Demo which tests the collections
+ * @author sbolsec
+ *
+ */
 public class Demo {
 
     public static void main(String[] args) {

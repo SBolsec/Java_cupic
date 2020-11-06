@@ -7,6 +7,13 @@ package hr.fer.oprpp1.custom.scripting.nodes;
  *
  */
 public class DocumentNode extends Node {
+	
+	/**
+	 * Two document nodes are equal if they have the exact same
+	 * children structure.
+	 * @param obj to be tested
+	 * @return true if the object is equal to this one, false otherwise
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof DocumentNode)) return false;
@@ -21,6 +28,11 @@ public class DocumentNode extends Node {
 		return true;
 	}
 	
+	/**
+	 * Returns string representation of this document node and all
+	 * of its children nodes.
+	 * @return string representation of this document node
+	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

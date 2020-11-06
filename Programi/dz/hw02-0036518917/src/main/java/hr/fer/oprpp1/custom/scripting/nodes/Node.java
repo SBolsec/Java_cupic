@@ -28,7 +28,9 @@ public abstract class Node {
 	 * @return number of children of this node
 	 */
 	public int numberOfChildren() {
-		return children.size();
+		if (this.children == null)
+			return 0;
+		return this.children.size();
 	}
 	
 	/**

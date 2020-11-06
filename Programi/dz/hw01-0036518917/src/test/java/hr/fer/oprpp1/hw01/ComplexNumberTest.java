@@ -4,131 +4,132 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 public class ComplexNumberTest {
+	
+	private static final double EPSILON = 10E-6; 
 
     @Test
     public void testConstructor() {
         ComplexNumber a = new ComplexNumber(1,2);
-        if (!(Math.abs(a.getReal()-1) < 10E-6)) fail("Test failed");
-        if (!(Math.abs(a.getImaginary()-2) < 10E-6)) fail("Test failed");
+        assertEquals(1, a.getReal(), EPSILON);
+        assertEquals(2, a.getImaginary(), EPSILON);
     }
 
     @Test
     public void testGetReal() {
         ComplexNumber a = new ComplexNumber(5.2,3);
-        if (!(Math.abs(a.getReal()-5.2) < 10E-6)) fail("Test failed");
+        assertEquals(5.2, a.getReal(), EPSILON);
     }
 
     @Test
     public void testGetImaginary() {
         ComplexNumber a = new ComplexNumber(5.2,3);
-        if (!(Math.abs(a.getImaginary()-3) < 10E-6)) fail("Test failed");
+        assertEquals(3, a.getImaginary(), EPSILON);
     }
 
     @Test
     public void testGetMagnitude() {
         ComplexNumber a = new ComplexNumber(6,8);
-        if (!(Math.abs(a.getMagnitude()-10) < 10E-6)) fail("Test failed");
+        assertEquals(10, a.getMagnitude(), EPSILON);
     }
 
     @Test
     public void testGetAngleCase1() {
         ComplexNumber a = new ComplexNumber(1,1);
-        if (!(Math.abs(a.getAngle()-0.785398163) < 10E-6)) fail("Test failed for input '1+i'");
+        assertEquals(0.785398163, a.getAngle(), EPSILON);
     }
 
     @Test
     public void testGetAngleCase2() {
         ComplexNumber a = new ComplexNumber(-1,1);
-        if (!(Math.abs(a.getAngle()-2.35619449) < 10E-6)) fail("Test failed for input '-1+i'");
+        assertEquals(2.35619449, a.getAngle(), EPSILON);
     }
 
     @Test
     public void testGetAngleCase3() {
         ComplexNumber a = new ComplexNumber(-1,-1);
-        if (!(Math.abs(a.getAngle()-3.926990817) < 10E-6)) fail("Test failed for input '-1-i'");
+        assertEquals(-2.356194490192345, a.getAngle(), EPSILON);
     }
 
     @Test
     public void testGetAngleCase4() {
         ComplexNumber a = new ComplexNumber(1,-1);
-        if (!(Math.abs(a.getAngle()-5.497787144) < 10E-6)) fail("Test failed for input '1-i'");
+        assertEquals(-0.7853981633974483, a.getAngle(), EPSILON);
     }
 
     @Test
     public void testFromReal() {
         ComplexNumber a = ComplexNumber.fromReal(1);
-        if (!(Math.abs(a.getReal()-1) < 10E-6)) fail("Test failed");
-        if (!(Math.abs(a.getImaginary()-0) < 10E-6)) fail("Test failed");
+        assertEquals(1, a.getReal(), EPSILON);
+        assertEquals(0, a.getImaginary(), EPSILON);
     }
 
     @Test
     public void testFromImaginary() {
         ComplexNumber a = ComplexNumber.fromImaginary(1);
-        if (!(Math.abs(a.getReal()-0) < 10E-6)) fail("Test failed");
-        if (!(Math.abs(a.getImaginary()-1) < 10E-6)) fail("Test failed");
+        assertEquals(0, a.getReal(), EPSILON);
+        assertEquals(1, a.getImaginary(), EPSILON);
     }
 
     @Test
     public void testFromMagnitudeAndAngle() {
         ComplexNumber a = ComplexNumber.fromMagnitudeAndAngle(Math.sqrt(2),0.785398163);
-        if (!(Math.abs(a.getReal()-1) < 10E-6)) fail("Test failed");
-        if (!(Math.abs(a.getImaginary()-1) < 10E-6)) fail("Test failed");
+        assertEquals(1, a.getReal(), EPSILON);
+        assertEquals(1, a.getImaginary(), EPSILON);
     }
 
     @Test
     public void testParseCase1() {
         ComplexNumber a = ComplexNumber.parse("3.51");
-        if (!(Math.abs(a.getReal()-3.51) < 10E-6)) fail("Test failed for input '3.51'");
-        if (!(Math.abs(a.getImaginary()-0) < 10E-6)) fail("Test failed for input '3.51'");
+        assertEquals(3.51, a.getReal(), EPSILON);
+        assertEquals(0, a.getImaginary(), EPSILON);
     }
 
     @Test
     public void testParseCase2() {
         ComplexNumber a = ComplexNumber.parse("-3.17");
-        if (!(Math.abs(a.getReal()+3.17) < 10E-6)) fail("Test failed for input '-3.17'");
-        if (!(Math.abs(a.getImaginary()-0) < 10E-6)) fail("Test failed for input '-3.17'");
+        assertEquals(-3.17, a.getReal(), EPSILON);
+        assertEquals(0, a.getImaginary(), EPSILON);
     }
 
     @Test
     public void testParseCase3() {
         ComplexNumber a = ComplexNumber.parse("-2.71i");
-        if (!(Math.abs(a.getReal()-0) < 10E-6)) fail("Test failed for input '-2.71i'");
-        if (!(Math.abs(a.getImaginary()+2.71) < 10E-6)) fail("Test failed for input '-2.71i'");
+        assertEquals(0, a.getReal(), EPSILON);
     }
 
     @Test
     public void testParseCase4() {
         ComplexNumber a = ComplexNumber.parse("i");
-        if (!(Math.abs(a.getReal()-0) < 10E-6)) fail("Test failed for input 'i'");
-        if (!(Math.abs(a.getImaginary()-1) < 10E-6)) fail("Test failed for input 'i'");
+        assertEquals(0, a.getReal(), EPSILON);
+        assertEquals(1, a.getImaginary(), EPSILON);
     }
 
     @Test
     public void testParseCase5() {
         ComplexNumber a = ComplexNumber.parse("-2.71-3.15i");
-        if (!(Math.abs(a.getReal()+2.71) < 10E-6)) fail("Test failed for input '-2.71-3.15i'");
-        if (!(Math.abs(a.getImaginary()+3.15) < 10E-6)) fail("Test failed for input '-2.71-3.15i'");
+        assertEquals(-2.71, a.getReal(), EPSILON);
+        assertEquals(-3.15, a.getImaginary(), EPSILON);
     }
 
     @Test
     public void testParseCase6() {
         ComplexNumber a = ComplexNumber.parse("+3.51i-2.17");
-        if (!(Math.abs(a.getReal()+2.17) < 10E-6)) fail("Test failed for input '+3.51i-2.17'");
-        if (!(Math.abs(a.getImaginary()-3.51) < 10E-6)) fail("Test failed for input '+3.51i-2.17'");
+        assertEquals(-2.17, a.getReal(), EPSILON);
+        assertEquals(3.51, a.getImaginary(), EPSILON);
     }
 
     @Test
     public void testParseCase7() {
         ComplexNumber a = ComplexNumber.parse("-1-i");
-        if (!(Math.abs(a.getReal()+1) < 10E-6)) fail("Test failed for input '-1-i'");
-        if (!(Math.abs(a.getImaginary()+1) < 10E-6)) fail("Test failed for input '-1-i'");
+        assertEquals(-1, a.getReal(), EPSILON);
+        assertEquals(-1, a.getImaginary(), EPSILON);
     }
 
     @Test
     public void testParseCase8() {
         ComplexNumber a = ComplexNumber.parse("-i+1");
-        if (!(Math.abs(a.getReal()-1) < 10E-6)) fail("Test failed for input '-i+1'");
-        if (!(Math.abs(a.getImaginary()+1) < 10E-6)) fail("Test failed for input '-i+1'");
+        assertEquals(1, a.getReal(), EPSILON);
+        assertEquals(-1, a.getImaginary(), EPSILON);
     }
 
     @Test
@@ -153,8 +154,8 @@ public class ComplexNumberTest {
         ComplexNumber b = new ComplexNumber(5,-3);
         ComplexNumber c = a.add(b);
 
-        if (!(Math.abs(c.getReal()-6) < 10E-6)) fail("Test failed");
-        if (!(Math.abs(c.getImaginary()+2) < 10E-6)) fail("Test failed");
+        assertEquals(6, c.getReal(), EPSILON);
+        assertEquals(-2, c.getImaginary(), EPSILON);
     }
 
     @Test
@@ -163,8 +164,8 @@ public class ComplexNumberTest {
         ComplexNumber b = new ComplexNumber(5,-3);
         ComplexNumber c = a.sub(b);
 
-        if (!(Math.abs(c.getReal()+4) < 10E-6)) fail("Test failed");
-        if (!(Math.abs(c.getImaginary()-4) < 10E-6)) fail("Test failed");
+        assertEquals(-4, c.getReal(), EPSILON);
+        assertEquals(4, c.getImaginary(), EPSILON);
     }
 
     @Test
@@ -173,8 +174,8 @@ public class ComplexNumberTest {
         ComplexNumber b = new ComplexNumber(5,-3);
         ComplexNumber c = a.mul(b);
 
-        if (!(Math.abs(c.getReal()-8) < 10E-6)) fail("Test failed");
-        if (!(Math.abs(c.getImaginary()-2) < 10E-6)) fail("Test failed");
+        assertEquals(8, c.getReal(), EPSILON);
+        assertEquals(2, c.getImaginary(), EPSILON);
     }
 
     @Test
@@ -183,8 +184,8 @@ public class ComplexNumberTest {
         ComplexNumber b = new ComplexNumber(5,-3);
         ComplexNumber c = a.div(b);
 
-        if (!(Math.abs(c.getReal()-0.0588235) < 10E-6)) fail("Test failed");
-        if (!(Math.abs(c.getImaginary()-0.2352941) < 10E-6)) fail("Test failed");
+        assertEquals(0.0588235, c.getReal(), EPSILON);
+        assertEquals(0.2352941, c.getImaginary(), EPSILON);
     }
 
     @Test
@@ -192,8 +193,8 @@ public class ComplexNumberTest {
         ComplexNumber a = new ComplexNumber(5,-3);
         ComplexNumber b = a.power(3);
 
-        if (!(Math.abs(b.getReal()+10) < 10E-6)) fail("Test failed");
-        if (!(Math.abs(b.getImaginary()+198) < 10E-6)) fail("Test failed");
+        assertEquals(-10, b.getReal(), EPSILON);
+        assertEquals(-198, b.getImaginary(), EPSILON);
     }
 
     @Test
@@ -208,10 +209,10 @@ public class ComplexNumberTest {
         ComplexNumber a = new ComplexNumber(5,-3);
         ComplexNumber[] roots = a.root(2);
 
-        if (!(Math.abs(roots[0].getReal()+2.327117519) < 10E-4)) fail("Test failed for input '5-3i'");
-        if (!(Math.abs(roots[0].getImaginary()-0.6445742372) < 10E-4)) fail("Test failed for input '5-3i'");
-        if (!(Math.abs(roots[1].getReal()-2.327117519) < 10E-4)) fail("Test failed for input '5-3i'");
-        if (!(Math.abs(roots[1].getImaginary()+0.6445742372) < 10E-4)) fail("Test failed for input '5-3i'");
+        assertEquals(2.327117519, roots[0].getReal(), EPSILON);
+        assertEquals(-0.6445742372, roots[0].getImaginary(), EPSILON);
+        assertEquals(-2.327117519, roots[1].getReal(), EPSILON);
+        assertEquals(0.6445742372, roots[1].getImaginary(), EPSILON);
     }
 
     @Test

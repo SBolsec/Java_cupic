@@ -30,6 +30,11 @@ public class EchoNode extends Node {
 		return elements;
 	}
 	
+	/**
+	 * Two echo nodes are equal if they have the exact same elements.
+	 * @param obj object to be tested
+	 * @return true if the echo nodes are equal, false otherwise
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof EchoNode)) return false;
@@ -44,6 +49,10 @@ public class EchoNode extends Node {
 		return true;
 	}
 	
+	/**
+	 * Returns string representation of this echo node and all of its elements.
+	 * @return string representation of this echo node
+	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

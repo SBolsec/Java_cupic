@@ -67,13 +67,13 @@ public class ForLoopNode extends Node {
 		return stepExpression;
 	}
 
-	@Override
-	public int numberOfChildren() {
-		if (this.children == null)
-			return 0;
-		return this.children.size();
-	}
-
+	/**
+	 * Two for loops are equal if they have the same signature, ie. variable name, 
+	 * start expression, end expression and stop expression, and have the exact
+	 * same children nodes.
+	 * @param obj object to be tested
+	 * @return true if the for loop nodes are equal, false otherwise
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof ForLoopNode)) return false;
@@ -108,6 +108,10 @@ public class ForLoopNode extends Node {
 		return true;
 	}
 	
+	/**
+	 * Returns string representation of for loop node and all of its children nodes.
+	 * @return string representation of for loop node
+	 */
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

@@ -34,7 +34,7 @@ public interface ElementsGetter<T> {
 	 * @param p
 	 * @throws ConcurrentModificationException if the collection was changed
 	 */
-	default void processRemaining(Processor<T> p) {
+	default void processRemaining(Processor<? super T> p) {
 		while (hasNextElement()) {
 			p.process(getNextElement());
 		}

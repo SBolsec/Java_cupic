@@ -15,6 +15,12 @@ public abstract class Element {
 		return "";
 	}
 	
+	/**
+	 * Tests whether the given object equals this one.
+	 * Returns true if this.asText() equals other.asText()
+	 * @param object to be tested
+	 * @return true if this.asText() equals other.asText()
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof Element)) return false;
@@ -22,6 +28,10 @@ public abstract class Element {
 		return this.asText().equals(other.asText());
 	}
 	
+	/**
+	 * Returns value of this element
+	 * @return value of this element
+	 */
 	@Override 
 	public String toString() {
 		return this.asText();

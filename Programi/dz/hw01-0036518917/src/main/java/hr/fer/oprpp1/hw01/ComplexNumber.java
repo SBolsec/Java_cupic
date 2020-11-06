@@ -73,19 +73,35 @@ public class ComplexNumber {
     public static ComplexNumber parse(String s) {
         int indexI = s.indexOf('i');
 
-        if (indexI == -1) return fromReal(Double.parseDouble(s));
+        // If there is no 'i', try to parse everything as real part of complex number
+        if (indexI == -1) { 
+        	try {
+        		return fromReal(Double.parseDouble(s));	
+        	} catch (NumberFormatException ex) {
+        		throw new IllegalArgumentException("Input could not be parsed as double, it was: " + s + ".");
+        	}
+        }
+        
+        // If input is: i, +i
         if (s.length() == 1 || (s.length() == 2 && s.charAt(0) == '+')) return fromImaginary(1);
+        // If input is: -i
         if (s.length() == 2 && s.charAt(0) == '-') return fromImaginary(-1);
 
         int indexPlus = s.lastIndexOf('+');
         int indexMinus = s.lastIndexOf('-');
         int separator = indexPlus < indexMinus ? indexMinus : indexPlus;
 
+        // Something like: +3i, 4i, -2i, ...
         if (separator <= 0) {
             if (indexI != s.length() - 1) throw new IllegalArgumentException("There are elements after 'i': " + s.substring(indexI+1, s.length()));
-            return fromImaginary(Double.parseDouble(s.substring(0, s.length()-1)));
+            try {
+            	return fromImaginary(Double.parseDouble(s.substring(0, s.length()-1)));	
+            } catch (NumberFormatException ex) {
+            	throw new IllegalArgumentException("Input could not be parsed as double, it was: " + s.substring(0, s.length()-1) + ".");
+            }
         }
 
+        // If real part is before imaginary part, examples: 2+3i, -1-i, ...
         if (separator < indexI) {
             if (indexI != s.length() - 1) throw new IllegalArgumentException("There are elements after 'i': " + s.substring(indexI+1, s.length()));
             double r = Double.parseDouble(s.substring(0, separator));
@@ -99,6 +115,8 @@ public class ComplexNumber {
             return new ComplexNumber(r, i);
         }
         
+        // Else imaginary part is first and real part is second
+        // If there is something behind 'i' other than '+' or '-', throw an exception. Examples: -2i1+5, 5is-2, ...
         if (indexI + 1 != separator) throw new IllegalArgumentException("There are elements after 'i': " + s.substring(indexI+1, separator));
         
         double i = 0;
@@ -107,11 +125,26 @@ public class ComplexNumber {
         } else if (indexI == 1) {
             if (s.charAt(0) == '-') i = -1;
             else if (s.charAt(0) == '+') i = 1;
-            else i = Double.parseDouble(s.substring(0, separator-1));
+            else {
+            	try {
+            		i = Double.parseDouble(s.substring(0, separator-1));
+            	} catch (NumberFormatException ex) {
+            		throw new IllegalArgumentException("Input could not be parsed as double, it was: " + s.substring(0, separator-1) + ".");
+            	}
+            }
         } else {
-            i = Double.parseDouble(s.substring(0, separator-1));
+            try {
+            	i = Double.parseDouble(s.substring(0, separator-1));
+            } catch (NumberFormatException ex) {
+            	throw new IllegalArgumentException("Input could not be parsed as double, it was: " + s.substring(0, separator-1) + ".");
+            }
         }
-        double r = Double.parseDouble(s.substring(separator, s.length()));
+        double r = 0;
+        try {
+        	r = Double.parseDouble(s.substring(separator, s.length()));
+        } catch (NumberFormatException ex) {
+        	throw new IllegalArgumentException("Input could not be parsed as double, it was: " + s.substring(separator, s.length()) + ".");
+        }
         return new ComplexNumber(r, i);
     }
 
@@ -149,13 +182,7 @@ public class ComplexNumber {
      * @return angle of the complex number
      */
     public double getAngle() {
-        double atan = Math.atan(imaginary / real);
-
-        if (real >= 0) {
-            if (imaginary >= 0) return atan;
-            else return Math.PI * 2 + atan;
-        }
-        return atan + Math.PI;
+    	return Math.atan2(imaginary, real);
     }
 
     /**

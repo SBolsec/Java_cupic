@@ -9,10 +9,17 @@ package hr.fer.oprpp1.custom.scripting.parser;
 public class SmartScriptParserException extends RuntimeException {
 	private static final long serialVersionUID = 10L;
 	
+	/**
+     * Default constructor
+     */
 	public SmartScriptParserException() {
 		super();
 	}
 	
+	/**
+     * Constructor which takes error message
+     * @param message error message
+     */
 	public SmartScriptParserException(String message) {
 		super(message);
 	}

@@ -3,6 +3,11 @@ package hr.fer.oprpp1.custom.collections.demo;
 import hr.fer.oprpp1.custom.collections.EmptyStackException;
 import hr.fer.oprpp1.custom.collections.ObjectStack;
 
+/**
+ * Demo which tests the <code>ObjectStack</code> class
+ * @author sbolsec
+ *
+ */
 public class StackDemo {
     public static void main(String[] args) {
         if (args.length != 1) {

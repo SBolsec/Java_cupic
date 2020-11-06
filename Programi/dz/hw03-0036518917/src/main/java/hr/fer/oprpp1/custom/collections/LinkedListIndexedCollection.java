@@ -158,7 +158,7 @@ public class LinkedListIndexedCollection<T> implements List<T> {
 
         if (position <= this.size / 2) {
             ListNode<T> head = first;
-            for (int i = 0; i < position-1; i++) {
+            for (int i = 0; i < position - 1; i++) {
                 head = head.next;
             }
             node.previous = head;
@@ -169,7 +169,7 @@ public class LinkedListIndexedCollection<T> implements List<T> {
         }
 
         ListNode<T> head = last;
-        for (int i = 0, n = this.size - position-1; i < n; i++) {
+        for (int i = 0, n = this.size - position - 1; i < n; i++) {
             head = head.previous;
         }
         node.previous = head;

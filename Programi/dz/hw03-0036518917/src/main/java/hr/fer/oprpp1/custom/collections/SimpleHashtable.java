@@ -1,7 +1,6 @@
 package hr.fer.oprpp1.custom.collections;
 
 import java.util.ConcurrentModificationException;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 

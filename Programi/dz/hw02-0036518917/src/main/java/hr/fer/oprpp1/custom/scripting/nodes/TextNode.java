@@ -26,6 +26,11 @@ public class TextNode extends Node {
 		return text;
 	}
 	
+	/**
+	 * Two text nodes are equal if they store the same text.
+	 * @param obj object to be tested
+	 * @return true if text nodes are equal, false otherwise
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof TextNode)) return false;
@@ -33,6 +38,10 @@ public class TextNode extends Node {
 		return this.text.equals(other.text);
 	}
 	
+	/**
+	 * Return text this nodes stores.
+	 * @return stored text
+	 */
 	@Override
 	public String toString() {
 		return generateStringWithEscapedCharacters(getText());
