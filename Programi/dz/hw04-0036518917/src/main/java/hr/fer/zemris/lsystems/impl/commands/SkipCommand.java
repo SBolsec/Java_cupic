@@ -45,12 +45,9 @@ public class SkipCommand implements Command {
      * @return angle of the vector in radians
      */
     public double getAngle(Vector2D angle) {
-        double atan = Math.atan(angle.getX() / angle.getY());
+        double atan = Math.atan2(angle.getX(), angle.getY());
 
-        if (angle.getX() >= 0) {
-            if (angle.getY() >= 0) return atan;
-            else return Math.PI * 2 + atan;
-        }
-        return atan + Math.PI;
+        if (atan < 0) atan += (2 * Math.PI);
+        return atan;
     }
 }

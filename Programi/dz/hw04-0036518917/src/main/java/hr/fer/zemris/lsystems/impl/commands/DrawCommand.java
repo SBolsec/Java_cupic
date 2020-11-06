@@ -54,12 +54,9 @@ public class DrawCommand implements Command {
      * @return angle of the vector in radians
      */
     public double getAngle(Vector2D angle) {
-        double atan = Math.atan(angle.getY() / angle.getX());
+        double atan = Math.atan2(angle.getY(), angle.getX());
 
-        if (angle.getX() >= 0) {
-            if (angle.getY() >= 0) return atan;
-            else return Math.PI * 2 + atan;
-        }
-        return atan + Math.PI;
+        if (atan < 0) atan += (2 * Math.PI);
+        return atan;
     }
 }

@@ -149,13 +149,12 @@ public class StudentDB {
 	 * @param maxFirstName longest first name
 	 */
 	public static void printHeaderFooter(int maxLastName, int maxFirstName) {
-		System.out.format("+============+=");
-		for (int i = 0; i < maxLastName; i++)
-			System.out.format("=");
-		System.out.format("=+=");
-		for (int i = 0; i < maxFirstName; i++)
-			System.out.format("=");
-		System.out.println("=+===+");
+		StringBuilder sb = new StringBuilder();
+		sb.append("+============+=")
+			.append("=".repeat(maxLastName))
+			.append("=+=").append("=".repeat(maxFirstName))
+			.append("=+===+");
+		System.out.println(sb.toString());
 	}
 	
 	/**
@@ -167,13 +166,9 @@ public class StudentDB {
 	public static void printRecord(int maxLastName, int maxFirstName, StudentRecord s) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("| ").append(s.getJmbag()).append(" | ").append(s.getLastName());
-		for (int i = 0; i < maxLastName - s.getLastName().length(); i++) {
-			sb.append(" ");
-		}
+		sb.append(" ".repeat(maxLastName - s.getLastName().length()));
 		sb.append(" | ").append(s.getFirstName());
-		for (int i = 0; i < maxFirstName - s.getFirstName().length(); i++) {
-			sb.append(" ");
-		}
+		sb.append(" ".repeat(maxFirstName - s.getFirstName().length()));
 		sb.append(" | ").append(s.getFinalGrade()).append(" |");
 		
 		System.out.println(sb.toString());
