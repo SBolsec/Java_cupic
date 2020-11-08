@@ -88,6 +88,7 @@ public class QueryParser {
 			if (literal.getType() != QueryTokenType.STRING_LITERAL)
 				throw new QueryParserException("There must be a operator after a field name!");
 			
+			// Get type of getter
 			IFieldValueGetter getter = null;
 			switch (field.getValue()) {
 				case "firstName": getter = FieldValueGetters.FIRST_NAME; break;
@@ -95,6 +96,7 @@ public class QueryParser {
 				case "jmbag": getter = FieldValueGetters.JMBAG; break;
 			}
 			
+			// Get type of comparison
 			IComparisonOperator oper = null;
 			switch (operator.getValue()) {
 				case "<": oper = ComparisonOperators.LESS; break;
@@ -106,9 +108,11 @@ public class QueryParser {
 				case "LIKE": oper = ComparisonOperators.LIKE; break;
 			}
 			
+			// Add the conditional expression to the list
 			ConditionalExpression expr = new ConditionalExpression(getter, literal.getValue(), oper);
 			list.add(expr);
 			
+			// Check if there is more comparisons connected with 'and'
 			if (i + 1 < n) {
 				QueryToken next = tokens.get(++i);
 				if (next.getType() != QueryTokenType.AND)

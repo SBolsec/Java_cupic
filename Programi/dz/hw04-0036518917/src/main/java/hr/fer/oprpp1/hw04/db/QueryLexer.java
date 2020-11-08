@@ -120,7 +120,6 @@ public class QueryLexer {
         String name = String.valueOf(data, start, currentIndex - start);
         QueryTokenType type = getType(name);
         token = new QueryToken(type, name);
-        return;
 	}
 	
 	/**

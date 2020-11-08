@@ -6,11 +6,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+/**
+ * Database which holds student records.
+ * @author sbolsec
+ *
+ */
 public class StudentDatabase {
 
+	/** List that stores student records **/
 	List<StudentRecord> students;
+	/** Map which serves as an index for faster retrieval of student records using their jmbag **/
 	Map<String, StudentRecord> jmbagIndex;
 	
+	/**
+	 * Constructor which parses the input into student records and stores them.
+	 * @param list list of students
+	 */
 	public StudentDatabase(List<String> list) {
 		students = new ArrayList<>();
 		jmbagIndex = new HashMap<>();
@@ -23,8 +34,10 @@ public class StudentDatabase {
 				if (!sc.hasNext()) throw new IllegalArgumentException("There was no jmbag!");
 				String jmbag = sc.next();
 				if (!isJmbagValid(jmbag)) throw new IllegalArgumentException("Jmbag was not valid, it was: " + jmbag + ".");
+				
 				if (!sc.hasNext()) throw new IllegalArgumentException("There was no last name!");
 				String first = sc.next();
+				
 				if (!sc.hasNext()) throw new IllegalArgumentException("There was no middle/first name!");
 				String second = sc.next();
 				String third = null;
@@ -63,6 +76,11 @@ public class StudentDatabase {
 		return jmbagIndex.get(jmbag);
 	}
 	
+	/**
+	 * Returns a list of student records which satisfied the given filter.
+	 * @param filter filter which tests student records
+	 * @return list of student records which satisfied the given filter
+	 */
 	public List<StudentRecord> filter(IFilter filter) {
 		List<StudentRecord> result = new ArrayList<>();
 		
