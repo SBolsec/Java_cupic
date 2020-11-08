@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.OptionalInt;
 import java.util.Scanner;
@@ -40,6 +41,7 @@ public class StudentDB {
 		}
 		
 		db = new StudentDatabase(lines);
+		filteredRecords = new ArrayList<StudentRecord>();
 		
 		startInterface();
 	}
@@ -64,12 +66,18 @@ public class StudentDB {
 				
 				// If command is does not start with query
 				if (!command.trim().startsWith("query")) {
-					System.out.println("Command has to start either with the keyword 'query' or 'exit'!");
+					System.out.println("Command has to start either with the keyword 'query' or 'exit'!\n");
+					continue;
+				}
+				
+				// If there is the command 'query' but there is nothing after it
+				if (command.trim().length() < 6) {
+					System.out.println("Query command requires a comparison!\n");
 					continue;
 				}
 				
 				// The parser requires the 'query' keyword to be removed
-				String query = command.trim().substring(6, command.length());
+				String query = command.trim().substring(6);
 				
 				// If there is an error while parsing, show a message and continue to next command
 				try {
@@ -89,15 +97,28 @@ public class StudentDB {
 	 * Executes the query.
 	 */
 	public static void query() {
-		filterRecords();
-		printFilteredRecords();
+		try {
+			filterRecords();
+			printFilteredRecords();
+		} catch (Exception ex) {
+			System.out.println("There was an error with the message: " + ex.getMessage() + "\n");	
+		}
 	}
 	
 	/**
 	 * Filters the records from the database with the given filters in the query.
 	 */
 	public static void filterRecords() {
-		filteredRecords = db.filter(new QueryFilter(qp.getQuery()));
+		filteredRecords.clear();
+		if (qp.isDirectQuery()) {
+			StudentRecord record = db.forJMBAG(qp.getQueriedJMBAG());
+			if (record != null) {
+				filteredRecords.add(record);
+				System.out.println("Using index for record retrieval.");
+			}
+		} else {
+			filteredRecords = db.filter(new QueryFilter(qp.getQuery()));
+		}
 	}
 	
 	/**
@@ -105,17 +126,9 @@ public class StudentDB {
 	 */
 	public static void printFilteredRecords() {
 		// If there is no records to show
-				if (filteredRecords.size() == 0) {
-					System.out.println("Records selected: 0\n");
-					return;
-				}
-		
-		// Checks whether the index was used for retrieving record
-		if (qp.getQuery().size() == 1) {
-			ConditionalExpression expr = qp.getQuery().get(0);
-			if (expr.getFieldGetter() == FieldValueGetters.JMBAG && expr.getComparisonOperator() == ComparisonOperators.EQUALS) {
-				System.out.println("Using index for record retrieval.");
-			}
+		if (filteredRecords.size() == 0) {
+			System.out.println("Records selected: 0\n");
+			return;
 		}
 		
 		// Max number of characters in last name - used for formating

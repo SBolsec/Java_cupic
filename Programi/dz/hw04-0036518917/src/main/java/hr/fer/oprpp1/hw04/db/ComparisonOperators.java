@@ -61,34 +61,20 @@ public class ComparisonOperators {
 	 * Tests whether the first string matches the regex in the second string.
 	 */
 	public static final IComparisonOperator LIKE = (a, b) -> {
-		int j = 0;
 		int indexOfDot = b.indexOf('*');
+		
+		if (indexOfDot != b.lastIndexOf('*'))
+			throw new IllegalArgumentException("There can only be one wildcard character! Input was: " + b + ".");
 		
 		if (indexOfDot == -1) return a.equals(b);
 		if (b.length() == 1) return true;	// b is '*' -> accept all
 		
-		try {
-			for (int i = 0; i < a.length(); i++) {
-				if (a.charAt(i) == b.charAt(j)) {
-					j++;
-					continue;
-				}
-				if (b.charAt(j) != '*')
-					return false;
-				
-				if (b.length() - 1 == indexOfDot)
-					return true;
-				
-				if (a.charAt(i) == b.charAt(j+1)) {
-					j += 2;
-					continue;
-				}
-			}
-		} catch (Exception ex) {
-			return false;
-		}
+		if (a.length() < b.length() - 1) return false;
 		
-		if (j != b.length()) return false;
-		return true;
+		if (a.startsWith(b.substring(0, indexOfDot)) &&
+			a.endsWith(b.substring(indexOfDot+1, b.length())))
+			return true;
+		
+		return false;
 	};
 }
