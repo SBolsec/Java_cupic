@@ -31,7 +31,7 @@
     			<groupId>hr.fer.oprpp1.fractals</groupId>
     			<artifactId>lsystems</artifactId>
     			<version>${lsystems.version}</version>
-    			<scope>source</scope>
+    			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 </project>
