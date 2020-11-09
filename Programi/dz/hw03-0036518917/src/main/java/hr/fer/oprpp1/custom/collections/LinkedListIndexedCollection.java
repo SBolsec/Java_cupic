@@ -285,14 +285,14 @@ public class LinkedListIndexedCollection<T> implements List<T> {
 	 */
 	private static class ListElementsGetter<T> implements ElementsGetter<T> {
 		/** Index of the current element that will be returned next **/
-		private int current;
+		private ListNode<T> current;
 		/** Number of modifications when this ElementsGetter was created **/
 		private long savedModificationCount;
 		/** Reference to the list **/
 		private LinkedListIndexedCollection<T> collection;
 
 		public ListElementsGetter(LinkedListIndexedCollection<T> collection) {
-			current = 0;
+			current = collection.first;
 			this.savedModificationCount = collection.modificationCount;
 			this.collection = collection;
 		}
@@ -301,14 +301,16 @@ public class LinkedListIndexedCollection<T> implements List<T> {
 		public boolean hasNextElement() {
 			if (this.savedModificationCount != collection.modificationCount)
 				throw new ConcurrentModificationException("The collection was changed!");
-			return this.current < collection.size;
+			return current != null;
 		}
 
 		@Override
 		public T getNextElement() {
 			if (!hasNextElement())
 				throw new NoSuchElementException("There are no more elements in this collection!");
-			return collection.get(current++);
+			T res = current.value;
+			current = current.next;
+			return res;
 		}
 	}
 }
