@@ -84,6 +84,8 @@ public class Dictionary<K, V> {
 	 * @return old value for this key or null if there was no value for this key
 	 */
 	public V put(K key, V value) {
+		if (key == null)
+			throw new NullPointerException("Key can not be null!");
 		DictionaryEntry<K, V> entry = new DictionaryEntry<>(key, value);
 		int index = elements.indexOf(entry);
 		if (index != -1) {
@@ -103,6 +105,7 @@ public class Dictionary<K, V> {
 	 */
 	@SuppressWarnings("unchecked")
 	public V get(Object key) {
+		if (key == null) return null;
 		DictionaryEntry<K, V> entry = new DictionaryEntry<>((K) key, null);
 		int index = elements.indexOf(entry);
 		if (index != -1) {
@@ -118,6 +121,7 @@ public class Dictionary<K, V> {
 	 * @return value of the pair to be deleted or null if it didn't exist
 	 */
 	public V remove(K key) {
+		if (key == null) return null;
 		DictionaryEntry<K, V> entry = new DictionaryEntry<>(key, null);
 		int index = elements.indexOf(entry);
 		if (index != -1) {

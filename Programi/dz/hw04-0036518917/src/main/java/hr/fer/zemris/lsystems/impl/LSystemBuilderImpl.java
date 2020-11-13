@@ -111,7 +111,7 @@ public class LSystemBuilderImpl implements LSystemBuilder {
 						if (key.length() != 1) throw new IllegalArgumentException("Was expecting character, but got a string: " + key + ".");
 						if (!sc.hasNext()) throw new IllegalArgumentException("There was no actual command!");
 						String restOfLine = sc.nextLine();
-						registerCommand(key.charAt(0), restOfLine);
+						registerCommand(key.charAt(0), restOfLine.trim());
 						break;
 					case "axiom":
 						if (!sc.hasNext()) throw new IllegalArgumentException("String was expected after axiom keyword!");
@@ -123,7 +123,7 @@ public class LSystemBuilderImpl implements LSystemBuilder {
 						if (key.length() != 1) throw new IllegalArgumentException("Was expecting character, but got a string: " + key + ".");
 						if (!sc.hasNext()) throw new IllegalArgumentException("There was no production!");
 						restOfLine = sc.nextLine();
-						productions.put(key.charAt(0), restOfLine);
+						productions.put(key.charAt(0), restOfLine.trim());
 						break;
 					default: throw new IllegalArgumentException("Input is not a valid keyword, it was: " + in + ".");
 				}

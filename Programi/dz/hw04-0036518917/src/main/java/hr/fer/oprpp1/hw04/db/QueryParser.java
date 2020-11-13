@@ -18,6 +18,8 @@ public class QueryParser {
 	private List<QueryToken> tokens;
 	
 	public QueryParser(String statement) {
+		if (statement == null)
+			throw new QueryParserException("Query can not be null!");
 		if (statement.isBlank())
 			throw new QueryParserException("Query can not be blank!");
 		

@@ -183,8 +183,16 @@ public class SimpleHashtable<K, V> implements Iterable<SimpleHashtable.TableEntr
 					sb.append(", ");
 				}
 			}
-			if (table[i] != null && i+1 < table.length && table[i+1] != null) {
-				sb.append(", ");
+			if (table[i] != null && i+1 < table.length) {
+				while (++i < table.length && table[i] == null);
+				if (i >= table.length) {
+					break;
+				} else if (table[i] != null) {
+					sb.append(", ");
+					i--;
+				} else {
+					break;
+				}
 			}
 		}
 		
