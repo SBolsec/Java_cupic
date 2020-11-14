@@ -61,7 +61,6 @@ public class LinkedListIndexedCollection extends Collection {
 
     /**
      * Creates a new collection based on a other collection by copying its elements.
-     *
      * @param other collection whose elements will be copied into this newly constructed collection
      * @throws NullPointerException the collection whose elements will be copied can not be <code>null</code>
      */

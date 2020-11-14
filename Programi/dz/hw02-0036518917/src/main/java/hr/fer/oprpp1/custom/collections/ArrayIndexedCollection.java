@@ -6,7 +6,6 @@ import java.util.NoSuchElementException;
 /**
  * Resizable array-backed list which implements the interface <code>List</code>.
  * Duplicate elements are allowed, storage of <code>null</code> references is not allowed.
- * 
  * @author sbolsec
  *
  */
@@ -30,7 +29,6 @@ public class ArrayIndexedCollection implements List {
 
 	/**
 	 * Creates an instance of the list with the desired capacity.
-	 * 
 	 * @param initialCapacity initial capacity of the list
 	 * @throws IllegalArgumentException if the initial capacity is less than 1
 	 */
@@ -44,7 +42,6 @@ public class ArrayIndexedCollection implements List {
 
 	/**
 	 * Creates a new list and copies the elements of the passed collection 'other' into it.
-	 * 
 	 * @param other collection whose items will be copied
 	 * @throws NullPointerException <code>other</code> can not be null
 	 */
@@ -55,13 +52,13 @@ public class ArrayIndexedCollection implements List {
 	/**
 	 * Creates a new list and copies the elements of the passed collection 'other' into it.
 	 * If the <code>initialCapacity</code> is smaller that the size of the given collection, the size of the given collection will be used.
-	 * 
 	 * @param other collection whose items will be copied
 	 * @param initialCapacity initial capacity of the new list
 	 * @throws NullPointerException <code>other</code> can not be null 
 	 * @throws IllegalArgumentException if the initial capacity is less than 1
 	 */
 	public ArrayIndexedCollection(Collection other, int initialCapacity) {
+		if (other == null) throw new NullPointerException("Given collection can not be null!");
 		if (initialCapacity < 1) throw new IllegalArgumentException("The initial capacity can not be less than 1!");
 		
 		this.size = 0;
@@ -81,7 +78,6 @@ public class ArrayIndexedCollection implements List {
 	 * Adds the given object into this list.
 	 * (reference is added into first empty place in the elements array; if the elements array is full, it is reallocated by doubling its size).
 	 * The time complexity is O(1)
-	 * 
 	 * @param value object to be added into this list
 	 * @throws NullPointerException the object to be added can not be null
 	 */
@@ -91,13 +87,7 @@ public class ArrayIndexedCollection implements List {
 
 		this.modificationCount++;
 		
-		if (size == elements.length) {
-			Object[] newElements = new Object[2 * elements.length];
-			for (int i = 0; i < elements.length; i++) {
-				newElements[i] = elements[i];
-			}
-			elements = newElements;
-		}
+		reallocateArray();
 
 		elements[this.size++] = value;
 	}
@@ -105,7 +95,6 @@ public class ArrayIndexedCollection implements List {
 	/**
 	 * Returns the object that is stored in backing array at position <code>index</code>.
 	 * The average complexity of this method is O(1)
-	 * 
 	 * @param index position from which the object will be returned
 	 * @return the object that is stored at position <code>index</code>
 	 * @throws IndexOutOfBoundsException index must be between 0 and size-1
@@ -121,7 +110,6 @@ public class ArrayIndexedCollection implements List {
 	 * Inserts the object at the specified position. It does not overwrite the given value at the given position, 
 	 * it shifts the elements at greater positions one place toward the end.
 	 * The average complexity of this method is O(n/2)
-	 * 
 	 * @param value object to be inserted
 	 * @param position index where the object should be inserted
 	 * @throws NullPointerException <code>null</code> object will not be inserted into the list
@@ -134,13 +122,7 @@ public class ArrayIndexedCollection implements List {
 
 		this.modificationCount++;
 		
-		if (size == elements.length) {
-			Object[] newElements = new Object[2 * elements.length];
-			for (int i = 0; i < elements.length; i++) {
-				newElements[i] = elements[i];
-			}
-			elements = newElements;
-		}
+		reallocateArray();
 		
 		for (int i = elements.length - 1; i > position; i--) {
 			elements[i] = elements[i-1];
@@ -154,12 +136,12 @@ public class ArrayIndexedCollection implements List {
 	 * Searches the list and returns the index of the first occurrence of the given value
 	 * or -1 if the value is not found.
 	 * The average complexity of this method is O(n/2)
-	 * 
 	 * @param value object that will be searched
 	 * @return index of the first occurrence of the given object or -1 if the value is not found
 	 */
 	@Override
 	public int indexOf(Object value) {
+		if (value == null) return -1;
 		for (int i = 0; i < this.size; i++) {
 			if (elements[i].equals(value))
 				return i;
@@ -177,7 +159,6 @@ public class ArrayIndexedCollection implements List {
 	/**
 	 * Removes element at specified index from list. 
 	 * Element that was previously at location index+1 after this operation is on location index , etc.
-	 * 
 	 * @param index index at which the element should be removed
 	 * @throws IndexOutOfBoundsException index must be between 0 and size-1
 	 */
@@ -197,7 +178,6 @@ public class ArrayIndexedCollection implements List {
 	/**
 	 * Allocates new array with size equals to the size of this list, fills it with list
 	 * content and returns the array. This method never returns null.
-	 * 
 	 * @return array made from the list
 	 */
 	@Override
@@ -234,8 +214,22 @@ public class ArrayIndexedCollection implements List {
 	}
 	
 	/**
+	 * Checks whether the backing array is full.
+	 * If it is full, this method creates a new array double the size of the current
+	 * one and copies all of the values to it.
+	 */
+	private void reallocateArray() {
+		if (size == elements.length) {
+			Object[] newElements = new Object[2 * elements.length];
+			for (int i = 0; i < elements.length; i++) {
+				newElements[i] = elements[i];
+			}
+			elements = newElements;
+		}
+	}
+	
+	/**
 	 * Implementation of ElementsGetter for ArrayIndexedCollection.
-	 * 
 	 * @author sbolsec
 	 *
 	 */
@@ -247,6 +241,10 @@ public class ArrayIndexedCollection implements List {
 		/** Reference to the list **/
 		private ArrayIndexedCollection collection;
 
+		/**
+		 * Initializes the elements getter and saves the count of current modifications.
+		 * @param collection collection for which this elements getter is created 
+		 */
 		public ArrayElementsGetter(ArrayIndexedCollection collection) {
 			current = 0;
 			this.savedModificationCount = collection.modificationCount;

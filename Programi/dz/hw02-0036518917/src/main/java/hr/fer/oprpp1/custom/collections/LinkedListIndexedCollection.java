@@ -25,7 +25,7 @@ public class LinkedListIndexedCollection implements List {
         /** Reference to next node **/
         public ListNode next;
 
-        /** ListNode constructor **/
+        /** ListNode constructor which initializes the variables **/
         public ListNode(Object value, ListNode previous, ListNode next) {
             this.value = value;
             this.previous = previous;
@@ -58,13 +58,12 @@ public class LinkedListIndexedCollection implements List {
 
     /**
      * Creates a new list based on a other collection by copying its elements.
-     *
      * @param other collection whose elements will be copied into this newly constructed collection
      * @throws NullPointerException the collection whose elements will be copied can not be <code>null</code>
      */
     public LinkedListIndexedCollection(Collection other) {
         this();
-
+        if (other == null) throw new NullPointerException("The collection whose elements will be copied can not be null!");
         this.addAll(other);
     }
 
@@ -75,7 +74,6 @@ public class LinkedListIndexedCollection implements List {
 
     /**
      * Adds the given object into this list at the end of the list
-     *
      * @param value object to be added into this list
      * @throws NullPointerException <code>null</code> can not be added to the list
      */
@@ -87,7 +85,7 @@ public class LinkedListIndexedCollection implements List {
         this.modificationCount++;
 
         ListNode node = new ListNode(value);
-        if (this.first == null) {
+        if (this.first == null) { // First node to be added
             this.first = this.last = node;
             return;
         }
@@ -98,8 +96,7 @@ public class LinkedListIndexedCollection implements List {
 
     /**
      * Returns the object that is stored in linked list at position index.
-     * The time complexity of this method id n/2 + 1
-     *
+     * The time complexity of this method is never greater than n/2 + 1
      * @param index index of the object to be return from this list.
      * @return object at the given index in this list
      * @throws IndexOutOfBoundsException valid indexes are 0 to size-1
@@ -127,7 +124,6 @@ public class LinkedListIndexedCollection implements List {
      * Inserts (does not overwrite) the given value at the given position in linked-list.
      * Elements starting from this position are shifted one position.
      * The average time complexity of this method is n/2 + 1
-     *
      * @param value object to be inserted at the given position
      * @param position position at which the object will be inserted
      * @throws IndexOutOfBoundsException valid positions are from 0 to size
@@ -138,21 +134,22 @@ public class LinkedListIndexedCollection implements List {
         if (value == null) throw new NullPointerException("Object to be added can not be null!");
         if (position < 0 || position > size) throw new IndexOutOfBoundsException("Position must be between 0 and size (" + this.size + "), it was: " + position + ".");
 
-        this.size++;
         this.modificationCount++;
         ListNode node = new ListNode(value);
 
-        if (position == 0) {
+        if (position == 0) { // Insert at the start
             node.next = first;
             first.previous = node;
             first = node;
+            this.size++;
             return;
         }
 
-        if (position == this.size-1) {
+        if (position == this.size) { // Insert at the end
             node.previous = last;
             last.next = node;
             last = node;
+            this.size++;
             return;
         }
 
@@ -165,6 +162,7 @@ public class LinkedListIndexedCollection implements List {
             node.next = head.next;
             node.next.previous = node;
             node.previous.next = node;
+            this.size++;
             return;
         }
 
@@ -172,10 +170,11 @@ public class LinkedListIndexedCollection implements List {
         for (int i = 0, n = this.size - position - 1; i < n; i++) {
             head = head.previous;
         }
-        node.previous = head;
-        node.next = head.next;
+        node.previous = head.previous;
+        node.next = head;
         node.next.previous = node;
         node.previous.next = node;
+        this.size++;
         return;
     }
 
@@ -183,12 +182,12 @@ public class LinkedListIndexedCollection implements List {
      * Searches the list and returns the index of the first occurrence of the given value
      * or -1 if the value is not found.
      * The average time complexity of this method is n.
-     *
      * @param value object to be searched for in linked-list
      * @return index of the first occurrence of the given value or -1 if the value is not found
      */
     @Override
     public int indexOf(Object value) {
+    	if (value == null) return -1;
         int index = 0;
         for (ListNode head = first; head != null; head = head.next) {
             if (head.value.equals(value))
@@ -201,7 +200,6 @@ public class LinkedListIndexedCollection implements List {
     /**
      * Removes element at specified index from list. Element that was previously located at
      * index+1 after this operation is on location index.
-     *
      * @param index index of the object to be removed
      * @throws IndexOutOfBoundsException valid indexes are from 0 to size-1
      */
@@ -212,17 +210,17 @@ public class LinkedListIndexedCollection implements List {
         this.size--;
         this.modificationCount++;
         
-        if (first == last) {
+        if (first == last) { // If there is only one node in the list
             first = last = null;
             return;
         }
 
-        if (index == 0) {
+        if (index == 0) { // If the first node needs to be deleted
             first = first.next;
             first.previous = null;
             return;
         }
-        if (index == this.size) {
+        if (index == this.size) { // If the last node need to be deleted
             last = last.previous;
             last.next = null;
             return;
@@ -284,15 +282,19 @@ public class LinkedListIndexedCollection implements List {
 	 *
 	 */
 	private static class ListElementsGetter implements ElementsGetter {
-		/** Index of the current element that will be returned next **/
-		private int current;
+		/** Current list node that will be returned next **/
+		private ListNode current;
 		/** Number of modifications when this ElementsGetter was created **/
 		private long savedModificationCount;
 		/** Reference to the list **/
 		private LinkedListIndexedCollection collection;
 
+		/**
+		 * Initializes the elements getter and saves the count of current modifications.
+		 * @param collection collection for which this elements getter is created 
+		 */
 		public ListElementsGetter(LinkedListIndexedCollection collection) {
-			current = 0;
+			current = collection.first;
 			this.savedModificationCount = collection.modificationCount;
 			this.collection = collection;
 		}
@@ -301,14 +303,16 @@ public class LinkedListIndexedCollection implements List {
 		public boolean hasNextElement() {
 			if (this.savedModificationCount != collection.modificationCount)
 				throw new ConcurrentModificationException("The collection was changed!");
-			return this.current < collection.size;
+			return current != null;
 		}
 
 		@Override
 		public Object getNextElement() {
 			if (!hasNextElement())
 				throw new NoSuchElementException("There are no more elements in this collection!");
-			return collection.get(current++);
+			Object value = current.value;
+			current = current.next;
+			return value;
 		}
 	}
 }

@@ -3,11 +3,12 @@ package hr.fer.oprpp1.custom.collections.demo;
 import hr.fer.oprpp1.custom.collections.ArrayIndexedCollection;
 import hr.fer.oprpp1.custom.collections.Collection;
 import hr.fer.oprpp1.custom.collections.ElementsGetter;
+import hr.fer.oprpp1.custom.collections.LinkedListIndexedCollection;
 
 public class Demo5 {
 	public static void main(String[] args) {
 		Collection col1 = new ArrayIndexedCollection();
-		Collection col2 = new ArrayIndexedCollection();
+		Collection col2 = new LinkedListIndexedCollection();
 		col1.add("Ivo");
 		col1.add("Ana");
 		col1.add("Jasna");

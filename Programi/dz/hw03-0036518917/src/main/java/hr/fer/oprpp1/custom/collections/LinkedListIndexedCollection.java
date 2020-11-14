@@ -58,13 +58,12 @@ public class LinkedListIndexedCollection<T> implements List<T> {
 
     /**
      * Creates a new list based on a other collection by copying its elements.
-     *
      * @param other collection whose elements will be copied into this newly constructed collection
      * @throws NullPointerException the collection whose elements will be copied can not be <code>null</code>
      */
     public LinkedListIndexedCollection(Collection<? extends T> other) {
         this();
-
+        if (other == null) throw new NullPointerException("Collection whose elements will be copied can not be null!");
         this.addAll(other);
     }
 
@@ -75,7 +74,6 @@ public class LinkedListIndexedCollection<T> implements List<T> {
 
     /**
      * Adds the given object into this list at the end of the list
-     *
      * @param value object to be added into this list
      * @throws NullPointerException <code>null</code> can not be added to the list
      */
@@ -98,8 +96,7 @@ public class LinkedListIndexedCollection<T> implements List<T> {
 
     /**
      * Returns the object that is stored in linked list at position index.
-     * The time complexity of this method id n/2 + 1
-     *
+     * The time complexity of this method is never greater than n/2 + 1
      * @param index index of the object to be return from this list.
      * @return object at the given index in this list
      * @throws IndexOutOfBoundsException valid indexes are 0 to size-1
@@ -127,7 +124,6 @@ public class LinkedListIndexedCollection<T> implements List<T> {
      * Inserts (does not overwrite) the given value at the given position in linked-list.
      * Elements starting from this position are shifted one position.
      * The average time complexity of this method is n/2 + 1
-     *
      * @param value object to be inserted at the given position
      * @param position position at which the object will be inserted
      * @throws IndexOutOfBoundsException valid positions are from 0 to size
@@ -138,21 +134,22 @@ public class LinkedListIndexedCollection<T> implements List<T> {
         if (value == null) throw new NullPointerException("Object to be added can not be null!");
         if (position < 0 || position > size) throw new IndexOutOfBoundsException("Position must be between 0 and size (" + this.size + "), it was: " + position + ".");
 
-        this.size++;
         this.modificationCount++;
         ListNode<T> node = new ListNode<>(value);
 
-        if (position == 0) {
+        if (position == 0) { // Insert at the start
             node.next = first;
             first.previous = node;
             first = node;
+            this.size++;
             return;
         }
 
-        if (position == this.size-1) {
+        if (position == this.size) { // Insert at the end
             node.previous = last;
             last.next = node;
             last = node;
+            this.size++;
             return;
         }
 
@@ -165,6 +162,7 @@ public class LinkedListIndexedCollection<T> implements List<T> {
             node.next = head.next;
             node.next.previous = node;
             node.previous.next = node;
+            this.size++;
             return;
         }
 
@@ -172,10 +170,11 @@ public class LinkedListIndexedCollection<T> implements List<T> {
         for (int i = 0, n = this.size - position - 1; i < n; i++) {
             head = head.previous;
         }
-        node.previous = head;
-        node.next = head.next;
+        node.previous = head.previous;
+        node.next = head;
         node.next.previous = node;
         node.previous.next = node;
+        this.size++;
         return;
     }
 
@@ -183,12 +182,12 @@ public class LinkedListIndexedCollection<T> implements List<T> {
      * Searches the list and returns the index of the first occurrence of the given value
      * or -1 if the value is not found.
      * The average time complexity of this method is n.
-     *
      * @param value object to be searched for in linked-list
      * @return index of the first occurrence of the given value or -1 if the value is not found
      */
     @Override
     public int indexOf(Object value) {
+    	if (value == null) return -1;
         int index = 0;
         for (ListNode<T> head = first; head != null; head = head.next) {
             if (head.value.equals(value))
@@ -201,7 +200,6 @@ public class LinkedListIndexedCollection<T> implements List<T> {
     /**
      * Removes element at specified index from list. Element that was previously located at
      * index+1 after this operation is on location index.
-     *
      * @param index index of the object to be removed
      * @throws IndexOutOfBoundsException valid indexes are from 0 to size-1
      */
@@ -279,18 +277,21 @@ public class LinkedListIndexedCollection<T> implements List<T> {
 	
 	/**
 	 * Implementation of ElementsGetter for LinkedListIndexedCollection.
-	 * 
 	 * @author sbolsec
 	 *
 	 */
 	private static class ListElementsGetter<T> implements ElementsGetter<T> {
-		/** Index of the current element that will be returned next **/
+		/** Current node **/
 		private ListNode<T> current;
 		/** Number of modifications when this ElementsGetter was created **/
 		private long savedModificationCount;
 		/** Reference to the list **/
 		private LinkedListIndexedCollection<T> collection;
 
+		/**
+		 * Initializes the elements getter and saves the count of current modifications.
+		 * @param collection collection for which this elements getter is created 
+		 */
 		public ListElementsGetter(LinkedListIndexedCollection<T> collection) {
 			current = collection.first;
 			this.savedModificationCount = collection.modificationCount;

@@ -101,6 +101,10 @@ public class SimpleHashtable<K, V> implements Iterable<SimpleHashtable.TableEntr
 		return head.value;
 	}
 	
+	/**
+	 * Returns the number of elements in table
+	 * @return number of elements in table
+	 */
 	public int size() {
 		return this.size;
 	}
@@ -135,9 +139,10 @@ public class SimpleHashtable<K, V> implements Iterable<SimpleHashtable.TableEntr
 	}
 	
 	/**
-	 * 
-	 * @param key
-	 * @return
+	 * Removes the element with the given key if it exists in the table and returns 
+	 * its value, or null if it did not exist in the table
+	 * @param key key of the element to remove
+	 * @return value of the element to be removed, or null if it did not exist in the table
 	 */
 	public V remove(Object key) {
 		if (key == null) return null;
@@ -354,7 +359,7 @@ public class SimpleHashtable<K, V> implements Iterable<SimpleHashtable.TableEntr
 		private TableEntry<K, V> next;
 		
 		/**
-		 * Initializes the iterator
+		 * Initializes the iterator and finds the first element
 		 */
 		public IteratorImpl() {
 			currentModificationsCount = modificationCount;

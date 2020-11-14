@@ -2,7 +2,6 @@ package hr.fer.oprpp1.custom.collections;
 
 /**
  * Stores key-value pairs
- * 
  * @author sbolsec
  *
  */
@@ -35,6 +34,11 @@ public class Dictionary<K, V> {
 			this.value = value;
 		}
 		
+		/**
+		 * Two dictionary entries are equal if they have the same key.
+		 * @param obj object to be tested
+		 * @return true if the given object is a dictionary entry with the same key as this one
+		 */
 		@SuppressWarnings("unchecked")
 		@Override
 		public boolean equals(Object obj) {
