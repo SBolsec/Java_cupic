@@ -1,6 +1,10 @@
-package hr.fer.oprpp1.custom.collections;
+package hr.fer.oprpp1.custom.collections.demo;
 
 import java.util.Arrays;
+
+import hr.fer.oprpp1.custom.collections.ArrayIndexedCollection;
+import hr.fer.oprpp1.custom.collections.LinkedListIndexedCollection;
+import hr.fer.oprpp1.custom.collections.Processor;
 
 /**
  * Demo which tests the collections

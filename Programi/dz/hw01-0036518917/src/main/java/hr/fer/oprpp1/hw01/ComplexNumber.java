@@ -8,18 +8,13 @@ package hr.fer.oprpp1.hw01;
  */
 public class ComplexNumber {
 
-    /**
-     * Real part of the complex number
-     */
+    /** Real part of the complex number **/
     private double real;
-    /**
-     * Imaginary part of the complex number
-     */
+    /** Imaginary part of the complex number **/
     private double imaginary;
 
     /**
      * Creates a new complex number with the passed arguments.
-     *
      * @param real real part of the complex number
      * @param imaginary imaginary part of the complex number
      */
@@ -31,7 +26,6 @@ public class ComplexNumber {
     /**
      * Creates a new complex number which has the imaginary part equal to 0,
      * and the real part equal to the passed argument.
-     *
      * @param real real part of the complex number
      * @return complex number with the imaginary part equal to 0, and the real part equal to the passed argument
      */
@@ -42,7 +36,6 @@ public class ComplexNumber {
     /**
      * Creates a new complex number which has the real part equal to 0,
      * and the real imaginary equal to the passed argument.
-     *
      * @param imaginary real imaginary of the complex number
      * @return complex number with the real part equal to 0, and the imaginary part equal to the passed argument
      */
@@ -52,7 +45,6 @@ public class ComplexNumber {
 
     /**
      * Creates a new complex number from the polar form.
-     *
      * @param magnitude the distance to the origin (0,0)
      * @param angle angle of the complex number
      * @return complex number in the standard form (a+bi)
@@ -150,7 +142,6 @@ public class ComplexNumber {
 
     /**
      * Returns the real part of the complex number.
-     *
      * @return real part of complex number
      */
     public double getReal() {
@@ -159,7 +150,6 @@ public class ComplexNumber {
 
     /**
      * Returns the imaginary part of the complex number.
-     *
      * @return imaginary part of complex number
      */
     public double getImaginary() {
@@ -169,7 +159,6 @@ public class ComplexNumber {
 
     /**
      * Returns the magnitude of the complex number.
-     *
      * @return magnitude of the complex number
      */
     public double getMagnitude() {
@@ -178,16 +167,16 @@ public class ComplexNumber {
 
     /**
      * Returns the angle of the complex number.
-     *
      * @return angle of the complex number
      */
     public double getAngle() {
-    	return Math.atan2(imaginary, real);
+    	double angle = Math.atan2(imaginary, real);
+    	if (angle < 0) angle += (2 * Math.PI);
+    	return angle;
     }
 
     /**
      * Returns the sum of the two complex numbers.
-     *
      * @param c complex number to be added
      * @return sum of the complex numbers
      */
@@ -197,7 +186,6 @@ public class ComplexNumber {
 
     /**
      * Subtracts the passed complex numbers and returns the result.
-     *
      * @param c complex number to be subtracted
      * @return original complex number subtracted by passed complex number
      */
@@ -207,7 +195,6 @@ public class ComplexNumber {
 
     /**
      * Multiplies the two complex numbers.
-     *
      * @param c complex number to be multiplied
      * @return result of multiplication of the two complex numbers
      */
@@ -217,7 +204,6 @@ public class ComplexNumber {
 
     /**
      * Divides the original complex number by the passed complex number.
-     *
      * @param c complex number which will be used to divide the original complex number
      * @return result of the division
      */
@@ -229,7 +215,6 @@ public class ComplexNumber {
 
     /**
      * Raises the original complex number to the specified power.
-     *
      * @param n power to which the complex number will be raised
      * @return the original complex number raised to the power of the passed argument
      * @throws IllegalArgumentException n must be >= 0
@@ -246,7 +231,6 @@ public class ComplexNumber {
 
     /**
      * Returns the n-th roots of the original complex number.
-     *
      * @param n determines which root will be the result
      * @return the n-th roots of the original complex number
      * @throws IllegalArgumentException n must be greater than 0
@@ -269,6 +253,9 @@ public class ComplexNumber {
         return array;
     }
 
+    /**
+     * Returns a string representation of the complex number
+     */
     @Override
     public String toString() {
         char sign = imaginary < 0 ? '-' : '+';

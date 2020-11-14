@@ -72,13 +72,23 @@ class ArrayIndexedCollectionTest {
 	}
 	
 	@Test
+	public void testConstructorPassedCollectionAndCapacityIsSmallerThanOne() {
+		Collection other = new ArrayIndexedCollection(5);
+		other.add(Integer.valueOf(1));
+		other.add(Integer.valueOf(2));
+
+		assertThrows(IllegalArgumentException.class, () -> new ArrayIndexedCollection(other, -1));
+
+	}
+	
+	@Test
 	public void testConstructorPassedCollectionIsNullAndCapacityIsGreaterThanOne() {
 		assertThrows(NullPointerException.class, () -> new ArrayIndexedCollection(null, 16));	
 	}
 	
 	@Test
 	public void testConstructorPassedCollectionIsNullAndCapacityIsSmallerThanOne() {
-		assertThrows(IllegalArgumentException.class, () -> new ArrayIndexedCollection(null, 0));
+		assertThrows(NullPointerException.class, () -> new ArrayIndexedCollection(null, 0));
 	}
 
 	@Test
@@ -279,5 +289,35 @@ class ArrayIndexedCollectionTest {
 		array.remove(3);
 		Object[] expected = {1, 2, 1};
 		assertArrayEquals(expected, array.toArray());
+	}
+	
+	@Test
+	public void testContains() {
+		array = new ArrayIndexedCollection();
+		array.add(Integer.valueOf(1));
+		array.add(Integer.valueOf(2));
+		array.add("Test");
+		array.add(Character.valueOf('*'));
+		assertEquals(true, array.contains(1));
+		assertEquals(true, array.contains("Test"));
+		assertEquals(false, array.contains(7));
+		assertEquals(false, array.contains('/'));
+		assertEquals(false, array.contains(null));
+	}
+
+	@Test
+	public void testRemoveObject() {
+		array = new ArrayIndexedCollection();
+		array.add(Integer.valueOf(1));
+		array.add(Integer.valueOf(2));
+		array.add("Test");
+		array.add(Character.valueOf('*'));
+		assertEquals(true, array.remove(Integer.valueOf(1)));
+		assertEquals(false, array.remove(Integer.valueOf(1)));
+		assertEquals(true, array.remove("Test"));
+		assertEquals(false, array.remove(Integer.valueOf(7)));
+		assertEquals(false, array.remove(Character.valueOf('/')));
+		assertEquals(true, array.remove(Character.valueOf('*')));
+		assertEquals(false, array.remove(null));
 	}
 }

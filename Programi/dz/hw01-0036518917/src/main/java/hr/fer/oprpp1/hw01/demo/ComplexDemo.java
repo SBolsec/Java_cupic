@@ -2,6 +2,11 @@ package hr.fer.oprpp1.hw01.demo;
 
 import hr.fer.oprpp1.hw01.ComplexNumber;
 
+/**
+ * Demo which tests the <code>ComplexNumber</code> class
+ * @author sinisa
+ *
+ */
 public class ComplexDemo {
     public static void main(String[] args) {
         ComplexNumber c1 = new ComplexNumber(2, 3);

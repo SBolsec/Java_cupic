@@ -66,6 +66,7 @@ public class Collection {
 	 * content and returns the array. This method never returns null.
 	 * 
 	 * @return array made from the collection
+	 * @throws UnsupportedOperationException if there is no implementation of this method
 	 */
 	public Object[] toArray() {
 		throw new UnsupportedOperationException();
@@ -77,7 +78,9 @@ public class Collection {
 	 * 
 	 * @param processor processor which will be used to process all of the items in the collection
 	 */
-	public void forEach(Processor processor) {}
+	public void forEach(Processor processor) {
+		// Does nothing
+	}
 	
 	/**
 	 * Method adds into the current collection all elements from the given collection.
@@ -99,5 +102,7 @@ public class Collection {
 	/**
 	 * Removes all elements from this collection.
 	 */
-	public void clear() {}
+	public void clear() {
+		// Does nothing
+	}
 }

@@ -9,17 +9,11 @@ package hr.fer.oprpp1.custom.collections;
  */
 public class ArrayIndexedCollection extends Collection {
 
-	/**
-	 * Initial capacity of the collection
-	 */
+	/** Initial capacity of the collection **/
 	private static final int INITIAL_CAPACITY = 16;
-	/**
-	 * Current size of collection (number of elements actually stored in elements array).
-	 */
+	/** Current size of collection (number of elements actually stored in elements array). **/
 	private int size;
-	/**
-	 * An array of object references
-	 */
+	/** An array of object references **/
 	private Object[] elements;
 	
 	/**
@@ -62,6 +56,7 @@ public class ArrayIndexedCollection extends Collection {
 	 * @throws IllegalArgumentException if the initial capacity is less than 1
 	 */
 	public ArrayIndexedCollection(Collection other, int initialCapacity) {
+		if (other == null) throw new NullPointerException("Given collection can not be null!");
 		if (initialCapacity < 1) throw new IllegalArgumentException("The initial capacity can not be less than 1!");
 		
 		int capacity = initialCapacity < other.size() ? other.size() : initialCapacity;
@@ -74,7 +69,6 @@ public class ArrayIndexedCollection extends Collection {
 		return this.size;
 	}
 	
-
 	/**
 	 * Adds the given object into this collection.
 	 * (reference is added into first empty place in the elements array; if the elements array is full, it is reallocated by doubling its size).
@@ -87,13 +81,7 @@ public class ArrayIndexedCollection extends Collection {
 	public void add(Object value) {
 		if (value == null) throw new NullPointerException("The object to be added can not be null!");
 
-		if (size == elements.length) {
-			Object[] newElements = new Object[2 * elements.length];
-			for (int i = 0; i < elements.length; i++) {
-				newElements[i] = elements[i];
-			}
-			elements = newElements;
-		}
+		reallocateArray();
 
 		elements[this.size++] = value;
 	}
@@ -125,17 +113,11 @@ public class ArrayIndexedCollection extends Collection {
 	public void insert(Object value, int position) {
 		if (value == null) throw new NullPointerException("The object to be added can not be null!");
 		if (position < 0 || position > size) throw new IndexOutOfBoundsException("The index must be between 0 and size (" + (this.size-1) + "), it was: " + position + ".");
-
-		if (size == elements.length) {
-			Object[] newElements = new Object[2 * elements.length];
-			for (int i = 0; i < elements.length; i++) {
-				newElements[i] = elements[i];
-			}
-			elements = newElements;
-		}
+		
+		reallocateArray();
 		
 		for (int i = elements.length - 1; i > position; i--) {
-			elements[i] = elements[i-1];
+			elements[i] = elements[i - 1];
 		}
 		
 		elements[position] = value;
@@ -151,6 +133,7 @@ public class ArrayIndexedCollection extends Collection {
 	 * @return index of the first occurrence of the given object or -1 if the value is not found
 	 */
 	public int indexOf(Object value) {
+		if (value == null) return -1;
 		for (int i = 0; i < this.size; i++) {
 			if (elements[i].equals(value))
 				return i;
@@ -173,7 +156,7 @@ public class ArrayIndexedCollection extends Collection {
 	 * @throws IndexOutOfBoundsException index must be between 0 and size-1
 	 */
 	public void remove(int index) {
-		if (index < 0 || index > size) throw new IndexOutOfBoundsException("The index must be between 0 and size-1 (" + (this.size-1) + "), it was: " + index + ".");
+		if (index < 0 || index >= size) throw new IndexOutOfBoundsException("The index must be between 0 and size-1 (" + (this.size-1) + "), it was: " + index + ".");
 		
 		for (int i = index; i < this.size - 1; i++) {
 			elements[i] = elements[i+1];
@@ -222,5 +205,20 @@ public class ArrayIndexedCollection extends Collection {
 			return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * Checks whether the backing array is full.
+	 * If it is full, this method creates a new array double the size of the current
+	 * one and copies all of the values to it.
+	 */
+	private void reallocateArray() {
+		if (size == elements.length) {
+			Object[] newElements = new Object[2 * elements.length];
+			for (int i = 0; i < elements.length; i++) {
+				newElements[i] = elements[i];
+			}
+			elements = newElements;
+		}
 	}
 }

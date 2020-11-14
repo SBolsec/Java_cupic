@@ -62,9 +62,15 @@ public class LinkedListIndexedCollectionTest {
         list = new LinkedListIndexedCollection();
         list.add(Integer.valueOf(1));
         list.add(Integer.valueOf(2));
+        list.add("Test");
+        list.add("Haja");
+        list.add(Character.valueOf('/'));
 
         assertEquals(Integer.valueOf(1), list.get(0));
         assertEquals(Integer.valueOf(2), list.get(1));
+        assertEquals("Test", list.get(2));
+        assertEquals("Haja", list.get(3));
+        assertEquals(Character.valueOf('/'), list.get(4));
     }
 
     @Test
@@ -116,8 +122,12 @@ public class LinkedListIndexedCollectionTest {
         list.add(Integer.valueOf(2));
         list.insert(Integer.valueOf(5), 1);
         list.insert(Integer.valueOf(6), 4);
-        Object[] expected = {1, 5, 2, 1, 6, 2};
-        assertEquals(6, list.size());
+        list.add("Test");
+        list.add("Haja");
+        list.insert(Character.valueOf('*'), 3);
+        list.insert(Character.valueOf('/'), 6);
+        Object[] expected = {1, 5, 2, '*', 1, 6, '/', 2, "Test", "Haja"};
+        assertEquals(10, list.size());
         assertArrayEquals(expected, list.toArray());
     }
 
@@ -166,7 +176,7 @@ public class LinkedListIndexedCollectionTest {
         list.add(Integer.valueOf(2));
         assertEquals(-1, list.indexOf(Integer.valueOf(5)));
     }
-
+    
     @Test
     public void testRemoveIndexLessThanZero() {
         list = new LinkedListIndexedCollection();
@@ -195,6 +205,14 @@ public class LinkedListIndexedCollectionTest {
         assertEquals(3, list.size());
         assertArrayEquals(expected, list.toArray());
     }
+    
+    @Test
+    public void testRemoveOnlyOneElement() {
+    	list = new LinkedListIndexedCollection();
+        list.add(Integer.valueOf(1));
+        list.remove(0);
+        assertEquals(0, list.size());
+    }
 
     @Test
     public void testRemoveFromStart() {
@@ -220,4 +238,34 @@ public class LinkedListIndexedCollectionTest {
         Object[] expected = {1, 2, 1};
         assertArrayEquals(expected, list.toArray());
     }
+    
+    @Test
+	public void testContains() {
+    	list = new LinkedListIndexedCollection();
+    	list.add(Integer.valueOf(1));
+    	list.add(Integer.valueOf(2));
+    	list.add("Test");
+    	list.add(Character.valueOf('*'));
+		assertEquals(true, list.contains(1));
+		assertEquals(true, list.contains("Test"));
+		assertEquals(false, list.contains(7));
+		assertEquals(false, list.contains('/'));
+		assertEquals(false, list.contains(null));
+	}
+
+	@Test
+	public void testRemoveObject() {
+		list = new LinkedListIndexedCollection();
+		list.add(Integer.valueOf(1));
+		list.add(Integer.valueOf(2));
+		list.add("Test");
+		list.add(Character.valueOf('*'));
+		assertEquals(true, list.remove(Integer.valueOf(1)));
+		assertEquals(false, list.remove(Integer.valueOf(1)));
+		assertEquals(true, list.remove("Test"));
+		assertEquals(false, list.remove(Integer.valueOf(7)));
+		assertEquals(false, list.remove(Character.valueOf('/')));
+		assertEquals(true, list.remove(Character.valueOf('*')));
+		assertEquals(false, list.remove(null));
+	}
 }

@@ -47,13 +47,13 @@ public class ComplexNumberTest {
     @Test
     public void testGetAngleCase3() {
         ComplexNumber a = new ComplexNumber(-1,-1);
-        assertEquals(-2.356194490192345, a.getAngle(), EPSILON);
+        assertEquals(3.9269908169872414, a.getAngle(), EPSILON);
     }
 
     @Test
     public void testGetAngleCase4() {
         ComplexNumber a = new ComplexNumber(1,-1);
-        assertEquals(-0.7853981633974483, a.getAngle(), EPSILON);
+        assertEquals(5.497787143782138, a.getAngle(), EPSILON);
     }
 
     @Test
@@ -209,10 +209,10 @@ public class ComplexNumberTest {
         ComplexNumber a = new ComplexNumber(5,-3);
         ComplexNumber[] roots = a.root(2);
 
-        assertEquals(2.327117519, roots[0].getReal(), EPSILON);
-        assertEquals(-0.6445742372, roots[0].getImaginary(), EPSILON);
-        assertEquals(-2.327117519, roots[1].getReal(), EPSILON);
-        assertEquals(0.6445742372, roots[1].getImaginary(), EPSILON);
+        assertEquals(-2.327117519, roots[0].getReal(), EPSILON);
+        assertEquals(0.6445742372, roots[0].getImaginary(), EPSILON);
+        assertEquals(2.327117519, roots[1].getReal(), EPSILON);
+        assertEquals(-0.6445742372, roots[1].getImaginary(), EPSILON);
     }
 
     @Test
