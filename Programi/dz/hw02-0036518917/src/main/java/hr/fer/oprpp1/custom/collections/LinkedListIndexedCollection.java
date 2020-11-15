@@ -7,7 +7,6 @@ import java.util.NoSuchElementException;
  * Linked list-backed list of objects which implements interface <code>List</code>
  * Duplicate elements are allowed (each of those element will be held in different
  * list node); storage of null references is not allowed.
- *
  * @author sbolsec
  *
  */

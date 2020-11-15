@@ -1,5 +1,10 @@
 package hr.fer.oprpp1.hw04.db;
 
+/**
+ * This class stores all the information about a student.
+ * @author sbolsec
+ *
+ */
 public class StudentRecord {
 
 	/** jmbag - unique identifier **/

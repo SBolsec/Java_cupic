@@ -4,7 +4,6 @@ package hr.fer.oprpp1.custom.collections;
  * Linked list-backed collection of objects which extends class <code>Collection</code>
  * Duplicate elements are allowed (each of those element will be held in different
  * list node); storage of null references is not allowed.
- *
  * @author sbolsec
  *
  */

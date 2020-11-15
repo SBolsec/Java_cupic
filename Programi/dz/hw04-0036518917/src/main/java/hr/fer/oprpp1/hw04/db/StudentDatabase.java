@@ -21,6 +21,7 @@ public class StudentDatabase {
 	/**
 	 * Constructor which parses the input into student records and stores them.
 	 * @param list list of students
+	 * @throws IllegalArgumentException if there was an error in the input
 	 */
 	public StudentDatabase(List<String> list) {
 		students = new ArrayList<>();
@@ -31,35 +32,23 @@ public class StudentDatabase {
 				continue;
 			
 			try (Scanner sc = new Scanner(s)) {
+				sc.useDelimiter("\t");
 				if (!sc.hasNext()) throw new IllegalArgumentException("There was no jmbag!");
-				String jmbag = sc.next();
+				String jmbag = sc.next().trim();
 				if (!isJmbagValid(jmbag)) throw new IllegalArgumentException("Jmbag was not valid, it was: " + jmbag + ".");
 				
 				if (!sc.hasNext()) throw new IllegalArgumentException("There was no last name!");
-				String first = sc.next();
+				String lastName = sc.next().trim();
 				
-				if (!sc.hasNext()) throw new IllegalArgumentException("There was no middle/first name!");
-				String second = sc.next();
-				String third = null;
-				if (!sc.hasNextInt()) {
-					if (!sc.hasNext()) throw new IllegalArgumentException("There was no first name or final grade!");
-					third = sc.next();
-				}
+				if (!sc.hasNext()) throw new IllegalArgumentException("There was no first name!");
+				String firstName = sc.next().trim();
+				
 				if (!sc.hasNextInt()) throw new IllegalArgumentException("There was no final grade!");
 				int grade = sc.nextInt();
 				if (grade < 1 || grade > 5) throw new IllegalArgumentException("Final grade must be in range (1, 5), it was: " + grade + ".");
 				
 				if (sc.hasNext()) throw new IllegalArgumentException("There was data after final grade!");
 				
-				String firstName;
-				String lastName;
-				if (third == null) {
-					lastName = first;
-					firstName = second;
-				} else {
-					lastName = first + " " + second;
-					firstName = third;
-				}
 				StudentRecord record = new StudentRecord(jmbag, lastName, firstName, grade);
 				students.add(record);
 				jmbagIndex.put(jmbag, record);

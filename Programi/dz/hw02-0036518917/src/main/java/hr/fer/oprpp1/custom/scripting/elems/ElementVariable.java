@@ -3,7 +3,6 @@ package hr.fer.oprpp1.custom.scripting.elems;
 /**
  * Inherits class <code>Element</code> and has a single 
  * read-only String property: name
- * 
  * @author sbolsec
  *
  */

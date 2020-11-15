@@ -3,7 +3,6 @@ package hr.fer.oprpp1.custom.collections;
 /**
  * Resizable array-backed collection which extends class <code>Collection</code>.
  * Duplicate elements are allowed, storage of <code>null</code> references is not allowed.
- * 
  * @author sbolsec
  *
  */
@@ -25,7 +24,6 @@ public class ArrayIndexedCollection extends Collection {
 
 	/**
 	 * Creates an instance of the collection with the desired capacity.
-	 * 
 	 * @param initialCapacity initial capacity of the collection
 	 * @throws IllegalArgumentException if the initial capacity is less than 1
 	 */
@@ -38,7 +36,6 @@ public class ArrayIndexedCollection extends Collection {
 
 	/**
 	 * Creates a new collection and copies the elements of the passed collection 'other' into it.
-	 * 
 	 * @param other collection whose items will be copied
 	 * @throws NullPointerException <code>other</code> can not be null
 	 */
@@ -49,7 +46,6 @@ public class ArrayIndexedCollection extends Collection {
 	/**
 	 * Creates a new collection and copies the elements of the passed collection 'other' into it.
 	 * If the <code>initialCapacity</code> is smaller that the size of the given collection, the size of the given collection will be used.
-	 * 
 	 * @param other collection whose items will be copied
 	 * @param initialCapacity initial capacity of the new collection
 	 * @throws NullPointerException <code>other</code> can not be null 
@@ -73,7 +69,6 @@ public class ArrayIndexedCollection extends Collection {
 	 * Adds the given object into this collection.
 	 * (reference is added into first empty place in the elements array; if the elements array is full, it is reallocated by doubling its size).
 	 * The time complexity is O(1)
-	 * 
 	 * @param value object to be added into this collection
 	 * @throws NullPointerException the object to be added can not be null
 	 */
@@ -89,7 +84,6 @@ public class ArrayIndexedCollection extends Collection {
 	/**
 	 * Returns the object that is stored in backing array at position <code>index</code>.
 	 * The average complexity of this method is O(1)
-	 * 
 	 * @param index position from which the object will be returned
 	 * @return the object that is stored at position <code>index</code>
 	 * @throws IndexOutOfBoundsException index must be between 0 and size-1
@@ -104,7 +98,6 @@ public class ArrayIndexedCollection extends Collection {
 	 * Inserts the object at the specified position. It does not overwrite the given value at the given position, 
 	 * it shifts the elements at greater positions one place toward the end.
 	 * The average complexity of this method is O(n/2)
-	 * 
 	 * @param value object to be inserted
 	 * @param position index where the object should be inserted
 	 * @throws NullPointerException <code>null</code> object will not be inserted into the collection
@@ -128,7 +121,6 @@ public class ArrayIndexedCollection extends Collection {
 	 * Searches the collection and returns the index of the first occurrence of the given value
 	 * or -1 if the value is not found.
 	 * The average complexity of this method is O(n/2)
-	 * 
 	 * @param value object that will be searched
 	 * @return index of the first occurrence of the given object or -1 if the value is not found
 	 */
@@ -151,7 +143,6 @@ public class ArrayIndexedCollection extends Collection {
 	/**
 	 * Removes element at specified index from collection. 
 	 * Element that was previously at location index+1 after this operation is on location index , etc.
-	 * 
 	 * @param index index at which the element should be removed
 	 * @throws IndexOutOfBoundsException index must be between 0 and size-1
 	 */
@@ -169,7 +160,6 @@ public class ArrayIndexedCollection extends Collection {
 	/**
 	 * Allocates new array with size equals to the size of this collection, fills it with collection
 	 * content and returns the array. This method never returns null.
-	 * 
 	 * @return array made from the collection
 	 */
 	@Override

@@ -2,7 +2,6 @@ package hr.fer.oprpp1.custom.collections;
 
 /**
  * This is a generic Collection which defines all the methods of a collection
- * 
  * @author sbolsec
  *
  */

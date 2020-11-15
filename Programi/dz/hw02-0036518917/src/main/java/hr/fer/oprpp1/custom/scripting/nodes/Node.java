@@ -4,7 +4,6 @@ import hr.fer.oprpp1.custom.collections.ArrayIndexedCollection;
 
 /**
  * Base class for all graph nodes.
- * 
  * @author sbolsec
  *
  */

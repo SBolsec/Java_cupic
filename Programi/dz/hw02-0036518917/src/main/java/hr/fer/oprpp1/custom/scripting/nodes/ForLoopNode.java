@@ -6,7 +6,6 @@ import hr.fer.oprpp1.custom.scripting.elems.ElementVariable;
 
 /**
  * A node representing a single for-loop construct
- * 
  * @author sbolsec
  *
  */

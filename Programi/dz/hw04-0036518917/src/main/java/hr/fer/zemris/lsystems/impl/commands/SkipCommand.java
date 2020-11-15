@@ -6,6 +6,12 @@ import hr.fer.zemris.lsystems.impl.Command;
 import hr.fer.zemris.lsystems.impl.Context;
 import hr.fer.zemris.lsystems.impl.TurtleState;
 
+/**
+ * This implementation of the <code>Command</code> interface allows the
+ * turtle to skip drawing a line while also moving to the desired new potition.
+ * @author sbolsec
+ *
+ */
 public class SkipCommand implements Command {
 	
 	/** Step multiplied by unit length gives the effective unit length to skip **/

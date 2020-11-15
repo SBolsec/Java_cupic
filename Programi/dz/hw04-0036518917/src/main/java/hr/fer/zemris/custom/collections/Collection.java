@@ -2,7 +2,6 @@ package hr.fer.zemris.custom.collections;
 
 /**
  * This is a generic Collection which defines all the methods of a collection
- * 
  * @author sbolsec
  *
  */
@@ -10,7 +9,6 @@ public interface Collection<T> {
 	
 	/**
 	 * Returns true if collection contains no objects and false otherwise.
-	 * 
 	 * @return true if collection contains no objects and false otherwise
 	 */
 	default boolean isEmpty() {
@@ -19,14 +17,12 @@ public interface Collection<T> {
 	
 	/**
 	 * Returns the number of currently stored objects in this collections.
-	 * 
 	 * @return number of objects in the collection
 	 */
 	int size();
 	
 	/**
 	 * Adds the given object into this collection.
-	 * 
 	 * @param value object to be added into this collection
 	 * @throws NullPointerException <code>null</code> can not be added to the collection
 	 */
@@ -34,7 +30,6 @@ public interface Collection<T> {
 	
 	/**
 	 * Returns true only if the collection contains given value, as determined by equals method.
-	 * 
 	 * @param value object to be tested
 	 * @return true if the object is in this collection, false otherwise
 	 */
@@ -42,7 +37,6 @@ public interface Collection<T> {
 	/**
 	 * Returns true only if the collection contains given value as determined by equals method and 
 	 * removes one occurrence of it.
-	 * 
 	 * @param value object to be removed from the collection
 	 * @return returns true if the collection contains the object and removes it, false otherwise
 	 */
@@ -51,14 +45,12 @@ public interface Collection<T> {
 	/**
 	 * Allocates new array with size equals to the size of this collection, fills it with collection
 	 * content and returns the array. This method never returns null.
-	 * 
 	 * @return array made from the collection
 	 */
 	Object[] toArray();
 	
 	/**
 	 * Method calls processor.process(.) for each element of this collection. 
-	 * 
 	 * @param processor processor which will be used to process all of the items in the collection
 	 */
 	default void forEach(Processor<? super T> processor) {
@@ -71,7 +63,6 @@ public interface Collection<T> {
 	/**
 	 * Method adds into the current collection all elements from the given collection.
 	 * This other collection remains unchanged
-	 * 
 	 * @param other collection whose items will be added to this collection
 	 */
 	default void addAll(Collection<? extends T> other) {
@@ -93,14 +84,12 @@ public interface Collection<T> {
 	/**
 	 * Creates a new ElementsGetter for this collection which allows you to iterate through this 
 	 * collection element by element.
-	 * 
 	 * @return returns object which allows to iterate through collection
 	 */
 	ElementsGetter<T> createElementsGetter();
 	
 	/**
 	 * Adds the elements from the given collection only if they are acceptable by the given tester.
-	 * 
 	 * @param col collection to be added
 	 * @param tester will test which elements of the collection to add
 	 */

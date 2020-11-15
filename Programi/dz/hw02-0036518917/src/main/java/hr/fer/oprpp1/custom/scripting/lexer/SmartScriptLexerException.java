@@ -6,8 +6,10 @@ package hr.fer.oprpp1.custom.scripting.lexer;
  *
  */
 public class SmartScriptLexerException extends RuntimeException {
-	private static final long serialVersionUID = 50L;
 	
+	/** Generated serial version UID **/
+	private static final long serialVersionUID = 6295420773039356932L;
+
 	/**
      * Default constructor
      */

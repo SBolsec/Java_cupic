@@ -2,7 +2,6 @@ package hr.fer.oprpp1.custom.scripting.lexer;
 
 /**
  * Enumeration of all types of tokens present in "smart script"
- * 
  * @author sbolsec
  *
  */

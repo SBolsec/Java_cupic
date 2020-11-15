@@ -2,7 +2,6 @@ package hr.fer.oprpp1.custom.scripting.elems;
 
 /**
  * Base elements class
- * 
  * @author sbolsec
  *
  */

@@ -2,7 +2,6 @@ package hr.fer.oprpp1.hw02.prob1;
 
 /**
  * This class models a token from the input text.
- * 
  * @author sbolsec
  *
  */
@@ -33,7 +32,6 @@ public class Token {
 
 	/**
 	 * Returns the token type of this token.
-	 * 
 	 * @return token type of this token
 	 */
 	public TokenType getType() {

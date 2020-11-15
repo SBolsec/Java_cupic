@@ -5,7 +5,6 @@ import hr.fer.oprpp1.custom.scripting.elems.ElementString;
 
 /**
  * A node representing a command which generates some textual output dynamically.
- *
  * @author sbolsec
  *
  */

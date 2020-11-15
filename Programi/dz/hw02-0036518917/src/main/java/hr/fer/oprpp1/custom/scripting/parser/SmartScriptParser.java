@@ -17,7 +17,6 @@ import hr.fer.oprpp1.custom.scripting.nodes.TextNode;
 
 /**
  * This is a parser for the specified format.
- * 
  * @author sbolsec
  *
  */

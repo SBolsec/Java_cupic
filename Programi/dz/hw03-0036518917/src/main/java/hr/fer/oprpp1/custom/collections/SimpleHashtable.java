@@ -174,6 +174,7 @@ public class SimpleHashtable<K, V> implements Iterable<SimpleHashtable.TableEntr
 	/**
 	 * Returns list of all elements in the table.
 	 * eq. "[key1=value1, key2=value2, key3=value3]"
+	 * @return string representation of the content of the hash table
 	 */
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

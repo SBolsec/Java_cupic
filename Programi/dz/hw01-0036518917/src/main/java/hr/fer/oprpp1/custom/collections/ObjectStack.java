@@ -3,7 +3,6 @@ package hr.fer.oprpp1.custom.collections;
 /**
  * This is a <code>Adaptor</code> class, it adapts the class <code>ArrayIndexedCollection</code> so that
  * it can be used as a stack.
- *
  * @author sbolsec
  *
  */

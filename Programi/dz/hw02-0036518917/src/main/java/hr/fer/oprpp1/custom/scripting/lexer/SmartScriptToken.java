@@ -4,7 +4,6 @@ import hr.fer.oprpp1.custom.scripting.elems.Element;
 
 /**
  * This class models a lexer for "smart script"
- * 
  * @author sbolsec
  *
  */

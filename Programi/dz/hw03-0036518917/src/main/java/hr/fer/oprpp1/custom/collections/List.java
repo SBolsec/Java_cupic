@@ -2,7 +2,6 @@ package hr.fer.oprpp1.custom.collections;
 
 /**
  * This interface models a list. A list is a collection which has indexed positions.
- * 
  * @author sbolsec
  *
  */

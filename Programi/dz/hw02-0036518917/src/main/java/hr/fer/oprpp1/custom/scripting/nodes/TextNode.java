@@ -2,7 +2,6 @@ package hr.fer.oprpp1.custom.scripting.nodes;
 
 /**
  * A node representing a piece of textual data.
- * 
  * @author sbolsec
  *
  */

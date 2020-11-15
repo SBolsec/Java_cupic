@@ -10,7 +10,6 @@ import hr.fer.oprpp1.hw02.prob1.LexerException;
 
 /**
  * This is a lexical analyzer.
- * 
  * @author sbolsec
  *
  */
@@ -317,6 +316,12 @@ public class SmartScriptLexer {
 		throw new SmartScriptLexerException("Illegal escape!");
 	}
 	
+	/**
+	 * Returns the escaped characters following the rules inside the tag
+	 * @param startIndex starting index of the text
+	 * @param endIndex end index of the text
+	 * @return text with escaped characters
+	 */
 	private String createTextInsideTag(int startIndex, int endIndex) {
 		StringBuilder sb = new StringBuilder();
 		loop:

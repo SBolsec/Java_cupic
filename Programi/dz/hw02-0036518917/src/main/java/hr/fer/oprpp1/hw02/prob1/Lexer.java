@@ -2,7 +2,6 @@ package hr.fer.oprpp1.hw02.prob1;
 
 /**
  * This is a lexical analyzer.
- * 
  * @author sbolsec
  *
  */

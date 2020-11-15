@@ -2,7 +2,6 @@ package hr.fer.oprpp1.hw01;
 
 /**
  * This class adds support for complex numbers.
- *
  * @author sbolsec
  *
  */
