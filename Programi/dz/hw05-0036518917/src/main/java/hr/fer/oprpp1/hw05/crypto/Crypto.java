@@ -8,7 +8,6 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
@@ -23,6 +22,12 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
+/**
+ * This class offers functions for encrypting and decrypting a file,
+ * or to check the SHA-256 digest of a file.
+ * @author sbolsec
+ *
+ */
 public class Crypto {
 	
 	/** Size of the buffer which will be used to read the file **/
@@ -64,11 +69,10 @@ public class Crypto {
 			default : 
 				System.err.println("Unsupported function, supported functions are: checksha, encrypt, decrypt. It was: " + args[0] + ".");
 				System.exit(1);
-		}
+			}
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
-		
 	}
 	
 	/**
@@ -155,13 +159,6 @@ public class Crypto {
 				os.flush();
 			}
 		}
-		
-//		try (OutputStream os = new BufferedOutputStream(Files.newOutputStream(output), BUFFER_SIZE)) {
-//			for (int i = 0; i < result.length; i++) {
-//				os.write(result);
-//			}
-//			os.flush();
-//		}
 		
 		System.out.println((encrypt ? "Encryption" : "Decryption") + " completed. " 
 			+ "Generated file " + output.getFileName() + " based on " + input.getFileName() + ".");

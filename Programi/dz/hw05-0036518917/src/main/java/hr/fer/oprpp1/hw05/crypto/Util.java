@@ -25,24 +25,24 @@ public class Util {
 	    	if (!isHex(keyText.charAt(i)))
 	    		throw new IllegalArgumentException("There was a non-hex character, it was: " + keyText.charAt(i) + ".");
 	    	if (!isHex(keyText.charAt(i+1)))
-	    		throw new IllegalArgumentException("There was a non-hex character, it was: " + keyText.charAt(i) + ".");
+	    		throw new IllegalArgumentException("There was a non-hex character, it was: " + keyText.charAt(i+1) + ".");
 	    	
-	        data[i / 2] = (byte) ((Character.digit(keyText.charAt(i), 16) << 4)
-	                             + Character.digit(keyText.charAt(i+1), 16));
+	        data[i / 2] = (byte) ((generateIntFromHexChar(keyText.charAt(i)) << 4)
+	                             + generateIntFromHexChar(keyText.charAt(i+1)));
 	    }
 	    return data;
 	}
 	
 	/**
 	 * Generates hexadecimal string from given byte array
-	 * @param bytearray
-	 * @return
+	 * @param bytearray array of bytes from which to generate a string of hex-characters
+	 * @return generated string of hex-characters
+	 * @throws IllegalArgumentException if a hex-character was not able to be generated from a byte in the array
 	 */
 	public static String bytetohex(byte[] bytearray) {
 		StringBuilder sb = new StringBuilder();
 		
 		for (byte b : bytearray) {
-			
 			byte first = (byte) ((b & 0xf0) >> 4);
 			byte second = (byte) (b & 0x0f);
 			
@@ -66,29 +66,45 @@ public class Util {
 	}
 	
 	/**
+	 * Generates int from the given hex-character
+	 * @param c hex-character from which to generate int
+	 * @return int value of given hex-character
+	 * @throws IllegalArgumentException if the input character is not a hex-character
+	 */
+	private static int generateIntFromHexChar(char c) {
+		if (Character.isDigit(c))
+			return c - 48; // numbers start at 48 in asci
+		
+		switch (Character.toLowerCase(c)) {
+			case 'a': return 10;
+			case 'b': return 11;
+			case 'c': return 12;
+			case 'd': return 13;
+			case 'e': return 14;
+			case 'f': return 15;
+			default: throw new IllegalArgumentException("Character is not a hex-character, it was: " + c + ".");
+		}
+	}
+	
+	/**
 	 * Generates a hexadecimal character from given byte
 	 * @param b byte from which to generate hexadecimal character
 	 * @return hexadecimal character generated from given byte
+	 * @throws IllegalArgumentException if the value of the given byte is greater than 15 or less than 0
 	 */
 	private static char generateCharFromHex(byte b) {
+		if (b >= 0 && b <= 9) {
+			return (char) (b + 48); // numbers start at 48 in asci
+		}
+		
 		switch(b) {
-			case 0: return '0';
-			case 1: return '1';
-			case 2: return '2';
-			case 3: return '3';
-			case 4: return '4';
-			case 5: return '5';
-			case 6: return '6';
-			case 7: return '7';
-			case 8: return '8';
-			case 9: return '9';
 			case 10: return 'a';
 			case 11: return 'b';
 			case 12: return 'c';
 			case 13: return 'd';
 			case 14: return 'e';
 			case 15: return 'f';
-			default: throw new IllegalArgumentException();
+			default: throw new IllegalArgumentException("Byte could not be converted into a hex-character, it was: " + b + ".");
 		}
 	}
 }
