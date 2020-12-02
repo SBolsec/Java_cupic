@@ -14,9 +14,14 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import hr.fer.oprpp1.java.hw05.shell.Environment;
-import hr.fer.oprpp1.java.hw05.shell.ShellIOException;
 import hr.fer.oprpp1.java.hw05.shell.ShellStatus;
+import hr.fer.oprpp1.java.hw05.shell.Util;
 
+/**
+ * Command which prints the contents of a directory (not recursive)
+ * @author sbolsec
+ *
+ */
 public class LsShellCommand implements ShellCommand {
 
 	/** Name of the command **/
@@ -34,19 +39,9 @@ public class LsShellCommand implements ShellCommand {
 	 */
 	@Override
 	public ShellStatus executeCommand(Environment env, String arguments) {
-		String dirName = "/home/sbolsec";
-		
-		Path path = Path.of(dirName);
-		try {
-			if (!Files.exists(path))
-				env.writeln("Given path does not exist!");
-			if (!Files.isReadable(path))
-				env.writeln("Given path is not readable");
-			if (!Files.isDirectory(path))
-				env.writeln("Given path is not a directory!");
-		} catch (ShellIOException e) {
+		Path path = Util.getDirectoryPath(arguments, env);
+		if (path == null) 
 			return ShellStatus.CONTINUE;
-		}
 		
 		try {
 			try (Stream<Path> stream = Files.list(path)) {

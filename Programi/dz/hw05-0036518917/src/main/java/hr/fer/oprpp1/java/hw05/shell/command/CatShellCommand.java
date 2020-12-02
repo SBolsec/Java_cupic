@@ -10,6 +10,10 @@ import java.util.List;
 import hr.fer.oprpp1.java.hw05.shell.Environment;
 import hr.fer.oprpp1.java.hw05.shell.ShellIOException;
 import hr.fer.oprpp1.java.hw05.shell.ShellStatus;
+import hr.fer.oprpp1.java.hw05.shell.lexer.Lexer;
+import hr.fer.oprpp1.java.hw05.shell.lexer.LexerState;
+import hr.fer.oprpp1.java.hw05.shell.lexer.Token;
+import hr.fer.oprpp1.java.hw05.shell.lexer.TokenType;
 
 /**
  * Command which opens given file and writes its content to console
@@ -53,10 +57,18 @@ public class CatShellCommand implements ShellCommand {
 		
 		Path path = Path.of(fileName);
 		try {
-			if (!Files.exists(path))
+			if (!Files.exists(path)) {
 				env.writeln("Given path does not exist!");
-			if (!Files.isReadable(path))
+				return ShellStatus.CONTINUE;
+			}
+			if (!Files.isReadable(path)) {
 				env.writeln("Given path is not readable!");
+				return ShellStatus.CONTINUE;
+			}
+			if (!Files.isRegularFile(path)) {
+				env.writeln("Given path is not a regular file!");
+				return ShellStatus.CONTINUE;
+			}
 		} catch (ShellIOException e) {
 			return ShellStatus.CONTINUE;
 		}
@@ -64,8 +76,14 @@ public class CatShellCommand implements ShellCommand {
 		Charset charset = null;
 		if (charsetName.length() == 0) {
 			charset = Charset.defaultCharset();
-		} else 
-			charset = Charset.forName(charsetName);
+		} else {
+			try {
+				charset = Charset.forName(charsetName);
+			} catch (Exception e) {
+				env.writeln("Given charset is invalid!");
+				return ShellStatus.CONTINUE;
+			}
+		}
 		
 		try {
 			List<String> lines = Files.readAllLines(path, charset);
@@ -104,17 +122,64 @@ public class CatShellCommand implements ShellCommand {
 		 * @throws IllegalArgumentException if too many arguments are given
 		 */
 		ArgumentParser(String args) {
-			String[] input = args.split("\\s+");
+			Lexer lexer = new Lexer(args);
+			List<Token> tokens = new ArrayList<>();
 			
-			if (input.length > 2)
-				throw new IllegalArgumentException("There are too many arguments!");
+			while (true) {
+				Token token = lexer.nextToken();
+				tokens.add(token);
+				if (token.getType() == TokenType.QUOTE_START) {
+					lexer.setState(LexerState.QUOTES);
+				} else if (token.getType() == TokenType.QUOTE) {
+					lexer.setState(LexerState.BASIC);
+				} else if (token.getType() == TokenType.EOF) {
+					break;
+				}
+			}
 			
-			file = input[0];
+			if (tokens.size() == 0)
+				throw new IllegalArgumentException("There were no arguments!");
 			
-			if (input.length == 2) 
-				charset = input[1];
-			else
-				charset = "";
+			if (tokens.get(0).getType() == TokenType.QUOTE_START) {
+				if (tokens.size() >= 2 && tokens.get(1).getType() != TokenType.QUOTE) {
+					throw new IllegalArgumentException("There was no file path!");
+				} else {
+					file = tokens.get(1).getValue();
+				}
+				if (tokens.size() >= 3) {
+					if (tokens.get(2).getType() == TokenType.EOF) {
+						charset = "";
+						return;
+					} else if (tokens.get(2).getType() == TokenType.STRING) {
+						charset = "";
+						if (tokens.size() != 4)
+							throw new IllegalArgumentException("Too many arguments!");
+					}
+				}
+			} else if (tokens.get(0).getType() == TokenType.STRING) {
+				file = tokens.get(0).getValue();
+				if (tokens.size() == 2) {
+					if (tokens.get(1).getType() == TokenType.EOF) {
+						charset = "";
+						return;
+					} else {
+						throw new IllegalArgumentException("Exception in parser");
+					}
+				} else if (tokens.size() == 3) {
+					if (tokens.get(1).getType() == TokenType.STRING) {
+						charset = tokens.get(1).getValue();
+						if (tokens.get(2).getType() == TokenType.EOF) {
+							return;
+						} else {
+							throw new IllegalArgumentException("Exception in parser");
+						}
+					}
+				} else {
+					throw new IllegalArgumentException("Invalid number of arguments!");
+				}
+			} else {
+				throw new IllegalArgumentException("There were no arguments");
+			}
 		}
 	}
 }

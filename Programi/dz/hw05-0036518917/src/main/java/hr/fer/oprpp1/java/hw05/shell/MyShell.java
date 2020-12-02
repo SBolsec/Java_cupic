@@ -42,6 +42,11 @@ public class MyShell {
 		
 	}
 	
+	/**
+	 * Extracts the command from user input
+	 * @param line user input
+	 * @return extracted command
+	 */
 	private static String extractCommandName(String line) {
 		int firstSpace = line.indexOf(" ");
 		
@@ -51,6 +56,11 @@ public class MyShell {
 			return line;
 	}
 	
+	/**
+	 * Extracts the command arguments from user input
+	 * @param line user input
+	 * @return extracted command arguments
+	 */
 	private static String extractArguments(String line) {
 		int firstSpace = line.indexOf(" ");
 		
