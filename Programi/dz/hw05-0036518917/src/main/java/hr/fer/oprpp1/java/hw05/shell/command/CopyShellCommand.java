@@ -38,11 +38,14 @@ public class CopyShellCommand implements ShellCommand {
 	
 	static {
 		description = new ArrayList<>();
-		description.add("\t- this command expects two arguments: source file name and destination file name");
-		description.add("\t- works only with files");
-		description.add("\t- if the second path is a directory, source file will be copyied into that directory with the same name");
+		description.add("this command expects two arguments: source file name and destination file name");
+		description.add("works only with files");
+		description.add("if the second path is a directory, source file will be copyied into that directory with the same name");
 	}
 	
+	/**
+	 * Copies a file
+	 */
 	@Override
 	public ShellStatus executeCommand(Environment env, String arguments) {
 		try {

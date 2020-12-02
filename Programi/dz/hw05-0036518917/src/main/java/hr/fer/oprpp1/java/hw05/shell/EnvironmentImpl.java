@@ -61,13 +61,14 @@ public class EnvironmentImpl implements Environment {
 		String line = null;
 		
 		try {
-			line = sc.nextLine();
+			line = sc.nextLine().trim();
 			
 			// If there is a multi-line command
 			while (true) {
-				if (line.trim().charAt(line.length()-1) == getMorelinesSymbol()) {
+				if ((line.length() >= 2 && line.charAt(line.length()-1) == getMorelinesSymbol() 
+						&& Character.isWhitespace(line.charAt(line.length()-2))) || line.equals(String.format("%s", getMorelinesSymbol()))) {
 					write(String.format("%s ", getMultilineSymbol()));
-					line = line + " " + sc.nextLine();
+					line = line.substring(0, line.length()-1) + " " + sc.nextLine();
 				} else {
 					break;
 				}

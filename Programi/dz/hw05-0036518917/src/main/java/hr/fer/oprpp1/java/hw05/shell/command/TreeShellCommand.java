@@ -29,8 +29,8 @@ public class TreeShellCommand implements ShellCommand {
 	
 	static {
 		description = new ArrayList<>();
-		description.add("\t- this command expects a single argument: a directory name");
-		description.add("\t- prints content of directory as a tree");
+		description.add("this command expects a single argument: a directory name");
+		description.add("prints content of directory as a tree");
 	}
 	
 	@Override

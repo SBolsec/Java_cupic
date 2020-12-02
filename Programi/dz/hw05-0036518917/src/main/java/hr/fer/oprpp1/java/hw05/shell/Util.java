@@ -141,4 +141,35 @@ public class Util {
 		}
 		return path;
 	}
+	
+	/**
+	 * Returns file from arguments if it is the only argument or null
+	 * @param arguments input text
+	 * @param env shell environment
+	 * @return directory path or null
+	 */
+	public static Path getFilePath(String arguments, Environment env) {
+		Path path = getPath(arguments, env);
+		
+		if (path == null)
+			return null;
+		
+		try {
+			if (!Files.exists(path)) {
+				env.writeln("Given path does not exist!");
+				return null;
+			}
+			if (!Files.isReadable(path)) {
+				env.writeln("Given path is not readable");
+				return null;
+			}
+			if (!Files.isRegularFile(path)) {
+				env.writeln("Given path is not a regular file!");
+				return null;
+			}
+		} catch (ShellIOException e) {
+			// do nothing
+		}
+		return path;
+	}
 }

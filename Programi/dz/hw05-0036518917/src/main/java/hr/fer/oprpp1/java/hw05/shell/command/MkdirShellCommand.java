@@ -26,8 +26,8 @@ public class MkdirShellCommand implements ShellCommand {
 	
 	static {
 		description = new ArrayList<>();
-		description.add("\t- takes a single argument: a directory name");
-		description.add("\t- creates the appropriate directory structure");
+		description.add("takes a single argument: a directory name");
+		description.add("creates the appropriate directory structure");
 	}
 	
 	/**
