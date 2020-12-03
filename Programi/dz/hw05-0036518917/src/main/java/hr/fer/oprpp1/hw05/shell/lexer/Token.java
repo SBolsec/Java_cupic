@@ -1,4 +1,4 @@
-package hr.fer.oprpp1.java.hw05.shell.lexer;
+package hr.fer.oprpp1.hw05.shell.lexer;
 
 /**
  * Token that the lexer produces

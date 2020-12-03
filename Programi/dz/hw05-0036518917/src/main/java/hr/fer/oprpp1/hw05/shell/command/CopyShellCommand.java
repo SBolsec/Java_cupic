@@ -1,4 +1,4 @@
-package hr.fer.oprpp1.java.hw05.shell.command;
+package hr.fer.oprpp1.hw05.shell.command;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -11,14 +11,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import hr.fer.oprpp1.java.hw05.shell.Environment;
-import hr.fer.oprpp1.java.hw05.shell.ShellIOException;
-import hr.fer.oprpp1.java.hw05.shell.ShellStatus;
-import hr.fer.oprpp1.java.hw05.shell.Util;
-import hr.fer.oprpp1.java.hw05.shell.lexer.Lexer;
-import hr.fer.oprpp1.java.hw05.shell.lexer.LexerState;
-import hr.fer.oprpp1.java.hw05.shell.lexer.Token;
-import hr.fer.oprpp1.java.hw05.shell.lexer.TokenType;
+import hr.fer.oprpp1.hw05.shell.Environment;
+import hr.fer.oprpp1.hw05.shell.ShellIOException;
+import hr.fer.oprpp1.hw05.shell.ShellStatus;
+import hr.fer.oprpp1.hw05.shell.Util;
+import hr.fer.oprpp1.hw05.shell.lexer.Lexer;
+import hr.fer.oprpp1.hw05.shell.lexer.LexerState;
+import hr.fer.oprpp1.hw05.shell.lexer.Token;
+import hr.fer.oprpp1.hw05.shell.lexer.TokenType;
 
 /**
  * Command that copies a file
@@ -100,7 +100,7 @@ public class CopyShellCommand implements ShellCommand {
 		// Check output path
 		if (Files.exists(second)) {
 			if (Files.isDirectory(second)) {
-				second = second.resolve(first.getName(first.getNameCount() - 1));
+				second = second.resolve(first.getFileName());
 			}
 			if (Files.isRegularFile(second)) {
 				if (!Files.isWritable(second)) {
@@ -125,14 +125,15 @@ public class CopyShellCommand implements ShellCommand {
 				} catch (ShellIOException e) {
 					return ShellStatus.CONTINUE;
 				}
-			} else {
-				try {
-					env.writeln("Can not write to output path!");
-					return ShellStatus.CONTINUE;
-				} catch (ShellIOException e) {
-					return ShellStatus.CONTINUE;
-				}
 			}
+//			else {
+//				try {
+//					env.writeln("Can not write to output path!");
+//					return ShellStatus.CONTINUE;
+//				} catch (ShellIOException e) {
+//					return ShellStatus.CONTINUE;
+//				}
+//			}
 		}
 		
 		// Actual copying

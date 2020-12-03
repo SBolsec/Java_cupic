@@ -1,8 +1,8 @@
-package hr.fer.oprpp1.java.hw05.shell;
+package hr.fer.oprpp1.hw05.shell;
 
 import java.util.SortedMap;
 
-import hr.fer.oprpp1.java.hw05.shell.command.ShellCommand;
+import hr.fer.oprpp1.hw05.shell.command.ShellCommand;
 
 /**
  * This interface handles the input/output functions of the shell, stores

@@ -1,4 +1,4 @@
-package hr.fer.oprpp1.java.hw05.shell.command;
+package hr.fer.oprpp1.hw05.shell.command;
 
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
@@ -13,9 +13,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
 
-import hr.fer.oprpp1.java.hw05.shell.Environment;
-import hr.fer.oprpp1.java.hw05.shell.ShellStatus;
-import hr.fer.oprpp1.java.hw05.shell.Util;
+import hr.fer.oprpp1.hw05.shell.Environment;
+import hr.fer.oprpp1.hw05.shell.ShellStatus;
+import hr.fer.oprpp1.hw05.shell.Util;
 
 /**
  * Command which prints the contents of a directory (not recursive)

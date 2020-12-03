@@ -102,7 +102,7 @@ public class Crypto {
 		byte[] result = sha.digest();
 		String res = Util.bytetohex(result);
 		
-		if (digest.equals(res)) {
+		if (digest.equalsIgnoreCase(res)) {
 			System.out.println("Digesting completed. Digest of " + path.getFileName() 
 				+ " matches expected digest.");
 		} else {

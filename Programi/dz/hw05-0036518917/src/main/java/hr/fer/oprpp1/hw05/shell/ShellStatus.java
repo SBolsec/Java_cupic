@@ -1,4 +1,4 @@
-package hr.fer.oprpp1.java.hw05.shell;
+package hr.fer.oprpp1.hw05.shell;
 
 /**
  * Shell statuses that commands can return indicating what should

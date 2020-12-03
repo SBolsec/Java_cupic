@@ -1,4 +1,4 @@
-package hr.fer.oprpp1.java.hw05.shell.command;
+package hr.fer.oprpp1.hw05.shell.command;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -10,10 +10,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import hr.fer.oprpp1.java.hw05.shell.Environment;
-import hr.fer.oprpp1.java.hw05.shell.ShellIOException;
-import hr.fer.oprpp1.java.hw05.shell.ShellStatus;
-import hr.fer.oprpp1.java.hw05.shell.Util;
+import hr.fer.oprpp1.hw05.shell.Environment;
+import hr.fer.oprpp1.hw05.shell.ShellIOException;
+import hr.fer.oprpp1.hw05.shell.ShellStatus;
+import hr.fer.oprpp1.hw05.shell.Util;
 
 /**
  * Command that prints a hex-dump of a file
@@ -29,6 +29,8 @@ public class HexdumpShellCommand implements ShellCommand {
 	
 	static {
 		description = new ArrayList<>();
+		description.add("this command takes a single argument: a file name");
+		description.add("produces hex-output of the content of the file");
 	}
 	
 	/**
@@ -58,7 +60,7 @@ public class HexdumpShellCommand implements ShellCommand {
 				for (i = 0; i < Math.min(size, neded); i++) {
 					res[start + i] = buff[i];
 				}
-				int end = i - 1;
+				int end = i;
 				used += i;
 				
 				if (used == 16) {

@@ -1,4 +1,4 @@
-package hr.fer.oprpp1.java.hw05.shell;
+package hr.fer.oprpp1.hw05.shell;
 
 /**
  * Exception for when there is an input/output

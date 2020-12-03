@@ -1,4 +1,4 @@
-package hr.fer.oprpp1.java.hw05.shell.command;
+package hr.fer.oprpp1.hw05.shell.command;
 
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
@@ -10,10 +10,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import hr.fer.oprpp1.java.hw05.shell.Environment;
-import hr.fer.oprpp1.java.hw05.shell.ShellIOException;
-import hr.fer.oprpp1.java.hw05.shell.ShellStatus;
-import hr.fer.oprpp1.java.hw05.shell.Util;
+import hr.fer.oprpp1.hw05.shell.Environment;
+import hr.fer.oprpp1.hw05.shell.ShellIOException;
+import hr.fer.oprpp1.hw05.shell.ShellStatus;
+import hr.fer.oprpp1.hw05.shell.Util;
 
 /**
  * Command that creates a tree of all the content inside a directory (recursive)
@@ -75,15 +75,18 @@ public class TreeShellCommand implements ShellCommand {
 		
 		public MyFileVisitor(Environment env, Path root) {
 			this.env = env;
-			level = 1;
-			
-			env.writeln(root.getFileName().toString());
+			level = 0;
 		}
 		
 		@Override
 		public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-			env.write(" ".repeat(level*2));
-			env.writeln(dir.getName(dir.getNameCount()-1).toString());
+			try {
+				String dirName = dir.getName(dir.getNameCount()-1).toString();
+				env.write(" ".repeat(level*2) + "");
+				env.writeln(dirName);
+			} catch (Exception e) {
+				
+			}
 			level++;
 			
 			return FileVisitResult.CONTINUE;
@@ -91,7 +94,7 @@ public class TreeShellCommand implements ShellCommand {
 
 		@Override
 		public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-			env.write(" ".repeat(level*2));
+			env.write(" ".repeat(level*2) + "| ");
 			env.writeln(file.getName(file.getNameCount()-1).toString());
 			
 			return FileVisitResult.CONTINUE;

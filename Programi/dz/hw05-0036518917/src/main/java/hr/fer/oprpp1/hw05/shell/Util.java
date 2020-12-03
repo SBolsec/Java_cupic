@@ -1,14 +1,14 @@
-package hr.fer.oprpp1.java.hw05.shell;
+package hr.fer.oprpp1.hw05.shell;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import hr.fer.oprpp1.java.hw05.shell.lexer.Lexer;
-import hr.fer.oprpp1.java.hw05.shell.lexer.LexerState;
-import hr.fer.oprpp1.java.hw05.shell.lexer.Token;
-import hr.fer.oprpp1.java.hw05.shell.lexer.TokenType;
+import hr.fer.oprpp1.hw05.shell.lexer.Lexer;
+import hr.fer.oprpp1.hw05.shell.lexer.LexerState;
+import hr.fer.oprpp1.hw05.shell.lexer.Token;
+import hr.fer.oprpp1.hw05.shell.lexer.TokenType;
 
 /**
  * Helper functions for shell commands
@@ -83,12 +83,7 @@ public class Util {
 		}
 		
 		if (name == null) {
-			try {
-				env.writeln("No path was provided!");
-				return null;
-			} catch (ShellIOException ex) {
-				return null;
-			}
+			return null;
 		}
 		return Path.of(name);
 	}

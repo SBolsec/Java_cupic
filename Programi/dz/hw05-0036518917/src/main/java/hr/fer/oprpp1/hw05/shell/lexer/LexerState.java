@@ -1,4 +1,4 @@
-package hr.fer.oprpp1.java.hw05.shell.lexer;
+package hr.fer.oprpp1.hw05.shell.lexer;
 
 /**
  * Enumeration of all the states of lexer

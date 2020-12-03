@@ -1,4 +1,4 @@
-package hr.fer.oprpp1.java.hw05.shell.command;
+package hr.fer.oprpp1.hw05.shell.command;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import hr.fer.oprpp1.java.hw05.shell.Environment;
-import hr.fer.oprpp1.java.hw05.shell.ShellIOException;
-import hr.fer.oprpp1.java.hw05.shell.ShellStatus;
-import hr.fer.oprpp1.java.hw05.shell.Util;
+import hr.fer.oprpp1.hw05.shell.Environment;
+import hr.fer.oprpp1.hw05.shell.ShellIOException;
+import hr.fer.oprpp1.hw05.shell.ShellStatus;
+import hr.fer.oprpp1.hw05.shell.Util;
 
 /**
  * Command that creates directory structure

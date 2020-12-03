@@ -1,21 +1,21 @@
-package hr.fer.oprpp1.java.hw05.shell;
+package hr.fer.oprpp1.hw05.shell;
 
 import java.util.Collections;
 import java.util.Scanner;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import hr.fer.oprpp1.java.hw05.shell.command.CatShellCommand;
-import hr.fer.oprpp1.java.hw05.shell.command.CharsetsShellCommand;
-import hr.fer.oprpp1.java.hw05.shell.command.CopyShellCommand;
-import hr.fer.oprpp1.java.hw05.shell.command.ExitShellCommand;
-import hr.fer.oprpp1.java.hw05.shell.command.HelpShellCommand;
-import hr.fer.oprpp1.java.hw05.shell.command.HexdumpShellCommand;
-import hr.fer.oprpp1.java.hw05.shell.command.LsShellCommand;
-import hr.fer.oprpp1.java.hw05.shell.command.MkdirShellCommand;
-import hr.fer.oprpp1.java.hw05.shell.command.ShellCommand;
-import hr.fer.oprpp1.java.hw05.shell.command.SymbolShellCommand;
-import hr.fer.oprpp1.java.hw05.shell.command.TreeShellCommand;
+import hr.fer.oprpp1.hw05.shell.command.CatShellCommand;
+import hr.fer.oprpp1.hw05.shell.command.CharsetsShellCommand;
+import hr.fer.oprpp1.hw05.shell.command.CopyShellCommand;
+import hr.fer.oprpp1.hw05.shell.command.ExitShellCommand;
+import hr.fer.oprpp1.hw05.shell.command.HelpShellCommand;
+import hr.fer.oprpp1.hw05.shell.command.HexdumpShellCommand;
+import hr.fer.oprpp1.hw05.shell.command.LsShellCommand;
+import hr.fer.oprpp1.hw05.shell.command.MkdirShellCommand;
+import hr.fer.oprpp1.hw05.shell.command.ShellCommand;
+import hr.fer.oprpp1.hw05.shell.command.SymbolShellCommand;
+import hr.fer.oprpp1.hw05.shell.command.TreeShellCommand;
 
 /**
  * Implementation of the <code>Environment</code> interface.

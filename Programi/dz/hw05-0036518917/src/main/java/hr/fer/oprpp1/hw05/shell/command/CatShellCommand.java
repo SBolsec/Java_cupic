@@ -1,5 +1,8 @@
-package hr.fer.oprpp1.java.hw05.shell.command;
+package hr.fer.oprpp1.hw05.shell.command;
 
+import java.io.FileInputStream;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -7,13 +10,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import hr.fer.oprpp1.java.hw05.shell.Environment;
-import hr.fer.oprpp1.java.hw05.shell.ShellIOException;
-import hr.fer.oprpp1.java.hw05.shell.ShellStatus;
-import hr.fer.oprpp1.java.hw05.shell.lexer.Lexer;
-import hr.fer.oprpp1.java.hw05.shell.lexer.LexerState;
-import hr.fer.oprpp1.java.hw05.shell.lexer.Token;
-import hr.fer.oprpp1.java.hw05.shell.lexer.TokenType;
+import hr.fer.oprpp1.hw05.shell.Environment;
+import hr.fer.oprpp1.hw05.shell.ShellIOException;
+import hr.fer.oprpp1.hw05.shell.ShellStatus;
+import hr.fer.oprpp1.hw05.shell.lexer.Lexer;
+import hr.fer.oprpp1.hw05.shell.lexer.LexerState;
+import hr.fer.oprpp1.hw05.shell.lexer.Token;
+import hr.fer.oprpp1.hw05.shell.lexer.TokenType;
 
 /**
  * Command which opens given file and writes its content to console
@@ -85,12 +88,25 @@ public class CatShellCommand implements ShellCommand {
 			}
 		}
 		
-		try {
-			List<String> lines = Files.readAllLines(path, charset);
-			lines.forEach(s -> env.writeln(s));
-		} catch (Exception e) {
-			// do nothing
-		}
+		
+		 try (FileInputStream fis = new FileInputStream(fileName);) {
+		        byte[] buff = new byte[2048];
+
+		        int amtRead = fis.read(buff);
+		        while (amtRead > 0) {
+		        	ByteBuffer buffer = ByteBuffer.wrap(buff);
+		        	CharBuffer chars = charset.decode(buffer);
+		        	env.write(chars.toString());
+		            amtRead = fis.read(buff);
+		        }
+		        env.writeln("");
+		    } catch (Exception e) {
+		        try {
+		        	env.writeln("There was an error while reading file!");
+		        } catch (Exception ex) {
+		            // do nothing
+		        }
+		    }
 		
 		return ShellStatus.CONTINUE;
 	}

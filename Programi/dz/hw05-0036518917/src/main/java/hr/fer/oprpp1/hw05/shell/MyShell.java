@@ -1,6 +1,6 @@
-package hr.fer.oprpp1.java.hw05.shell;
+package hr.fer.oprpp1.hw05.shell;
 
-import hr.fer.oprpp1.java.hw05.shell.command.ShellCommand;
+import hr.fer.oprpp1.hw05.shell.command.ShellCommand;
 
 /**
  * Basic shell

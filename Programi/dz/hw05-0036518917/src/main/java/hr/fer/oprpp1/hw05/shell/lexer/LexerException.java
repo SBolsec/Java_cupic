@@ -1,4 +1,4 @@
-package hr.fer.oprpp1.java.hw05.shell.lexer;
+package hr.fer.oprpp1.hw05.shell.lexer;
 
 /**
  * Exception which is thrown when there is a problem in the lexer for "smart script"
