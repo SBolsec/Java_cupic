@@ -12,9 +12,8 @@ import java.util.Collections;
 import java.util.List;
 
 import hr.fer.oprpp1.hw05.shell.Environment;
-import hr.fer.oprpp1.hw05.shell.ShellIOException;
 import hr.fer.oprpp1.hw05.shell.ShellStatus;
-import hr.fer.oprpp1.hw05.shell.Util;
+import hr.fer.oprpp1.hw05.shell.ShellUtil;
 import hr.fer.oprpp1.hw05.shell.lexer.Lexer;
 import hr.fer.oprpp1.hw05.shell.lexer.LexerState;
 import hr.fer.oprpp1.hw05.shell.lexer.Token;
@@ -51,49 +50,33 @@ public class CopyShellCommand implements ShellCommand {
 		try {
 			parsePaths(arguments);
 		} catch (Exception e) {
-			try {
-				env.writeln(e.getMessage());
-				return ShellStatus.CONTINUE;
-			} catch(ShellIOException ex) {
-				return ShellStatus.CONTINUE;
-			}
+			env.writeln(e.getMessage());
+			return ShellStatus.CONTINUE;
 		}
 		
-		Path first = Util.getPathFromString(input, env);
-		Path second = Util.getPathFromString(output, env);
+		Path first = ShellUtil.getPathFromString(input, env);
+		Path second = ShellUtil.getPathFromString(output, env);
 		
 		if (first == null) {
-			try {
-				env.writeln("Input path invalid!");
-				return null;
-			} catch (ShellIOException ex) {
-				return null;
-			}
+			env.writeln("Input path invalid!");
+			return null;
 		}
 		if (second == null) {
-			try {
-				env.writeln("Output path invalid!");
-				return null;
-			} catch (ShellIOException ex) {
-				return null;
-			}
+			env.writeln("Output path invalid!");
+			return null;
 		}
 		
 		// Check input path
-		try {
-			if (!Files.exists(first)) {
-				env.writeln("Source file does not exist!");
-				return ShellStatus.CONTINUE;
-			}
-			if (!Files.isReadable(first)) {
-				env.writeln("Source file is not readable!");
-				return ShellStatus.CONTINUE;
-			}
-			if (!Files.isRegularFile(first)) {
-				env.writeln("Source file is not a regular file!");
-				return ShellStatus.CONTINUE;
-			}
-		} catch (ShellIOException e) {
+		if (!Files.exists(first)) {
+			env.writeln("Source file does not exist!");
+			return ShellStatus.CONTINUE;
+		}
+		if (!Files.isReadable(first)) {
+			env.writeln("Source file is not readable!");
+			return ShellStatus.CONTINUE;
+		}
+		if (!Files.isRegularFile(first)) {
+			env.writeln("Source file is not a regular file!");
 			return ShellStatus.CONTINUE;
 		}
 		
@@ -104,36 +87,19 @@ public class CopyShellCommand implements ShellCommand {
 			}
 			if (Files.isRegularFile(second)) {
 				if (!Files.isWritable(second)) {
-					try {
-						env.writeln("Output file already exists and can not be overwritten!");
-						return ShellStatus.CONTINUE;
-					} catch (ShellIOException e) {
-						return ShellStatus.CONTINUE;
-					}
-				}
-				try {
-					env.write("Do you want to overwrite the existing file? [y/n] > ");
-					String response = env.readLine();
-					if (!response.equalsIgnoreCase("y")) {
-						try {
-							env.writeln("Copying canceled!");
-							return ShellStatus.CONTINUE;
-						} catch (ShellIOException e) {
-							return ShellStatus.CONTINUE;
-						}
-					}
-				} catch (ShellIOException e) {
+					env.writeln("Output file already exists and can not be overwritten!");
 					return ShellStatus.CONTINUE;
 				}
+				String response = null;
+				do {
+					env.write("Do you want to overwrite the existing file? [y/n] > ");
+					response = env.readLine();
+					if (response.equalsIgnoreCase("n")) {
+						env.writeln("Copying canceled!");
+						return ShellStatus.CONTINUE;
+					}
+				} while (!response.equalsIgnoreCase("y") && !response.equalsIgnoreCase("n"));
 			}
-//			else {
-//				try {
-//					env.writeln("Can not write to output path!");
-//					return ShellStatus.CONTINUE;
-//				} catch (ShellIOException e) {
-//					return ShellStatus.CONTINUE;
-//				}
-//			}
 		}
 		
 		// Actual copying
@@ -151,12 +117,8 @@ public class CopyShellCommand implements ShellCommand {
 				os.flush();
 			}
 		} catch (IOException e) {
-			try {
-				env.writeln("There was an error while copying!");
-				return ShellStatus.CONTINUE;
-			} catch (ShellIOException ex) {
-				return ShellStatus.CONTINUE;
-			}
+			env.writeln("There was an error while copying!");
+			return ShellStatus.CONTINUE;
 		}
 
 		return ShellStatus.CONTINUE;

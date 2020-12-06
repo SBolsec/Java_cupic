@@ -10,7 +10,7 @@ import java.util.List;
 import hr.fer.oprpp1.hw05.shell.Environment;
 import hr.fer.oprpp1.hw05.shell.ShellIOException;
 import hr.fer.oprpp1.hw05.shell.ShellStatus;
-import hr.fer.oprpp1.hw05.shell.Util;
+import hr.fer.oprpp1.hw05.shell.ShellUtil;
 
 /**
  * Command that creates directory structure
@@ -35,7 +35,7 @@ public class MkdirShellCommand implements ShellCommand {
 	 */
 	@Override
 	public ShellStatus executeCommand(Environment env, String arguments) {
-		Path path = Util.getPath(arguments, env);
+		Path path = ShellUtil.getPath(arguments, env);
 		
 		if (path == null)
 			return ShellStatus.CONTINUE;

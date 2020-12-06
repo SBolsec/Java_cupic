@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 
 import hr.fer.oprpp1.hw05.shell.Environment;
 import hr.fer.oprpp1.hw05.shell.ShellStatus;
-import hr.fer.oprpp1.hw05.shell.Util;
+import hr.fer.oprpp1.hw05.shell.ShellUtil;
 
 /**
  * Command which prints the contents of a directory (not recursive)
@@ -39,7 +39,7 @@ public class LsShellCommand implements ShellCommand {
 	 */
 	@Override
 	public ShellStatus executeCommand(Environment env, String arguments) {
-		Path path = Util.getDirectoryPath(arguments, env);
+		Path path = ShellUtil.getDirectoryPath(arguments, env);
 		if (path == null) 
 			return ShellStatus.CONTINUE;
 		

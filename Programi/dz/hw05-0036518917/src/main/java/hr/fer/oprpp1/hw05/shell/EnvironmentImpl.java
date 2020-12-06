@@ -102,7 +102,15 @@ public class EnvironmentImpl implements Environment {
 
 	@Override
 	public void setMultilineSymbol(Character symbol) {
-		this.multilineSymbol = symbol;
+		if (symbol == null) {
+			try {
+				this.writeln("Multi line symbol can't be null!");
+			} catch (ShellIOException e) {
+				// do nothing
+			}
+		} else {
+			this.multilineSymbol = symbol;
+		}
 	}
 
 	@Override
@@ -112,7 +120,15 @@ public class EnvironmentImpl implements Environment {
 
 	@Override
 	public void setPromptSymbol(Character symbol) {
-		this.promptSymbol = symbol;
+		if (symbol == null) {
+			try {
+				this.writeln("Prompt symbol can't be null!");
+			} catch (ShellIOException e) {
+				// do nothing
+			}
+		} else {
+			this.promptSymbol = symbol;
+		}
 	}
 
 	@Override
@@ -122,6 +138,14 @@ public class EnvironmentImpl implements Environment {
 
 	@Override
 	public void setMorelinesSymbol(Character symbol) {
-		this.morelinesSymbol = symbol;
+		if (symbol == null) {
+			try {
+				this.writeln("More lines symbol can't be null!");
+			} catch (ShellIOException e) {
+				// do nothing
+			}
+		} else {
+			this.morelinesSymbol = symbol;
+		}
 	}
 }

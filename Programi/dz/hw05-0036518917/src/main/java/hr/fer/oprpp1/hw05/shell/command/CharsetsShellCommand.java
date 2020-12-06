@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.List;
 
 import hr.fer.oprpp1.hw05.shell.Environment;
-import hr.fer.oprpp1.hw05.shell.ShellIOException;
 import hr.fer.oprpp1.hw05.shell.ShellStatus;
 
 /**
@@ -29,23 +28,14 @@ public class CharsetsShellCommand implements ShellCommand {
 	/**
 	 * Writes the available charsets.
 	 */
-	@SuppressWarnings("unused")
 	@Override
 	public ShellStatus executeCommand(Environment env, String arguments) {
-		if (arguments.length() != 0) { 
-			try {
-				env.writeln("Command 'charsets' does not support any arguments!");
-				return ShellStatus.CONTINUE;
-			} catch (ShellIOException e) {
-				return ShellStatus.CONTINUE;
-			}
+		if (arguments.length() != 0) {
+			env.writeln("Command 'charsets' does not support any arguments!");
+			return ShellStatus.CONTINUE;
 		}
 		
-		try {
-			Charset.availableCharsets().forEach((s, c) -> env.writeln(s));
-		} catch (ShellIOException e) {
-			// do nothing
-		}
+		Charset.availableCharsets().forEach((s, c) -> env.writeln(s));
 		
 		return ShellStatus.CONTINUE;
 	}

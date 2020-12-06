@@ -59,20 +59,16 @@ public class CatShellCommand implements ShellCommand {
 		String charsetName = parser.charset;
 		
 		Path path = Path.of(fileName);
-		try {
-			if (!Files.exists(path)) {
-				env.writeln("Given path does not exist!");
-				return ShellStatus.CONTINUE;
-			}
-			if (!Files.isReadable(path)) {
-				env.writeln("Given path is not readable!");
-				return ShellStatus.CONTINUE;
-			}
-			if (!Files.isRegularFile(path)) {
-				env.writeln("Given path is not a regular file!");
-				return ShellStatus.CONTINUE;
-			}
-		} catch (ShellIOException e) {
+		if (!Files.exists(path)) {
+			env.writeln("Given path does not exist!");
+			return ShellStatus.CONTINUE;
+		}
+		if (!Files.isReadable(path)) {
+			env.writeln("Given path is not readable!");
+			return ShellStatus.CONTINUE;
+		}
+		if (!Files.isRegularFile(path)) {
+			env.writeln("Given path is not a regular file!");
 			return ShellStatus.CONTINUE;
 		}
 		
@@ -88,25 +84,21 @@ public class CatShellCommand implements ShellCommand {
 			}
 		}
 		
-		
-		 try (FileInputStream fis = new FileInputStream(fileName);) {
-		        byte[] buff = new byte[2048];
+		 try (FileInputStream fis = new FileInputStream(fileName)) {
+			 byte[] buff = new byte[2048];
 
-		        int amtRead = fis.read(buff);
-		        while (amtRead > 0) {
-		        	ByteBuffer buffer = ByteBuffer.wrap(buff);
-		        	CharBuffer chars = charset.decode(buffer);
-		        	env.write(chars.toString());
-		            amtRead = fis.read(buff);
-		        }
-		        env.writeln("");
-		    } catch (Exception e) {
-		        try {
-		        	env.writeln("There was an error while reading file!");
-		        } catch (Exception ex) {
-		            // do nothing
-		        }
-		    }
+		     int amtRead = fis.read(buff);
+		     while (amtRead > 0) {
+		      	ByteBuffer buffer = ByteBuffer.wrap(buff);
+		       	CharBuffer chars = charset.decode(buffer);
+		       	env.write(chars.toString());
+		        amtRead = fis.read(buff);
+		     }
+		     
+		     env.writeln("");
+		} catch (Exception e) {
+			env.writeln("There was an error while reading file!");
+		}
 		
 		return ShellStatus.CONTINUE;
 	}

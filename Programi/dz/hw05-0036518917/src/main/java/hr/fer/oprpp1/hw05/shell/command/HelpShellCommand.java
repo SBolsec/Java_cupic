@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 
 import hr.fer.oprpp1.hw05.shell.Environment;
-import hr.fer.oprpp1.hw05.shell.ShellIOException;
 import hr.fer.oprpp1.hw05.shell.ShellStatus;
 
 /**
@@ -33,22 +32,14 @@ public class HelpShellCommand implements ShellCommand {
 	@Override
 	public ShellStatus executeCommand(Environment env, String arguments) {
 		if (arguments.length() == 0) {
-			try {
-				env.commands().keySet().forEach(s -> env.writeln(s));
-			} catch (ShellIOException e) {
-				// do nothing
-			}
+			env.commands().keySet().forEach(s -> env.writeln(s));
 		} else {
 			ShellCommand command = env.commands().get(arguments);
-			try {
-				if (command == null) {
-					env.writeln("There is no command with the name " + arguments + ".");
-				} else {
-					env.writeln(command.getCommandName());
-					command.getCommandDescription().forEach(s -> env.writeln("\t- " + s));
-				}
-			} catch (ShellIOException e) {
-				// do nothing
+			if (command == null) {
+				env.writeln("There is no command with the name " + arguments + ".");
+			} else {
+				env.writeln(command.getCommandName());
+				command.getCommandDescription().forEach(s -> env.writeln("\t- " + s));
 			}
 		}
 		

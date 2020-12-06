@@ -15,7 +15,7 @@ import hr.fer.oprpp1.hw05.shell.lexer.TokenType;
  * @author sbolsec
  *
  */
-public class Util {
+public class ShellUtil {
 	
 	/**
 	 * Parses the path if it is the only argument, if there is no input
@@ -75,11 +75,7 @@ public class Util {
 		try {
 			name = parsePath(arguments);
 		} catch (IllegalArgumentException e) {
-			try {
-				env.writeln(e.getMessage());
-			} catch (ShellIOException ex) {
-				return null;
-			}
+			env.writeln(e.getMessage());
 		}
 		
 		if (name == null) {
@@ -96,12 +92,8 @@ public class Util {
 	 */
 	public static Path getPathFromString(String name, Environment env) {
 		if (name == null) {
-			try {
-				env.writeln("No path was provided!");
-				return null;
-			} catch (ShellIOException ex) {
-				return null;
-			}
+			env.writeln("No path was provided!");
+			return null;
 		}
 		return Path.of(name);
 	}
@@ -118,22 +110,19 @@ public class Util {
 		if (path == null)
 			return null;
 		
-		try {
-			if (!Files.exists(path)) {
-				env.writeln("Given path does not exist!");
-				return null;
-			}
-			if (!Files.isReadable(path)) {
-				env.writeln("Given path is not readable");
-				return null;
-			}
-			if (!Files.isDirectory(path)) {
-				env.writeln("Given path is not a directory!");
-				return null;
-			}
-		} catch (ShellIOException e) {
-			// do nothing
+		if (!Files.exists(path)) {
+			env.writeln("Given path does not exist!");
+			return null;
 		}
+		if (!Files.isReadable(path)) {
+			env.writeln("Given path is not readable");
+			return null;
+		}
+		if (!Files.isDirectory(path)) {
+			env.writeln("Given path is not a directory!");
+			return null;
+		}
+		
 		return path;
 	}
 	
@@ -149,22 +138,19 @@ public class Util {
 		if (path == null)
 			return null;
 		
-		try {
-			if (!Files.exists(path)) {
-				env.writeln("Given path does not exist!");
-				return null;
-			}
-			if (!Files.isReadable(path)) {
-				env.writeln("Given path is not readable");
-				return null;
-			}
-			if (!Files.isRegularFile(path)) {
-				env.writeln("Given path is not a regular file!");
-				return null;
-			}
-		} catch (ShellIOException e) {
-			// do nothing
+		if (!Files.exists(path)) {
+			env.writeln("Given path does not exist!");
+			return null;
 		}
+		if (!Files.isReadable(path)) {
+			env.writeln("Given path is not readable");
+			return null;
+		}
+		if (!Files.isRegularFile(path)) {
+			env.writeln("Given path is not a regular file!");
+			return null;
+		}
+		
 		return path;
 	}
 }

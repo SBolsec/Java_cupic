@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 
 import hr.fer.oprpp1.hw05.shell.Environment;
-import hr.fer.oprpp1.hw05.shell.ShellIOException;
 import hr.fer.oprpp1.hw05.shell.ShellStatus;
 import hr.fer.oprpp1.hw05.shell.lexer.Lexer;
 import hr.fer.oprpp1.hw05.shell.lexer.LexerState;
@@ -41,12 +40,8 @@ public class SymbolShellCommand implements ShellCommand {
 	@Override
 	public ShellStatus executeCommand(Environment env, String arguments) {
 		if (arguments == null) {
-			try {
-				env.writeln("There were no arguments");
-				return ShellStatus.CONTINUE;
-			} catch (ShellIOException e) {
-				return ShellStatus.CONTINUE;
-			}
+			env.writeln("There were no arguments");
+			return ShellStatus.CONTINUE;
 		}
 		
 		Lexer lexer = new Lexer(arguments);
@@ -67,63 +62,35 @@ public class SymbolShellCommand implements ShellCommand {
 		// i.e. symbol PROMPT
 		if (tokens.size() == 2) {
 			if (tokens.get(0).getType() != TokenType.STRING || tokens.get(1).getType() != TokenType.EOF) {
-				try {
-					env.writeln("Arguments invalid! Use 'help symbol' to see usage of this command!");
-					return ShellStatus.CONTINUE;
-				} catch (ShellIOException e) {
-					return ShellStatus.CONTINUE;
-				}
+				env.writeln("Arguments invalid! Use 'help symbol' to see usage of this command!");
+				return ShellStatus.CONTINUE;
 			}
 			switch (tokens.get(0).getValue()) {
 				case "PROMPT":
-					try {
-						env.writeln("Symbol for PROMPT is '" + env.getPromptSymbol() + "'");
-						return ShellStatus.CONTINUE;
-					} catch (ShellIOException e) {
-						return ShellStatus.CONTINUE;
-					}
+					env.writeln("Symbol for PROMPT is '" + env.getPromptSymbol() + "'");
+					return ShellStatus.CONTINUE;
 				case "MORELINES":
-					try {
-						env.writeln("Symbol for MORELINES is '" + env.getMorelinesSymbol() + "'");
-						return ShellStatus.CONTINUE;
-					} catch (ShellIOException e) {
-						return ShellStatus.CONTINUE;
-					}
+					env.writeln("Symbol for MORELINES is '" + env.getMorelinesSymbol() + "'");
+					return ShellStatus.CONTINUE;
 				case "MULTILINES":
-					try {
-						env.writeln("Symbol for MULTILINES is '" + env.getMultilineSymbol() + "'");
-						return ShellStatus.CONTINUE;
-					} catch (ShellIOException e) {
-						return ShellStatus.CONTINUE;
-					}
+					env.writeln("Symbol for MULTILINES is '" + env.getMultilineSymbol() + "'");
+					return ShellStatus.CONTINUE;
 				default:
-					try {
-						env.writeln("Unsupported argument, it was: " + tokens.get(0).getValue());
-						return ShellStatus.CONTINUE;
-					} catch (ShellIOException e) {
-						return ShellStatus.CONTINUE;
-					}
+					env.writeln("Unsupported argument, it was: " + tokens.get(0).getValue());
+					return ShellStatus.CONTINUE;
 			}
 		}
 		
 		// i.e. symbol PROMPT #
 		if (tokens.size() != 3) {
-			try {
-				env.writeln("Invalid number of arguments!");
-				return ShellStatus.CONTINUE;
-			} catch (ShellIOException e) {
-				return ShellStatus.CONTINUE;
-			}
+			env.writeln("Invalid number of arguments!");
+			return ShellStatus.CONTINUE;
 		}
 		
 		if (tokens.get(0).getType() != TokenType.STRING || tokens.get(1).getType() != TokenType.STRING
 				|| tokens.get(2).getType() != TokenType.EOF) {
-			try {
-				env.writeln("Arguments invalid! Use 'help symbol' to see usage of this command!");
-				return ShellStatus.CONTINUE;
-			} catch (ShellIOException e) {
-				return ShellStatus.CONTINUE;
-			}
+			env.writeln("Arguments invalid! Use 'help symbol' to see usage of this command!");
+			return ShellStatus.CONTINUE;
 		}
 		
 		char old;
@@ -131,37 +98,21 @@ public class SymbolShellCommand implements ShellCommand {
 			case "PROMPT":
 				old = env.getPromptSymbol();
 				env.setPromptSymbol(tokens.get(1).getValue().charAt(0));
-				try {
-					env.writeln("Symbol for PROMPT changed from '" + old + "' to '" + tokens.get(1).getValue().charAt(0) + "'");
-					return ShellStatus.CONTINUE;
-				} catch (ShellIOException e) {
-					return ShellStatus.CONTINUE;
-				}
+				env.writeln("Symbol for PROMPT changed from '" + old + "' to '" + tokens.get(1).getValue().charAt(0) + "'");
+				return ShellStatus.CONTINUE;
 			case "MORELINES":
 				env.setMorelinesSymbol(tokens.get(1).getValue().charAt(0));
-				try {
-					old = env.getMorelinesSymbol();
-					env.writeln("Symbol for PROMPT changed from '" + old + "' to '" + tokens.get(1).getValue().charAt(0) + "'");
-					return ShellStatus.CONTINUE;
-				} catch (ShellIOException e) {
-					return ShellStatus.CONTINUE;
-				}
+				old = env.getMorelinesSymbol();
+				env.writeln("Symbol for PROMPT changed from '" + old + "' to '" + tokens.get(1).getValue().charAt(0) + "'");
+				return ShellStatus.CONTINUE;
 			case "MULTILINES":
 				old = env.getMultilineSymbol();
 				env.setMultilineSymbol(tokens.get(1).getValue().charAt(0));
-				try {
-					env.writeln("Symbol for PROMPT changed from '" + old + "' to '" + tokens.get(1).getValue().charAt(0) + "'");
-					return ShellStatus.CONTINUE;
-				} catch (ShellIOException e) {
-					return ShellStatus.CONTINUE;
-				}
+				env.writeln("Symbol for PROMPT changed from '" + old + "' to '" + tokens.get(1).getValue().charAt(0) + "'");
+				return ShellStatus.CONTINUE;
 			default:
-				try {
-					env.writeln("Unsupported argument, it was: " + tokens.get(0).getValue());
-					return ShellStatus.CONTINUE;
-				} catch (ShellIOException e) {
-					return ShellStatus.CONTINUE;
-				}
+				env.writeln("Unsupported argument, it was: " + tokens.get(0).getValue());
+				return ShellStatus.CONTINUE;
 		}
 	}
 
@@ -174,5 +125,4 @@ public class SymbolShellCommand implements ShellCommand {
 	public List<String> getCommandDescription() {
 		return Collections.unmodifiableList(description);
 	}
-
 }

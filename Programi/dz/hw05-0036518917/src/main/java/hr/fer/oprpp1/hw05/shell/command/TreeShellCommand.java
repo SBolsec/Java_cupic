@@ -11,9 +11,8 @@ import java.util.Collections;
 import java.util.List;
 
 import hr.fer.oprpp1.hw05.shell.Environment;
-import hr.fer.oprpp1.hw05.shell.ShellIOException;
 import hr.fer.oprpp1.hw05.shell.ShellStatus;
-import hr.fer.oprpp1.hw05.shell.Util;
+import hr.fer.oprpp1.hw05.shell.ShellUtil;
 
 /**
  * Command that creates a tree of all the content inside a directory (recursive)
@@ -35,19 +34,15 @@ public class TreeShellCommand implements ShellCommand {
 	
 	@Override
 	public ShellStatus executeCommand(Environment env, String arguments) {
-		Path path = Util.getDirectoryPath(arguments, env);
+		Path path = ShellUtil.getDirectoryPath(arguments, env);
 		if (path == null) 
 			return ShellStatus.CONTINUE;
 		
 		try {
 			Files.walkFileTree(path, new MyFileVisitor(env, path));
 		} catch (Exception e) {
-			try {
-				env.writeln("There was an error while walking the file tree!");
-				return ShellStatus.CONTINUE;
-			} catch (ShellIOException ex) {
-				return ShellStatus.CONTINUE;
-			}
+			env.writeln("There was an error while walking the file tree!");
+			return ShellStatus.CONTINUE;
 		}
 		
 		return ShellStatus.CONTINUE;

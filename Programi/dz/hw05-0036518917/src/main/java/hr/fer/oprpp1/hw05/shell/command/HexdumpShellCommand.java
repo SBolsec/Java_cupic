@@ -10,10 +10,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import hr.fer.oprpp1.hw05.crypto.Util;
 import hr.fer.oprpp1.hw05.shell.Environment;
-import hr.fer.oprpp1.hw05.shell.ShellIOException;
 import hr.fer.oprpp1.hw05.shell.ShellStatus;
-import hr.fer.oprpp1.hw05.shell.Util;
+import hr.fer.oprpp1.hw05.shell.ShellUtil;
 
 /**
  * Command that prints a hex-dump of a file
@@ -38,7 +38,7 @@ public class HexdumpShellCommand implements ShellCommand {
 	 */
 	@Override
 	public ShellStatus executeCommand(Environment env, String arguments) {
-		Path path = Util.getFilePath(arguments, env);
+		Path path = ShellUtil.getFilePath(arguments, env);
 		if (path == null) 
 			return ShellStatus.CONTINUE;
 		
@@ -80,12 +80,8 @@ public class HexdumpShellCommand implements ShellCommand {
 				}
 			}
 		} catch (IOException e) {
-			try {
-				env.writeln("There was an error while copying!");
-				return ShellStatus.CONTINUE;
-			} catch (ShellIOException ex) {
-				return ShellStatus.CONTINUE;
-			}
+			env.writeln("There was an error while copying!");
+			return ShellStatus.CONTINUE;
 		}
 		
 		return ShellStatus.CONTINUE;
@@ -102,45 +98,40 @@ public class HexdumpShellCommand implements ShellCommand {
 	}
 
 	private void printLine(byte[] array, int line, int size, Environment env) {
-		try {
-			byte[] a = BigInteger.valueOf(line).toByteArray();
-			String hexLine = hr.fer.oprpp1.hw05.crypto.Util.bytetohex(a);
-			env.write(String.format("%s%s: ", "0".repeat(8-(a.length*2)), hexLine));
+		byte[] a = BigInteger.valueOf(line).toByteArray();
+		String hexLine = Util.bytetohex(a);
+		env.write(String.format("%s%s: ", "0".repeat(8-(a.length*2)), hexLine));
 			
-			//env.write("000" + line + ": ");
-			String hex = hr.fer.oprpp1.hw05.crypto.Util.bytetohex(array);
-			
-			int i;
-			for (i = 0; i < size; i++) {
-				env.write(hex.substring(i, Math.min(i+2, hex.length()-1)));
-				if (i == 7) {
+		String hex = Util.bytetohex(array);
+		
+		int i;
+		for (i = 0; i < size; i++) {
+			env.write(hex.substring(i, Math.min(i+2, hex.length()-1)));
+			if (i == 7) {
+				env.write("|");
+			} else {
+				env.write(" ");
+			}
+		}
+		if (i != 16) {
+			for (int j = i; j < 16; j++) {
+				env.write("  ");
+				if (j == 7) {
 					env.write("|");
 				} else {
 					env.write(" ");
 				}
 			}
-			if (i != 16) {
-				for (int j = i; j < 16; j++) {
-					env.write("  ");
-					if (j == 7) {
-						env.write("|");
-					} else {
-						env.write(" ");
-					}
-				}
-			}
-			
-			env.write("| ");
-			
-			for (i = 0; i < size; i++) {
-				env.write(String.format("%s", replaceChar(array[i])));
-			}
-			
-			env.writeln("");
-			
-		} catch (ShellIOException e) {
-			// do nothing
 		}
+		
+		env.write("| ");
+		
+		for (i = 0; i < size; i++) {
+			env.write(String.format("%s", replaceChar(array[i])));
+		}
+		
+		env.writeln("");
+		
 	}
 	
 	private char replaceChar(byte b) {
