@@ -45,9 +45,8 @@ public class LsShellCommand implements ShellCommand {
 		
 		try {
 			try (Stream<Path> stream = Files.list(path)) {
-				stream
-					.sorted((a,b) -> a.getFileName().compareTo(b.getFileName()))
-					.forEach(s -> printLine(s, env));
+				stream.sorted((a,b) -> a.getFileName().compareTo(b.getFileName()))
+					  .forEach(s -> printLine(s, env));
 			}
 		} catch (Exception e) {
 			// do nothing

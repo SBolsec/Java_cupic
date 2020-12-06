@@ -11,7 +11,6 @@ import java.util.Collections;
 import java.util.List;
 
 import hr.fer.oprpp1.hw05.shell.Environment;
-import hr.fer.oprpp1.hw05.shell.ShellIOException;
 import hr.fer.oprpp1.hw05.shell.ShellStatus;
 import hr.fer.oprpp1.hw05.shell.lexer.Lexer;
 import hr.fer.oprpp1.hw05.shell.lexer.LexerState;
@@ -48,11 +47,7 @@ public class CatShellCommand implements ShellCommand {
 		try {
 			parser = new ArgumentParser(arguments);
 		} catch (Exception e) {
-			try {
-				env.writeln(e.getMessage());
-			} catch (ShellIOException ex) {
-				// do nothing
-			}
+			env.writeln(e.getMessage());
 			return ShellStatus.CONTINUE;
 		}
 		String fileName = parser.file;
