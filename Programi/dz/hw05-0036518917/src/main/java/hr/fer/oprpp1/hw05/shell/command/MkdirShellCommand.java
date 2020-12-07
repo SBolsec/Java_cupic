@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.List;
 
 import hr.fer.oprpp1.hw05.shell.Environment;
-import hr.fer.oprpp1.hw05.shell.ShellIOException;
 import hr.fer.oprpp1.hw05.shell.ShellStatus;
 import hr.fer.oprpp1.hw05.shell.ShellUtil;
 
@@ -43,12 +42,8 @@ public class MkdirShellCommand implements ShellCommand {
 		try {
 			Files.createDirectories(path);
 		} catch (IOException e) {
-			try {
-				env.writeln("Directory was not succesfully created!");
-				return ShellStatus.CONTINUE;
-			} catch (ShellIOException ex) {
-				return ShellStatus.CONTINUE;
-			}
+			env.writeln("Directory was not succesfully created!");
+			return ShellStatus.CONTINUE;
 		}
 		
 		return ShellStatus.CONTINUE;

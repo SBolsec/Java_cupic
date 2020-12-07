@@ -3,6 +3,7 @@ package hr.fer.oprpp1.hw05.shell.command;
 import java.util.List;
 
 import hr.fer.oprpp1.hw05.shell.Environment;
+import hr.fer.oprpp1.hw05.shell.ShellIOException;
 import hr.fer.oprpp1.hw05.shell.ShellStatus;
 
 /**
@@ -17,6 +18,7 @@ public interface ShellCommand {
 	 * @param env shell environment
 	 * @param arguments command arguments
 	 * @return shell status
+	 * @throws ShellIOException if there was an error with input/output
 	 */
 	ShellStatus executeCommand(Environment env, String arguments);
 	
