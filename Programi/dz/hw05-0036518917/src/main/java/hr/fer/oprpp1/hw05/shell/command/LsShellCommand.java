@@ -41,7 +41,7 @@ public class LsShellCommand implements ShellCommand {
 	public ShellStatus executeCommand(Environment env, String arguments) {
 		Path path = ShellUtil.getDirectoryPath(arguments, env);
 		if (path == null) 
-			return ShellStatus.CONTINUE;
+			path = Path.of(".");
 		
 		try {
 			try (Stream<Path> stream = Files.list(path)) {
@@ -49,7 +49,7 @@ public class LsShellCommand implements ShellCommand {
 					  .forEach(s -> printLine(s, env));
 			}
 		} catch (Exception e) {
-			// do nothing
+			env.writeln("There was an error!");
 		}
 		
 		return ShellStatus.CONTINUE;

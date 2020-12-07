@@ -36,7 +36,7 @@ public class TreeShellCommand implements ShellCommand {
 	public ShellStatus executeCommand(Environment env, String arguments) {
 		Path path = ShellUtil.getDirectoryPath(arguments, env);
 		if (path == null) 
-			return ShellStatus.CONTINUE;
+			path = Path.of(".");
 		
 		try {
 			Files.walkFileTree(path, new MyFileVisitor(env, path));
