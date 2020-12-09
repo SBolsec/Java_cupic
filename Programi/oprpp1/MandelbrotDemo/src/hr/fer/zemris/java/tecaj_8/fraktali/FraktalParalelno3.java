@@ -73,6 +73,7 @@ public class FraktalParalelno3 {
 			final int brojTraka = 16;
 			int brojYPoTraci = height / brojTraka;
 
+			System.out.println(Runtime.getRuntime().availableProcessors());
 			ExecutorService pool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 			List<Future<Void>> rezultati = new ArrayList<>();
 			
