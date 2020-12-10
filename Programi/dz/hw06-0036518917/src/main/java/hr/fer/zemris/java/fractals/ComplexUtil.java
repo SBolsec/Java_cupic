@@ -15,7 +15,13 @@ public class ComplexUtil {
      * @throws IllegalArgumentException passed string could not be parsed as complex number
      */
     public static Complex parse(String s) {
-        s = s.trim();
+        if (s == null) 
+        	throw new IllegalArgumentException("Argument can not be null!");
+    	
+    	s = s.trim();
+        
+        if (s.length() == 0) 
+        	throw new IllegalArgumentException("Argument can not be blank!");
     	
     	int indexI = s.indexOf('i');
 
@@ -56,16 +62,9 @@ public class ComplexUtil {
         	} else {
         		throw new IllegalArgumentException("Input could not be parsed as double, it was: " + s + ".");
         	}
-        	
-        	
-//            if (indexI != 0 && indexI != 1) throw new IllegalArgumentException("There are elements after 'i': " + s.substring(indexI+1, s.length()));
-//            try {
-//            	return new Complex(0, Double.parseDouble(s.substring(0, s.length()-1)));	
-//            } catch (NumberFormatException ex) {
-//            	throw new IllegalArgumentException("Input could not be parsed as double, it was: " + s.substring(0, s.length()-1) + ".");
-//            }
         }
 
+        // Something like: 1+i3, -5-i1, ...
         double r = Double.parseDouble(s.substring(0, separator));
         double i = 0;
         boolean imPositive = s.charAt(separator) == '+' ? true : false;

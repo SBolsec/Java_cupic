@@ -1,5 +1,10 @@
 package hr.fer.zemris.math;
 
+/**
+ * Test for complex numbers and polynoms
+ * @author sbolsec
+ *
+ */
 public class Demo {
 	public static void main(String[] args) {
 		ComplexRootedPolynomial crp = new ComplexRootedPolynomial(

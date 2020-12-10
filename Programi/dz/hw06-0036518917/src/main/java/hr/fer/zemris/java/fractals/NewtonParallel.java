@@ -14,21 +14,35 @@ import hr.fer.zemris.math.Complex;
 import hr.fer.zemris.math.ComplexPolynomial;
 import hr.fer.zemris.math.ComplexRootedPolynomial;
 
+/**
+ * Does the work parallel, using more threads and
+ * spliting the work between them
+ * @author sbolsec
+ *
+ */
 public class NewtonParallel {
-
+	/** Complex rooted polynomial created from the user input **/
 	private static ComplexRootedPolynomial polynom;
+	/** Complex polynomial created from complex rooted polynomial **/
 	private static ComplexPolynomial polynomial;
+	/** Complex polynomial that was derived from the complex polynomial **/
 	private static ComplexPolynomial derived;
 	
+	/** Number of workers (threads) **/
 	private static int workers;
+	/** Number of tracks **/
 	private static int tracks;
 	
+	/** Convergence treshold **/
 	private static final double CONVERGENCE_TRESHOLD = 0.001;
+	/** Root treshold **/
 	private static final double ROOT_TRESHOLD = 0.002;
+	/** Maximum number of iterations **/
 	private static final short MAX_ITER = 16*16*16;
 	
 	/**
-	 * @param args
+	 * Starting point of program
+	 * @param args command line arguments
 	 */
 	public static void main(String[] args) {
 		configureFromArguments(args);
@@ -68,6 +82,11 @@ public class NewtonParallel {
 		FractalViewer.show(new MojProducer());	
 	}
 
+	/**
+	 * Models the actual work, the calculations a thread will perform
+	 * @author sbolsec
+	 *
+	 */
 	public static class PosaoIzracuna implements Runnable {
 		double reMin;
 		double reMax;
@@ -102,6 +121,9 @@ public class NewtonParallel {
 			this.cancel = cancel;
 		}
 		
+		/**
+		 * Calculates the data for one track
+		 */
 		@Override
 		public void run() {
 			System.out.println("Dretva " + Thread.currentThread().getName() + " zapocinje izracun...");
@@ -130,9 +152,16 @@ public class NewtonParallel {
 		}
 	}
 	
-	
+	/**
+	 * Produces the data needed to draw the fractal
+	 * @author sbolsec
+	 *
+	 */
 	public static class MojProducer implements IFractalProducer {
 		
+		/**
+		 * Produces the data that is needed to draw the fractal
+		 */
 		@Override
 		public void produce(double reMin, double reMax, double imMin, double imMax,
 				int width, int height, long requestNo, IFractalResultObserver observer, AtomicBoolean cancel) {

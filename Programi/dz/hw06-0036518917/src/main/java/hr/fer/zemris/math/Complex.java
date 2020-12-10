@@ -17,10 +17,15 @@ public class Complex {
 	/** Imaginary part of the complex number **/
 	private double im;
 	
+	/** Complex number with value: 0 **/
 	public static final Complex ZERO = new Complex(0,0);
+	/** Complex number with value: 1 **/
 	public static final Complex ONE = new Complex(1,0);
+	/** Complex number with value: -1 **/
 	public static final Complex ONE_NEG = new Complex(-1,0);
+	/** Complex number with value: -i **/
 	public static final Complex IM = new Complex(0,1);
+	/** Complex number with value: i **/
 	public static final Complex IM_NEG = new Complex(0, -1);
 
 	/**
@@ -168,12 +173,19 @@ public class Complex {
 	   return angle;
    }
 
-public double getRe() {
-	return re;
-}
+   /**
+    * Returns the real part of the complex number
+    * @return real part of complex number
+    */
+   public double getRe() {
+		return re;
+	}
 
-public double getIm() {
-	return im;
-}
-   
+   /**
+    * Returns the imaginary part of the complex number
+    * @return imaginary part of the complex number
+    */
+   public double getIm() {
+		return im;
+	}
 }

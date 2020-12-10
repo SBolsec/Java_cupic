@@ -12,35 +12,42 @@ import hr.fer.zemris.math.Complex;
 import hr.fer.zemris.math.ComplexPolynomial;
 import hr.fer.zemris.math.ComplexRootedPolynomial;
 
+/**
+ * Does everything sequentially on one thread
+ * @author sbolsec
+ *
+ */
 public class Newton {
 
 	/**
-	 * @param args
+	 * Starting point of program
+	 * @param args command line arguments
 	 */
 	public static void main(String[] args) {
 		System.out.println("Welcome to Newton-Raphson iteration-based fractal viewer.");
 		System.out.println("Please enter at least two roots, one root per line. Enter 'done' when done.");
 		
 		Scanner sc = new Scanner(System.in);
-		List<String> inputs = new ArrayList<>();
-		int count = 0;
+		List<Complex> inputs = new ArrayList<>();
+		int count = 1;
 		while (true) {
-			System.out.format("Root %d> ", ++count);
+			System.out.format("Root %d> ", count);
 			String line = sc.nextLine();
 			if (line.equals("done"))
 				break;
-			inputs.add(line);
+			try {
+				Complex c = ComplexUtil.parse(line);
+				inputs.add(c);
+				count++;
+			} catch (IllegalArgumentException e) {
+				System.out.println("Input could not be parsed as complex number!");
+			}
 		}
 		sc.close();
 		
 		Complex[] roots = new Complex[inputs.size()];
-		try {
-			for (int i = 0; i < inputs.size(); i++) {
-				roots[i] = ComplexUtil.parse(inputs.get(i));
-			}
-		} catch (IllegalArgumentException e) {
-			System.out.println("Input was not a complex number!");
-			System.exit(1);
+		for (int i = 0; i < inputs.size(); i++) {
+			roots[i] = inputs.get(i);
 		}
 		ComplexRootedPolynomial polynom = new ComplexRootedPolynomial(Complex.ONE, roots);
 		
@@ -50,23 +57,39 @@ public class Newton {
 		FractalViewer.show(new MojProducer(polynom));	
 	}
 	
+	/**
+	 * Produces the data needed to draw the fractal
+	 * @author sbolsec
+	 *
+	 */
 	public static class MojProducer implements IFractalProducer {
-		
+		/** Complex rooted polynomial created from the user input **/
 		private ComplexRootedPolynomial polynom;
+		/** Complex polynomial created from complex rooted polynomial **/
 		private ComplexPolynomial polynomial;
+		/** Complex polynomial that was derived from the complex polynomial **/
 		private ComplexPolynomial derived;
 		
+		/** Convergence treshold **/
 		private final double CONVERGENCE_TRESHOLD = 0.001;
+		/** Root treshold **/
 		private final double ROOT_TRESHOLD = 0.002;
+		/** Maximum number of iterations **/
 		private final short MAX_ITER = 16*16*16;
 		
+		/**
+		 * Constructor which sets the polynoms needed for the calculations
+		 * @param polynom
+		 */
 		public MojProducer(ComplexRootedPolynomial polynom) {
 			this.polynom = polynom;
 			this.polynomial = polynom.toComplexPolynom();
 			this.derived = polynomial.derive();
 		}
 		
-		
+		/**
+		 * Produces the data that is needed to draw the fractal
+		 */
 		@Override
 		public void produce(double reMin, double reMax, double imMin, double imMax,
 				int width, int height, long requestNo, IFractalResultObserver observer, AtomicBoolean cancel) {
