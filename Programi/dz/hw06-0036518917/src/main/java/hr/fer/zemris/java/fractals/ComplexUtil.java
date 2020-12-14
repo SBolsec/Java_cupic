@@ -53,21 +53,41 @@ public class ComplexUtil {
         		}
         	} else if (indexI == 1) {
         		try {
-        			boolean positive = s.charAt(0) == '+' ? true : false;
+        			boolean positive = s.charAt(0) == '-' ? false : true;
         			double im = Double.parseDouble(s.substring(indexI+1));
         			return new Complex(0, positive ? im : -im);
         		} catch (NumberFormatException e) {
         			throw new IllegalArgumentException("Input could not be parsed as double, it was: " + s.substring(indexI+1) + ".");
         		}
+        	} else if (indexI == s.length()-1) {
+        		boolean positive = s.charAt(0) == '-' ? false : true;
+        		return new Complex(0, positive ? 1 : -1);
         	} else {
-        		throw new IllegalArgumentException("Input could not be parsed as double, it was: " + s + ".");
+        		try {
+        			boolean positive = s.charAt(0) == '-' ? false : true;
+        			for (int i = 1; i < indexI; i++) {
+        				if (s.charAt(i) != ' ') {
+        					throw new IllegalArgumentException("There was something between separator and i, input was: " + s + ".");
+        				}
+        			}
+        			
+        			double im = Double.parseDouble(s.substring(indexI+1));
+        			return new Complex(0, positive ? im : -im);
+        		} catch (NumberFormatException e) {
+        			throw new IllegalArgumentException("Input could not be parsed as double, it was: " + s.substring(indexI+1) + ".");
+        		}
         	}
         }
 
         // Something like: 1+i3, -5-i1, ...
         double r = Double.parseDouble(s.substring(0, separator));
         double i = 0;
-        boolean imPositive = s.charAt(separator) == '+' ? true : false;
+        boolean imPositive = s.charAt(separator) == '-' ? false : true;
+        for (int j = separator+1; j < indexI; j++) {
+			if (s.charAt(j) != ' ') {
+				throw new IllegalArgumentException("There was something between separator and i, input was: " + s + ".");
+			}
+		}
         if (indexI == s.length()-1) {
         	i = 1;
         } else {

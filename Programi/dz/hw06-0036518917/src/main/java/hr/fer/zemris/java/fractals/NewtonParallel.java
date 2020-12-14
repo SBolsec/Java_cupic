@@ -245,7 +245,7 @@ public class NewtonParallel {
 	private static void configureFromArguments(String[] args) {
 		if (args.length == 0) {
 			workers = Runtime.getRuntime().availableProcessors();
-			tracks = 4;
+			tracks = workers * 4;
 			return;
 		}
 		
@@ -307,7 +307,7 @@ public class NewtonParallel {
 		
 		if (args.length <= i) {
 			if (!w) workers = Runtime.getRuntime().availableProcessors();
-			else if (!t) tracks = 4;
+			else if (!t) tracks =  workers * 4;
 			return;
 		}
 		
