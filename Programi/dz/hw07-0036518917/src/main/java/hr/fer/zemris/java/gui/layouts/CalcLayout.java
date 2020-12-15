@@ -101,26 +101,25 @@ public class CalcLayout implements LayoutManager2 {
 	}
 	
 	private Dimension calculateWidthAndHeight(Function<Component, Dimension> function, Insets ins) {
-		double width, height;
+		double width = 0, height;
 		
-		Map.Entry<Component, RCPosition> maxWidthEntry = null;
 		boolean first = true;
 		for (Map.Entry<Component, RCPosition> entry : components.entrySet()) {
+			double newWidth = function.apply(entry.getKey()).getWidth();
+			RCPosition e = entry.getValue();
+			if (e.getRow() == 1 && e.getColumn() == 1) {
+				newWidth = (newWidth - (4*gap)) / 5.;
+			}
 			if (first) {
-				maxWidthEntry = entry;
+				width = newWidth;
 				first = false;
 				continue;
 			}
-			if (function.apply(entry.getKey()).getWidth() > function.apply(maxWidthEntry.getKey()).getWidth()) {
-				maxWidthEntry = entry;
+			if (newWidth > width) {
+				width = newWidth;
 			}
 		}
-		double maxWidth = function.apply(maxWidthEntry.getKey()).getWidth();
-		RCPosition widthPos = maxWidthEntry.getValue();
-		if (widthPos.getRow() == 1 && widthPos.getColumn() == 1) {
-			maxWidth = (maxWidth - (4*gap)) / 5;
-		} 
-		width = maxWidth*7 + gap*6;
+		width = width*7 + gap*6;
 		
 		OptionalDouble maxHeight = components.keySet().stream().mapToDouble(c -> function.apply(c).getHeight()).max();
 		height = maxHeight.getAsDouble() * 5 + gap*4;
