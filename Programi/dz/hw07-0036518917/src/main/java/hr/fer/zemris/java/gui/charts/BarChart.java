@@ -101,5 +101,4 @@ public class BarChart {
 	public int getGap() {
 		return gap;
 	}
-	
 }

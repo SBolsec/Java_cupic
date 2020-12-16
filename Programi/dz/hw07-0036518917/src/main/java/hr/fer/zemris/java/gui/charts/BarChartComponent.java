@@ -1,9 +1,11 @@
 package hr.fer.zemris.java.gui.charts;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.util.List;
@@ -23,16 +25,22 @@ public class BarChartComponent extends JComponent {
 	private BarChart barChart;
 	/** Window in which to draw **/
 	private Rectangle window;
+	/** Default font **/
+	private Font defaultFont;
+	/** Bold font for numbers **/
+	private Font boldFont;
 	/** Font metrics **/
 	private FontMetrics metrics;
+	/** Font metrics for bold font **/
+	private FontMetrics boldFontMetrics;
+	/** Width of the widest number on the y axis **/
+	private int numWidth;
 	/** Gap from edge of window **/
 	private final int gapToWindow = 20;
 	/** Gap from axis description to numbers **/
 	private final int gapToNum = 20;
-	/** Width of the widest number on the y axis **/
-	private int numWidth = 20;
 	/** Gap from numbers to axis **/
-	private final int gapToAxis = 10;
+	private final int gapToAxis = 15;
 	/** Color of axis lines **/
 	private final Color axisColor = Color.GRAY;
 	/** Color of grid lines **/
@@ -45,6 +53,8 @@ public class BarChartComponent extends JComponent {
 	private final int extraLines = 5;
 	/** Gap between neighburing bars **/
 	private final int gapBetweenBars = 1;
+	/** Extra to add to axis lines for arrows **/
+	private final int arrowExtra = 10;
 	
 	/**
 	 * Constructor which sets the BarChart
@@ -59,8 +69,11 @@ public class BarChartComponent extends JComponent {
 	@Override
 	public void paintComponent(Graphics g) {
 		window = this.getBounds();
+		defaultFont = g.getFont();
 		metrics = g.getFontMetrics(g.getFont());
-		numWidth = metrics.stringWidth(Integer.toString(barChart.getMaxY()));
+		boldFont = new Font("default", Font.BOLD, 12);
+		boldFontMetrics = g.getFontMetrics(boldFont);
+		numWidth = boldFontMetrics.stringWidth(Integer.toString(barChart.getMaxY()));
 		
 		drawDescription(g);
 		drawAxisAndGrid(g);
@@ -90,7 +103,7 @@ public class BarChartComponent extends JComponent {
 		AffineTransform at = AffineTransform.getQuadrantRotateInstance(3);
 		g2d.setTransform(at);
 		
-		int yDescWidth = metrics.stringWidth(barChart.getyDesc());
+		//int yDescWidth = metrics.stringWidth(barChart.getyDesc());
 		int yDownGap = window.y + gap;
 		x = yDownGap + ((window.height - yDownGap - height - gapToWindow) / 2);
 		y = window.x + gapToWindow + metrics.getAscent();
@@ -108,7 +121,6 @@ public class BarChartComponent extends JComponent {
 		Graphics2D g2d = (Graphics2D) g;
 		
 		int fontHeight = metrics.getHeight();
-		int arrowExtra = 10; // making the line longer for the arrow
 		
 		// Find starting point (0, 0)
 		int x0 = window.x + gapToWindow + fontHeight + gapToNum + numWidth + gapToAxis;
@@ -126,9 +138,9 @@ public class BarChartComponent extends JComponent {
 		g2d.setColor(axisColor);
 		g2d.drawLine(x0 - extraLines, y0, x1, y1);
 		g2d.drawLine(x0, y0 + extraLines, x2, y2);
-		g2d.setColor(Color.BLACK);
 		
 		// Draw the numbers and grid lines on the y-axis
+		g2d.setFont(boldFont);
 		int minY = barChart.getMinY();
 		int maxY = barChart.getMaxY();
 		int barGap = barChart.getGap();
@@ -171,19 +183,19 @@ public class BarChartComponent extends JComponent {
 				
 				// Draw bar
 				int val = values.get(i).getY();
-				int xStart = (int) (x0 + w*i + gapBetweenBars);
-				int xEnd = (int) (x0 + w*(i+1) - gapBetweenBars);
+				int xStart = (int) (x0 + w*i) + gapBetweenBars;
+				int xEnd = (int) (x0 + w*(i+1)) - gapBetweenBars;
 				int yStart = y0 - 1;
 				int yEnd = (int) (y0 - h*val);
 				g2d.setColor(barColor);
 				g2d.fillRect(xStart, yEnd, xEnd-xStart, yStart-yEnd);
 				
 				// Draw shadow
-				g2d.setColor(shadowColor);
 				xStart = (int) (x0 + w*(i+1) + gapBetweenBars);
-				xEnd = xStart + (int) (0.05 * w);
+				xEnd = xStart + (int) (0.03*w);
 				yStart = y0 - 1;
-				yEnd = (int) (y0 - h*val) + (int) (0.3 * h);
+				yEnd = (int) (y0 - h*val + 0.3*h);
+				g2d.setColor(shadowColor);
 				g2d.fillRect(xStart, yEnd, xEnd-xStart, yStart-yEnd);
 			}
 			
@@ -197,7 +209,19 @@ public class BarChartComponent extends JComponent {
 			g2d.setColor(gridColor);
 			g2d.drawLine(x, y0, x, y2 + arrowExtra - extraLines);
 		}
+		g2d.setFont(defaultFont);
+		g2d.setColor(Color.BLACK);
+		
+		// Draw arrows on ends on axis
+		int a = 5;
+		int b = 3;
+		g2d.setColor(axisColor);
+		Polygon yArrow = new Polygon(new int[] {x0, x0-b, x0+b}, new int[] {y2-a, y2, y2} , 3);
+		g2d.drawPolygon(yArrow);
+		g2d.fill(yArrow);
+		Polygon xArrow = new Polygon(new int[] {x1-a, x1-a, x1}, new int[] {y0-b, y0+b, y0}, 3);
+		g2d.drawPolygon(xArrow);
+		g2d.fill(xArrow);
 		g2d.setColor(Color.BLACK);
 	}
-	
 }

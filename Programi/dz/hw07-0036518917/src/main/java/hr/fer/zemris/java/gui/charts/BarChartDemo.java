@@ -44,20 +44,21 @@ public class BarChartDemo extends JFrame {
 		initGUI(fileName);
 	}
 	
+	/**
+	 * Initializes the GUI.
+	 * @param fileName file name to be displayed at top
+	 */
 	private void initGUI(String fileName) {
 		Container cp = getContentPane();
 		cp.setLayout(new BorderLayout());
 		
 		JPanel north = new JPanel();
-		north.setBorder(BorderFactory.createLineBorder(Color.BLUE, 1));
 		fileLabel = new JLabel(fileName);
 		fileLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
 		north.add(fileLabel);
 		cp.add(north, BorderLayout.NORTH);
 		
-		
 		BarChartComponent bar = new BarChartComponent(barChart);
-		bar.setBorder(BorderFactory.createLineBorder(Color.GREEN, 1));
 		cp.add(bar, BorderLayout.CENTER);
 	}
 	
