@@ -20,7 +20,7 @@ public class CalcLayout implements LayoutManager2 {
 	/** Gap between rows and columns **/
 	private int gap;
 	/** Components in this layout **/
-	private Map<Component, RCPosition> components = new HashMap<>();
+	private Map<Component, RCPosition> components;
 	
 	/**
 	 * Default constructor, sets gap between rows and columns to 0.
@@ -36,6 +36,7 @@ public class CalcLayout implements LayoutManager2 {
 	public CalcLayout(int gap) {
 		super();
 		this.gap = gap;
+		components = new HashMap<>();
 	}
 	
 	@Override
@@ -142,12 +143,6 @@ public class CalcLayout implements LayoutManager2 {
 	
 	@Override
 	public void layoutContainer(Container parent) {
-		Insets ins = parent.getInsets();
-		Dimension dim = parent.getSize();
-		double dx = (dim.getWidth() - 6*gap) / 7.;
-		double dy = (dim.getHeight() - 4*gap) / 5.;
-		int remainder = (int) ((dim.getWidth() - 6*gap) % 7);
-		
 		class Pomocna {
 			public Component c;
 			public int x;
@@ -166,6 +161,11 @@ public class CalcLayout implements LayoutManager2 {
 		}
 		
 		Pomocna[][] polje = new Pomocna[5][7];
+		Insets ins = parent.getInsets();
+		Dimension dim = parent.getSize();
+		double dx = (dim.getWidth() - 6*gap) / 7.;
+		double dy = (dim.getHeight() - 4*gap) / 5.;
+		int remainder = (int) ((dim.getWidth() - 6*gap) % 7);
 		
 		// Calculating temporary data
 		for (Map.Entry<Component, RCPosition> entry : components.entrySet()) {
@@ -179,19 +179,15 @@ public class CalcLayout implements LayoutManager2 {
 			
 			if (px == 1 && py == 1) {
 				x = ins.left;
-				w = dx*5 + gap*4;
-				
-				if (remainder <= 4) w += 3;
-				else if (remainder == 5) w += 4;
-				else if (remainder == 6) w += 5;
+				w = dx*5 + gap*4 + 1;
 			} else {
 				if (px == 1 && py == 6) {
 					if (remainder >= 4) w += 1;
 				}
-				x = ins.left + (py-1)*dx + (py-2)*gap;
+				x = ins.left + (py-1)*dx + (py-1)*gap;
 			}
+			y = ins.top + (px-1)*dy + (px-1)*gap;
 			
-			y = ins.top + (px-1)*dy + (px-2)*gap;
 			polje[px-1][py-1] = new Pomocna(c, (int) x, (int) y, (int) w, (int) dy);
 		}
 		
@@ -203,11 +199,38 @@ public class CalcLayout implements LayoutManager2 {
 				count--;
 				Pomocna p = polje[i][j];
 				if (p != null) {
-					p.w = p.w+1;
+					p.w += 1;
 				}
 				j += 2;
 				if (j > 6)
 					j = 1;
+			}
+		}
+		
+		// Fixing the gaps
+		if (polje[0][0] != null && polje[0][5] != null) {
+			int actualGap = polje[0][5].x - (polje[0][0].x + polje[0][0].w);
+			if (actualGap != gap) {
+				int toAdd = gap - actualGap;
+				polje[0][5].x += toAdd;
+			}
+		}
+		if (polje[0][5] != null && polje[0][6] != null) {
+			int actualGap = polje[0][6].x - (polje[0][5].x + polje[0][5].w);
+			if (actualGap != gap) {
+				int toAdd = gap - actualGap;
+				polje[0][6].x += toAdd;
+			}
+		}
+		for (int i = 1; i < 5; i++) { // All other rows
+			for (int j = 1; j < 7; j++) {
+				if (polje[i][j] != null && polje[i][j-1] != null) {
+					int actualGap = polje[i][j].x - (polje[i][j-1].x + polje[i][j-1].w);
+					if (actualGap != gap) {
+						int toAdd = gap - actualGap;
+						polje[i][j].x += toAdd;
+					}
+				}
 			}
 		}
 		

@@ -42,4 +42,91 @@ public class CalcLayoutTest {
 		assertEquals(152, dim.getWidth(), EPSILON);
 		assertEquals(158, dim.getHeight(), EPSILON);
 	}
+	
+	@Test
+	public void testRowTooSmall1() {
+		JPanel p = new JPanel(new CalcLayout(2));
+		JLabel l = new JLabel("");
+		
+		assertThrows(CalcLayoutException.class, () -> p.add(l, new RCPosition(-2, 2)));
+	}
+	
+	@Test
+	public void testRowTooSmall2() {
+		JPanel p = new JPanel(new CalcLayout(2));
+		JLabel l = new JLabel("");
+		
+		assertThrows(CalcLayoutException.class, () -> p.add(l, new RCPosition(0, 2)));
+	}
+	
+	@Test
+	public void testRowTooBig1() {
+		JPanel p = new JPanel(new CalcLayout(2));
+		JLabel l = new JLabel("");
+		
+		assertThrows(CalcLayoutException.class, () -> p.add(l, new RCPosition(6, 2)));
+	}
+	
+	@Test
+	public void testRowTooBig2() {
+		JPanel p = new JPanel(new CalcLayout(2));
+		JLabel l = new JLabel("");
+		
+		assertThrows(CalcLayoutException.class, () -> p.add(l, new RCPosition(9, 1)));
+	}
+	
+	@Test
+	public void testColumnTooSmall1() {
+		JPanel p = new JPanel(new CalcLayout(2));
+		JLabel l = new JLabel("");
+		
+		assertThrows(CalcLayoutException.class, () -> p.add(l, new RCPosition(1, -2)));
+	}
+	
+	@Test
+	public void testColumnTooSmall2() {
+		JPanel p = new JPanel(new CalcLayout(2));
+		JLabel l = new JLabel("");
+		
+		assertThrows(CalcLayoutException.class, () -> p.add(l, new RCPosition(5, 0)));
+	}
+	
+	@Test
+	public void testColumnTooBig1() {
+		JPanel p = new JPanel(new CalcLayout(2));
+		JLabel l = new JLabel("");
+		
+		assertThrows(CalcLayoutException.class, () -> p.add(l, new RCPosition(2, 8)));
+	}
+	
+	@Test
+	public void testColumnTooBig2() {
+		JPanel p = new JPanel(new CalcLayout(2));
+		JLabel l = new JLabel("");
+		
+		assertThrows(CalcLayoutException.class, () -> p.add(l, new RCPosition(4, 15)));
+	}
+	
+	@Test
+	public void testFirstRow() {
+		JPanel p = new JPanel(new CalcLayout(2));
+		JLabel l = new JLabel("");
+		
+		assertThrows(CalcLayoutException.class, () -> p.add(l, new RCPosition(1, 2)));
+		assertThrows(CalcLayoutException.class, () -> p.add(l, new RCPosition(1, 3)));
+		assertThrows(CalcLayoutException.class, () -> p.add(l, new RCPosition(1, 4)));
+		assertThrows(CalcLayoutException.class, () -> p.add(l, new RCPosition(1, 5)));
+	}
+	
+	@Test
+	public void testAddSecondConstraintToComponent() {
+		JPanel p = new JPanel(new CalcLayout(2));
+		RCPosition pos = new RCPosition(2, 2);
+		JLabel l1 = new JLabel("1");
+		JLabel l2 = new JLabel("2");
+		
+		p.add(l1, pos);
+		
+		assertThrows(CalcLayoutException.class, () -> p.add(l2, pos));
+	}
 }

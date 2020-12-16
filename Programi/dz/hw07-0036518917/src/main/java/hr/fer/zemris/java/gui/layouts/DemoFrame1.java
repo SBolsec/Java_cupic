@@ -9,6 +9,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 public class DemoFrame1 extends JFrame {
+	private static final long serialVersionUID = 1221767549940419039L;
+
 	public DemoFrame1() {
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setSize(200,500);
@@ -36,7 +38,7 @@ public class DemoFrame1 extends JFrame {
 	
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(()->{
-		new DemoFrame1().setVisible(true);
+			new DemoFrame1().setVisible(true);
 		});
 	}
 }
