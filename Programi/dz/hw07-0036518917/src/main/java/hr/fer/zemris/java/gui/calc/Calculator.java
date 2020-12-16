@@ -148,7 +148,9 @@ public class Calculator extends JFrame {
 					model.setActiveOperand(model.getValue());
 					double result = btn.getOperator().applyAsDouble(model.getActiveOperand());
 					model.setValue(result);
-					model.clearActiveOperand();
+					model.setActiveOperand(result);
+					model.clear();
+					//model.clearActiveOperand();
 				} catch (Exception e) {
 					
 				}
@@ -213,7 +215,12 @@ public class Calculator extends JFrame {
 			}
 			try {
 				model.setActiveOperand(model.getValue());
-				model.freezeValue(Double.toString(model.getValue()));
+				String s = Double.toString(model.getValue());
+				model.clear();
+				if (s.endsWith(".0")) s = s.substring(0, s.length()-2);
+				if (s.length() > 0 && s.charAt(0) == '-')
+					model.swapSign();
+				model.freezeValue(s);
 			} catch (Exception e) {
 			}
 			model.setPendingBinaryOperation(btn.getOperator());
@@ -274,7 +281,7 @@ public class Calculator extends JFrame {
 			try {
 				double res = model.getPendingBinaryOperation().applyAsDouble(model.getActiveOperand(), model.getValue());
 				model.setValue(res);
-				model.setActiveOperand(res);
+				model.clearActiveOperand();
 				model.setPendingBinaryOperation(null);
 				model.clear();
 			} catch (Exception e) {}

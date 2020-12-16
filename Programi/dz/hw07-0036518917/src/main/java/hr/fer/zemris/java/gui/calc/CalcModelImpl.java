@@ -54,6 +54,8 @@ public class CalcModelImpl implements CalcModel {
 
 	@Override
 	public double getValue() {
+		if (value == null)
+			return activeOperand;
 		return positive ? value : -value;
 	}
 
