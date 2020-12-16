@@ -180,13 +180,11 @@ public class Calculator extends JFrame {
 			btn.addActionListener(l -> {
 				try {
 					double res = model.getPendingBinaryOperation().applyAsDouble(model.getActiveOperand(), model.getValue());
-//					String s = Double.toString(res);
-//					if (s.endsWith(".0")) s = s.substring(0, s.length()-2);
-//					model.freezeValue(s);
-					model.setValue(res);
-				} catch (Exception e) {
-					
-				}
+					String s = Double.toString(res);
+					if (s.endsWith(".0")) s = s.substring(0, s.length()-2);
+					model.freezeValue(s);
+					//model.setValue(res);
+				} catch (Exception e) { }
 				try {
 					model.setActiveOperand(model.getValue());
 					String s = Double.toString(model.getValue());
@@ -195,8 +193,7 @@ public class Calculator extends JFrame {
 					if (s.length() > 0 && s.charAt(0) == '-')
 						model.swapSign();
 					model.freezeValue(s);
-				} catch (Exception e) {
-				}
+				} catch (Exception e) {}
 				model.setPendingBinaryOperation(operators[op]);
 				model.clear();
 			});
