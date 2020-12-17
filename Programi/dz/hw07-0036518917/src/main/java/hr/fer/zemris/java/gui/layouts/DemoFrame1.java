@@ -8,19 +8,24 @@ import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
+/**
+ * Demo class that tests the layout
+ * @author sbolsec
+ *
+ */
 public class DemoFrame1 extends JFrame {
 	private static final long serialVersionUID = 1221767549940419039L;
 
 	public DemoFrame1() {
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		setSize(200,500);
+		//setSize(200,500);
 		initGUI();
-		//pack();
+		pack();
 	}
 	
 	private void initGUI() {
 		Container cp = getContentPane();
-		cp.setLayout(new CalcLayout(0));
+		cp.setLayout(new CalcLayout(2));
 		cp.add(l("tekst 1"), new RCPosition(1,1));
 		cp.add(l("tekst 2"), new RCPosition(2,3));
 		cp.add(l("tekst stvarno najdulji"), new RCPosition(2,7));

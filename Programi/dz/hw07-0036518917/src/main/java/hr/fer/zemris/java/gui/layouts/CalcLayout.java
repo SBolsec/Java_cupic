@@ -39,14 +39,24 @@ public class CalcLayout implements LayoutManager2 {
 		components = new HashMap<>();
 	}
 	
+	/**
+	 * Throws <code>UnsupportedOperationException</code>
+	 * @throws UnsupportedOperationException always
+	 */
 	@Override
 	public void addLayoutComponent(String name, Component comp) {
 		throw new UnsupportedOperationException();
 	}
 	
+	/**
+	 * @throws CalcLayoutException if arguments violated a constraint of this layout
+	 */
 	@Override
 	public void addLayoutComponent(Component comp, Object constraints) {
 		RCPosition p = null;
+		
+		if (comp == null)
+			throw new NullPointerException("Component can not be null!");
 		
 		if (constraints instanceof RCPosition) {
 			p = (RCPosition) constraints;
@@ -54,7 +64,7 @@ public class CalcLayout implements LayoutManager2 {
 			try {
 				p = RCPosition.parse(constraints.toString());
 			} catch (NullPointerException | IllegalArgumentException e) {
-				throw new IllegalArgumentException("String could not be parsed as RCPosition, it was: " + constraints.toString());
+				throw new CalcLayoutException("String could not be parsed as RCPosition, it was: " + constraints.toString());
 			}
 		} else {
 			throw new IllegalArgumentException("Constraints were neither a string nor RCPosition!");
@@ -62,8 +72,6 @@ public class CalcLayout implements LayoutManager2 {
 		
 		if (p == null) 
 			throw new NullPointerException("RCPosition can not be null!");
-		if (comp == null)
-			throw new NullPointerException("Component can not be null!");
 		
 		int r = p.getRow();
 		int c = p.getColumn();
@@ -101,6 +109,12 @@ public class CalcLayout implements LayoutManager2 {
 		return calculateWidthAndHeight(c -> c.getMaximumSize(), target.getInsets());
 	}
 	
+	/**
+	 * Calculates dimension based on applying given function on each component.
+	 * @param function function that does the calculation
+	 * @param ins insets
+	 * @return dimension based on function calculations
+	 */
 	private Dimension calculateWidthAndHeight(Function<Component, Dimension> function, Insets ins) {
 		double width = 0, height;
 		
@@ -143,6 +157,7 @@ public class CalcLayout implements LayoutManager2 {
 	
 	@Override
 	public void layoutContainer(Container parent) {
+		/** Helper class **/
 		class Pomocna {
 			public Component c;
 			public int x;
@@ -165,7 +180,7 @@ public class CalcLayout implements LayoutManager2 {
 		Dimension dim = parent.getSize();
 		double dx = (dim.getWidth() - 6*gap) / 7.;
 		double dy = (dim.getHeight() - 4*gap) / 5.;
-		int remainder = (int) ((dim.getWidth() - 6*gap) % 7);
+		int colRemainder = (int) ((dim.getWidth() - 6*gap) % 7);
 		
 		// Calculating temporary data
 		for (Map.Entry<Component, RCPosition> entry : components.entrySet()) {
@@ -182,7 +197,7 @@ public class CalcLayout implements LayoutManager2 {
 				w = dx*5 + gap*4 + 1;
 			} else {
 				if (px == 1 && py == 6) {
-					if (remainder >= 4) w += 1;
+					if (colRemainder >= 4) w += 1;
 				}
 				x = ins.left + (py-1)*dx + (py-1)*gap;
 			}
@@ -191,7 +206,7 @@ public class CalcLayout implements LayoutManager2 {
 			polje[px-1][py-1] = new Pomocna(c, (int) x, (int) y, (int) w, (int) dy);
 		}
 		
-		// Uniform increase
+		// Uniform increase in columns
 		for (int i = 1; i < 5; i++) {
 			int count = (int) ((dim.getWidth() - 6*gap) % 7);
 			int j = 0;
@@ -207,7 +222,7 @@ public class CalcLayout implements LayoutManager2 {
 			}
 		}
 		
-		// Fixing the gaps
+		// Fixing the gaps in columns
 		if (polje[0][0] != null && polje[0][5] != null) {
 			int actualGap = polje[0][5].x - (polje[0][0].x + polje[0][0].w);
 			if (actualGap != gap) {
@@ -234,6 +249,53 @@ public class CalcLayout implements LayoutManager2 {
 			}
 		}
 		
+		// Uniform increase in rows
+		boolean doneFirst = false;
+		for (int i = 0; i < 7; i++) {
+			int count = (int) ((dim.getHeight() - 4*gap) % 5);
+			int j = 0;
+			
+			while (count > 0) {
+				if (j >= 4)
+					j = 1;
+				count--;
+				if (j == 0 && i < 5) {
+					if (doneFirst) {
+						j += 2;
+						continue;
+					}
+					Pomocna p = polje[0][0];
+					if (p != null) {
+						p.h += 1;
+					}
+					doneFirst = true;
+					continue;
+				}
+				Pomocna p = polje[j][i];
+				if (p != null) {
+					p.h += 1;
+				}
+				j += 2;
+			}
+		}
+		
+		// Fixing the gaps in rows
+		for (int i = 1; i < 5; i++) {
+			for (int j = 0; j < 7; j++) {
+				int x = j;
+				if (i == 1 && j < 5) {
+					x = 0;
+				}
+				if (polje[i][j] != null && polje[i-1][x] != null) {
+					int actualGap = polje[i][j].y - polje[i-1][x].y - polje[i-1][x].h;
+					if (actualGap != gap) {
+						int toAdd = gap - actualGap;
+						polje[i][j].y += toAdd;
+					}
+				}
+			}
+		}
+		
 		// Setting bounds
 		for (int i = 0; i < 5; i++) {
 			for (int j = 0; j < 7; j++) {
@@ -247,8 +309,7 @@ public class CalcLayout implements LayoutManager2 {
 
 	@Override
 	public void invalidateLayout(Container target) {
-		// TODO Auto-generated method stub
-		
+		// do nothing?
 	}
 
 }

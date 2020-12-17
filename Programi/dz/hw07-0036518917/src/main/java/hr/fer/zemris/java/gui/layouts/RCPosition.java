@@ -49,6 +49,8 @@ public class RCPosition {
 			throw new NullPointerException("Input text can not be null!");
 		if (text.trim().length() == 0)
 			throw new IllegalArgumentException("Input can not be empty!");
+		if (text.indexOf(',') != text.lastIndexOf(','))
+			throw new IllegalArgumentException("There were more than one ',' signs!");
 		
 		String[] elements = text.trim().split(",");
 		
