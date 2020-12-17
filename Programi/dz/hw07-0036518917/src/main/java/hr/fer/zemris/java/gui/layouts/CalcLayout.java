@@ -269,6 +269,7 @@ public class CalcLayout implements LayoutManager2 {
 						p.h += 1;
 					}
 					doneFirst = true;
+					j += 2;
 					continue;
 				}
 				Pomocna p = polje[j][i];

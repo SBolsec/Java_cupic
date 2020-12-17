@@ -146,9 +146,12 @@ public class Calculator extends JFrame {
 			btn.addActionListener(l -> {
 				try {
 					model.setActiveOperand(model.getValue());
-					double result = btn.getOperator().applyAsDouble(model.getActiveOperand());
-					model.setValue(result);
-					model.setActiveOperand(result);
+					double res = btn.getOperator().applyAsDouble(model.getActiveOperand());
+					String s = Double.toString(res);
+					if (s.endsWith(".0")) s = s.substring(0, s.length()-2);
+					model.setValue(res);
+					model.freezeValue(s);
+					model.setActiveOperand(res);
 					model.clear();
 					//model.clearActiveOperand();
 				} catch (Exception e) {
@@ -178,24 +181,8 @@ public class Calculator extends JFrame {
 			btn.setBackground(btnColor);
 			final int op = i;
 			btn.addActionListener(l -> {
-				try {
-					double res = model.getPendingBinaryOperation().applyAsDouble(model.getActiveOperand(), model.getValue());
-					String s = Double.toString(res);
-					if (s.endsWith(".0")) s = s.substring(0, s.length()-2);
-					model.freezeValue(s);
-					//model.setValue(res);
-				} catch (Exception e) { }
-				try {
-					model.setActiveOperand(model.getValue());
-					String s = Double.toString(model.getValue());
-					model.clear();
-					if (s.endsWith(".0")) s = s.substring(0, s.length()-2);
-					if (s.length() > 0 && s.charAt(0) == '-')
-						model.swapSign();
-					model.freezeValue(s);
-				} catch (Exception e) {}
+				binaryButtonAction();
 				model.setPendingBinaryOperation(operators[op]);
-				model.clear();
 			});
 			cp.add(btn, new RCPosition(i+2, 6));
 		}
@@ -204,27 +191,31 @@ public class Calculator extends JFrame {
 		btn.setBackground(btnColor);
 		btn.setText("x^n");
 		btn.addActionListener(l -> {
-			try {
-				double res = model.getPendingBinaryOperation().applyAsDouble(model.getActiveOperand(), model.getValue());
-				model.setValue(res);
-			} catch (Exception e) {
-				
-			}
-			try {
-				model.setActiveOperand(model.getValue());
-				String s = Double.toString(model.getValue());
-				model.clear();
-				if (s.endsWith(".0")) s = s.substring(0, s.length()-2);
-				if (s.length() > 0 && s.charAt(0) == '-')
-					model.swapSign();
-				model.freezeValue(s);
-			} catch (Exception e) {
-			}
+			binaryButtonAction();
 			model.setPendingBinaryOperation(btn.getOperator());
-			model.clear();
 		});
 		cb.addActionListener(btn);
 		cp.add(btn, new RCPosition(5, 1));
+	}
+	
+	private void binaryButtonAction() {
+		try {
+			double res = model.getPendingBinaryOperation().applyAsDouble(model.getActiveOperand(), model.getValue());
+			String s = Double.toString(res);
+			if (s.endsWith(".0")) s = s.substring(0, s.length()-2);
+			model.setValue(res);
+			model.freezeValue(s);
+		} catch (Exception e) { }
+		try {
+			model.setActiveOperand(model.getValue());
+			String s = Double.toString(model.getValue());
+			model.clear();
+			if (s.endsWith(".0")) s = s.substring(0, s.length()-2);
+			if (s.length() > 0 && s.charAt(0) == '-')
+				model.swapSign();
+			model.freezeValue(s);
+		} catch (Exception e) {}
+		model.clear();
 	}
 	
 	private void initOtherButtons() {
@@ -277,8 +268,12 @@ public class Calculator extends JFrame {
 		equals.addActionListener(l -> {
 			try {
 				double res = model.getPendingBinaryOperation().applyAsDouble(model.getActiveOperand(), model.getValue());
+				String s = Double.toString(res);
+				if (s.endsWith(".0")) s = s.substring(0, s.length()-2);
 				model.setValue(res);
-				model.clearActiveOperand();
+				model.freezeValue(s);
+				//model.clearActiveOperand();
+				model.setActiveOperand(model.getValue());
 				model.setPendingBinaryOperation(null);
 				model.clear();
 			} catch (Exception e) {}

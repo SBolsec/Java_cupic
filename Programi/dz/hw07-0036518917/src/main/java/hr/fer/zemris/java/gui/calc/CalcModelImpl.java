@@ -64,12 +64,13 @@ public class CalcModelImpl implements CalcModel {
 		this.positive = value >= 0;
 		this.value = Math.abs(value);
 		if (Double.isNaN(value)) {
-			this.frozen = "NaN";
+			this.input = "NaN";
 		} else if (Double.isInfinite(value)) {
-			this.frozen = positive ? "Infinity" : "-Infinity";
+			this.input = "Infinity";
 		} else {
-			this.frozen = Double.toString(value);
+			this.input = Double.toString(this.value);
 		}
+		this.frozen = null;
 		this.editable = false;
 		
 		informListeners();
@@ -83,10 +84,8 @@ public class CalcModelImpl implements CalcModel {
 	@Override
 	public void clear() {
 		this.input = "";
-		//this.frozen = "";
 		this.value = null;
 		this.editable = true;
-		//this.positive = true;
 		informListeners();
 	}
 
