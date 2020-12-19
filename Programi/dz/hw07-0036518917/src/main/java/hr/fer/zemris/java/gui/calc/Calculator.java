@@ -3,16 +3,12 @@ package hr.fer.zemris.java.gui.calc;
 import java.awt.Color;
 import java.awt.ComponentOrientation;
 import java.awt.Container;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Stack;
 import java.util.function.DoubleBinaryOperator;
 import java.util.function.DoubleUnaryOperator;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -25,18 +21,30 @@ import hr.fer.zemris.java.gui.calc.model.CalcModel;
 import hr.fer.zemris.java.gui.layouts.CalcLayout;
 import hr.fer.zemris.java.gui.layouts.RCPosition;
 
+/**
+ * Calculator based on the Windows XP calculator.
+ * @author sbolsec
+ *
+ */
 public class Calculator extends JFrame {
 
 	/** Generated serial version UID **/
 	private static final long serialVersionUID = -5148492242213114522L;
 	
+	/** Calculator model which keeps track of all the data **/
 	private CalcModel model;
+	/** Container in which the visual components are added **/
 	private Container cp;
+	/** Checkobox which inverses all the unary buttons **/
 	private InverseCheckBox cb;
-	/** Used by push and pop **/
+	/** Stack used by push and pop **/
 	private Stack<Double> memory = new Stack<>();
+	/** Color of the buttons **/
 	private Color btnColor = new Color(221, 221, 255, 255);
 
+	/**
+	 * Constructor.
+	 */
 	public Calculator() {
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle("Java Calculator v1.0");
@@ -44,6 +52,9 @@ public class Calculator extends JFrame {
 		initGUI();
 	}
 	
+	/**
+	 * Initializes the GUI.
+	 */
 	private void initGUI() {
 		model = new CalcModelImpl();
 		cp = getContentPane();
@@ -63,6 +74,9 @@ public class Calculator extends JFrame {
 		initOtherButtons();
 	}
 	
+	/**
+	 * Initializes the display.
+	 */
 	private void initDisplay() {
 		CalcDisplay display = new CalcDisplay();
 		display.setText("0");
@@ -75,6 +89,9 @@ public class Calculator extends JFrame {
 		cp.add(display, new RCPosition(1, 1));
 	}
 	
+	/**
+	 * Initializes the digit buttons.
+	 */
 	private void initDigitButtons() {
 		for (int i = 0; i < 10; i++) {
 			DigitButton btn = new DigitButton(i);
@@ -109,6 +126,9 @@ public class Calculator extends JFrame {
 		}
 	}
 	
+	/**
+	 * Initializes the unary buttons.
+	 */
 	private void initUnaryButtons() {
 		String[][] btnNames = new String[][] {
 			{"sin", "arcsin"},
@@ -163,6 +183,9 @@ public class Calculator extends JFrame {
 		}
 	}
 	
+	/**
+	 * Initializes the binary buttons.
+	 */
 	private void initBinaryButtons() {
 		String btnNames[] = new String[] {
 				"/", "*", "-", "+" 
@@ -198,6 +221,9 @@ public class Calculator extends JFrame {
 		cp.add(btn, new RCPosition(5, 1));
 	}
 	
+	/**
+	 * Initializes the binary buttons.
+	 */
 	private void binaryButtonAction() {
 		try {
 			double res = model.getPendingBinaryOperation().applyAsDouble(model.getActiveOperand(), model.getValue());
@@ -218,6 +244,9 @@ public class Calculator extends JFrame {
 		model.clear();
 	}
 	
+	/**
+	 * Initializes all the other buttons.
+	 */
 	private void initOtherButtons() {
 		// Clear button
 		JButton clr = new JButton();
@@ -300,33 +329,10 @@ public class Calculator extends JFrame {
 		cp.add(dot, new RCPosition(5, 5));
 	}
 	
-	private class InverseCheckBox extends JCheckBox {
-
-		/** Generated serial version UID **/
-		private static final long serialVersionUID = 7952893386476862646L;
-		
-		private List<ActionListener> listeners = new ArrayList<>();
-		
-		public void addActionListener(ActionListener l) {
-			listeners.add(l);
-		}
-
-		public void removeActionListener(ActionListener l) {
-			listeners.remove(l);
-		}
-		
-		/**
-		 * Informs all the listeners that there was a change
-		 */
-		public void informListeners() {
-			if (listeners != null) {
-				for (ActionListener l : listeners) {
-					l.actionPerformed(null);
-				}
-			}
-		}
-	}
-	
+	/**
+	 * Starts the calculator.
+	 * @param args command line arguments // not used
+	 */
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> {
 			new Calculator().setVisible(true);

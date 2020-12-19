@@ -76,7 +76,7 @@ public class BarChartComponent extends JComponent {
 		numWidth = boldFontMetrics.stringWidth(Integer.toString(barChart.getMaxY()));
 		
 		drawDescription(g);
-		drawAxisAndGrid(g);
+		drawAxisGridBars(g);
 	}
 	
 	/**
@@ -117,7 +117,7 @@ public class BarChartComponent extends JComponent {
 	 * Draws the x and y axis and the grid including the labels.
 	 * @param g graphic used to draw with
 	 */
-	private void drawAxisAndGrid(Graphics g) {
+	private void drawAxisGridBars(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
 		
 		int fontHeight = metrics.getHeight();

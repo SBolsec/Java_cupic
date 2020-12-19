@@ -3,7 +3,7 @@ package hr.fer.zemris.java.gui.calc.button;
 import javax.swing.JButton;
 
 /**
- * Button that adds a digit
+ * Button that adds a digit to the current value
  * @author sbolsec
  *
  */
