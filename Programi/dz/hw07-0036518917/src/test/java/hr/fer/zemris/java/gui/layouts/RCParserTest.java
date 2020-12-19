@@ -1,10 +1,7 @@
 package hr.fer.zemris.java.gui.layouts;
 
-import hr.fer.zemris.java.gui.layouts.calcLayoutException.CalcLayoutException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import javax.swing.*;
 
 public class RCParserTest {
 
@@ -30,7 +27,7 @@ public class RCParserTest {
 
     @Test
     public void InvalidArgumentsStringTest2() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> RCPosition.parse(null));
+        Assertions.assertThrows(NullPointerException.class, () -> RCPosition.parse(null));
     }
 
     @Test

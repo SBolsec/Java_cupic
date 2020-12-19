@@ -13,7 +13,7 @@ import hr.fer.zemris.java.gui.calc.model.CalculatorInputException;
  * @author sbolsec
  *
  */
-public class CalcModelImpl implements CalcModel {
+public class CalcModelImpl2 implements CalcModel {
 	/** Stores whether the model is editable **/
 	private boolean editable;
 	/** Stores whether the input is positive **/
@@ -34,7 +34,7 @@ public class CalcModelImpl implements CalcModel {
 	/**
 	 * Default constructor
 	 */
-	public CalcModelImpl() {
+	public CalcModelImpl2() {
 		editable = true;
 		positive = true;
 		input = "";
@@ -54,24 +54,22 @@ public class CalcModelImpl implements CalcModel {
 
 	@Override
 	public double getValue() {
-		if (value == null)
-			return activeOperand;
-		return positive ? value : -value;
+		return this.value;
 	}
 
 	@Override
 	public void setValue(double value) {
+		this.value = value;
 		this.positive = value >= 0;
-		this.value = Math.abs(value);
-		if (Double.isNaN(value)) {
-			this.input = "NaN";
-		} else if (Double.isInfinite(value)) {
-			this.input = "Infinity";
-		} else {
-			this.input = Double.toString(this.value);
-		}
-		this.frozen = null;
 		this.editable = false;
+		
+		String s = Double.toString(value);
+		if (Double.isNaN(value))
+			this.positive = true;
+		if (positive)
+			this.input = s;
+		else 
+			this.input = s.substring(1);
 		
 		informListeners();
 	}
@@ -85,39 +83,47 @@ public class CalcModelImpl implements CalcModel {
 	public void clear() {
 		this.input = "";
 		this.value = null;
+		this.positive = true;
 		this.editable = true;
+		
 		informListeners();
 	}
 
 	@Override
 	public void clearAll() {
-		this.frozen = null;
-		this.positive = true;
 		clear();
 		clearActiveOperand();
-		pendingOperation = null;
+		this.pendingOperation = null;
+		this.frozen = null;
+		
+		informListeners();
 	}
 
 	@Override
 	public void swapSign() throws CalculatorInputException {
-		if (!editable) 
+		if (!editable)
 			throw new CalculatorInputException("Calculator model is not editable!");
-		this.positive = !this.positive;
+		
 		this.frozen = null;
+		this.positive = !this.positive;
+		
+		if (this.value != null)
+			this.value = -this.value;
+		
 		informListeners();
 	}
 
 	@Override
 	public void insertDecimalPoint() throws CalculatorInputException {
-		if (!editable) 
+		if (!editable)
 			throw new CalculatorInputException("Calculator model is not editable!");
 		if (input.contains("."))
 			throw new CalculatorInputException("Input already contains decimal point!");
 		if (input.length() == 0)
+			//this.input = "0";
 			throw new CalculatorInputException("There were no digits before decimal point!");
 		
 		this.input += ".";
-		//this.value = Double.parseDouble(input);
 		this.frozen = null;
 		
 		informListeners();
@@ -141,8 +147,8 @@ public class CalcModelImpl implements CalcModel {
 		try {
 			double newValue = Double.parseDouble(newInput);
 			this.input = newInput;
+			this.value = positive ? newValue : -newValue;
 			this.frozen = null;
-			this.value = newValue;
 		} catch (NumberFormatException e) {
 			throw new CalculatorInputException("New input could not be parsed as double, it was: " + newInput);
 		}
@@ -158,7 +164,7 @@ public class CalcModelImpl implements CalcModel {
 	@Override
 	public double getActiveOperand() throws IllegalStateException {
 		if (this.activeOperand == null)
-			throw new IllegalStateException();
+			throw new IllegalStateException("Active operand is not set!");
 		return this.activeOperand;
 	}
 
@@ -185,6 +191,8 @@ public class CalcModelImpl implements CalcModel {
 	@Override
 	public void freezeValue(String value) {
 		this.frozen = value;
+		
+		informListeners();
 	}
 
 	@Override
@@ -194,10 +202,10 @@ public class CalcModelImpl implements CalcModel {
 
 	@Override
 	public String toString() {
-		if (hasFrozenValue())
-			return (frozen.equals("") ? "0" : frozen);
-		else 
-			return (positive ? "" : "-") + (input.equals("") ? "0" : input);
+		if (hasFrozenValue()) {
+			return this.frozen;
+		}
+		return (positive ? "" : "-") + (input.equals("") ? "0" : input);
 	}
 	
 	/**

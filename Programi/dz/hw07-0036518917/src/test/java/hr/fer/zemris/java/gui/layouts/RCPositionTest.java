@@ -1,6 +1,5 @@
 package hr.fer.zemris.java.gui.layouts;
 
-import hr.fer.zemris.java.gui.layouts.calcLayoutException.CalcLayoutException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -79,7 +78,7 @@ public class RCPositionTest {
 
     @Test
     public void InvalidArgumentsStringTest7() {
-        Assertions.assertThrows(NumberFormatException.class, () -> p.add(new JLabel("x"), "12a,4"));
+        Assertions.assertThrows(CalcLayoutException.class, () -> p.add(new JLabel("x"), "12a,4"));
     }
 
     @Test
