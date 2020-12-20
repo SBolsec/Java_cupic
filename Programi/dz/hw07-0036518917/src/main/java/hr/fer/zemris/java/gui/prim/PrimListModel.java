@@ -14,9 +14,9 @@ import javax.swing.event.ListDataListener;
  */
 public class PrimListModel implements ListModel<Integer> {
 	/** Calculated data **/
-	private List<Integer> data = new ArrayList<>();
+	private final List<Integer> data = new ArrayList<>();
 	/** Listeners that are attached to this model **/
-	private List<ListDataListener> listeners = new ArrayList<>();
+	private final List<ListDataListener> listeners = new ArrayList<>();
 	
 	/**
 	 * Constructor.

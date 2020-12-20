@@ -22,7 +22,7 @@ public class BarChartComponent extends JComponent {
 	private static final long serialVersionUID = -2290688286165650352L;
 	
 	/** Reference to BarChart **/
-	private BarChart barChart;
+	private final BarChart barChart;
 	/** Window in which to draw **/
 	private Rectangle window;
 	/** Default font **/
@@ -51,7 +51,7 @@ public class BarChartComponent extends JComponent {
 	private final Color shadowColor = new Color(197,195,195,255);
 	/** Length the lines go over the axis **/
 	private final int extraLines = 5;
-	/** Gap between neighburing bars **/
+	/** Gap between neighbouring bars **/
 	private final int gapBetweenBars = 1;
 	/** Extra to add to axis lines for arrows **/
 	private final int arrowExtra = 10;
@@ -128,16 +128,16 @@ public class BarChartComponent extends JComponent {
 		
 		// Find end point of x-axis (x, 0)
 		int x1 = window.width - gapToWindow + arrowExtra;
-		int y1 = y0;
+		// int y1 = y0;
 		
 		// Find end point of y-axis (0, y)
-		int x2 = x0;
+		//int x2 = x0;
 		int y2 = gapToWindow - arrowExtra;
 		
 		// Draw x-axis and y-axis
 		g2d.setColor(axisColor);
-		g2d.drawLine(x0 - extraLines, y0, x1, y1);
-		g2d.drawLine(x0, y0 + extraLines, x2, y2);
+		g2d.drawLine(x0 - extraLines, y0, x1, y0);
+		g2d.drawLine(x0, y0 + extraLines, x0, y2);
 		
 		// Draw the numbers and grid lines on the y-axis
 		g2d.setFont(boldFont);

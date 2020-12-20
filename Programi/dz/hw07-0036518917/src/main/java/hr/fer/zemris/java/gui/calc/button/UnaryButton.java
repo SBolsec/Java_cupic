@@ -18,13 +18,13 @@ public class UnaryButton extends JButton implements ActionListener {
 	private static final long serialVersionUID = -3620935050355208730L;
 
 	/** Operation to be performed in normal state **/
-	private DoubleUnaryOperator first;
+	private final DoubleUnaryOperator first;
 	/** Operation to be performed in inverted state **/
-	private DoubleUnaryOperator second;
+	private final DoubleUnaryOperator second;
 	/** Text to be displayed on button in normal state **/
-	private String firstString;
+	private final String firstString;
 	/** Text to be displayed on button in normal state **/
-	private String secondString;
+	private final String secondString;
 	/** State of the button, true == normal state, false == inverted state **/
 	private boolean inverse;
 	

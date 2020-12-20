@@ -18,7 +18,7 @@ public class InverseCheckBox extends JCheckBox {
 	private static final long serialVersionUID = 7952893386476862646L;
 	
 	/** Listeners that listen to this check box **/
-	private List<ActionListener> listeners = new ArrayList<>();
+	private final List<ActionListener> listeners = new ArrayList<>();
 	
 	@Override
 	public void addActionListener(ActionListener l) {

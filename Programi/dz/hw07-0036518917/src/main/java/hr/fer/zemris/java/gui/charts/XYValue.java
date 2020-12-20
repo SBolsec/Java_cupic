@@ -7,9 +7,9 @@ package hr.fer.zemris.java.gui.charts;
  */
 public class XYValue {
 	/** Value of x **/
-	private int x;
+	private final int x;
 	/** Value of y **/
-	private int y;
+	private final int y;
 	
 	/**
 	 * Default constructor which initializes the properties.

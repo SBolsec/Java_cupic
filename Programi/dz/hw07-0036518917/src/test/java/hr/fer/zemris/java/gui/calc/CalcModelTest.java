@@ -14,7 +14,7 @@ public class CalcModelTest {
 	
 	private static CalcModel newCalcModel() {
 		// Zamijenite ovo tako da vraća primjerak Vaše implementacije modela.
-		return new CalcModelImpl2();
+		return new CalcModelImpl();
 	}
 
 	@BeforeEach

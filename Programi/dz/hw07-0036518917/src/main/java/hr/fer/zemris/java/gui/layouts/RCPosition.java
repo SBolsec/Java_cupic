@@ -7,9 +7,9 @@ package hr.fer.zemris.java.gui.layouts;
  */
 public class RCPosition {
 	/** Row of the element **/
-	private int row;
+	private final int row;
 	/** Column of the element **/
-	private int column;
+	private final int column;
 	
 	/**
 	 * Constructor which initializes the row and column.

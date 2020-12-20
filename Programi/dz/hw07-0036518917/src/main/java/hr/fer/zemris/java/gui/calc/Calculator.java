@@ -35,12 +35,12 @@ public class Calculator extends JFrame {
 	private CalcModel model;
 	/** Container in which the visual components are added **/
 	private Container cp;
-	/** Checkobox which inverses all the unary buttons **/
+	/** Checkbox which inverses all the unary buttons **/
 	private InverseCheckBox cb;
 	/** Stack used by push and pop **/
-	private Stack<Double> memory = new Stack<>();
+	private final Stack<Double> memory = new Stack<>();
 	/** Color of the buttons **/
-	private Color btnColor = new Color(221, 221, 255, 255);
+	private final Color btnColor = new Color(221, 221, 255, 255);
 
 	/**
 	 * Constructor.
@@ -48,7 +48,7 @@ public class Calculator extends JFrame {
 	public Calculator() {
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		setTitle("Java Calculator v1.0");
-		setSize(600,400);
+		setSize(700,400);
 		initGUI();
 	}
 	
@@ -62,9 +62,7 @@ public class Calculator extends JFrame {
 		
 		cb = new InverseCheckBox();
 		cb.setText("Inv");
-		cb.addItemListener(l -> {
-			cb.informListeners();
-		});
+		cb.addItemListener(l -> cb.informListeners());
 		cp.add(cb, new RCPosition(5, 7));
 
 		initDisplay();
@@ -117,7 +115,7 @@ public class Calculator extends JFrame {
 			btn.addActionListener(l -> {
 				try {
 					model.insertDigit(btn.getDigit());
-				} catch (Exception e) {
+				} catch (Exception ignored) {
 					
 				}
 			});
@@ -164,19 +162,20 @@ public class Calculator extends JFrame {
 			btn.setBackground(btnColor);
 			btn.setText(btnNames[i][0]);
 			btn.addActionListener(l -> {
-				try {
-					model.setActiveOperand(model.getValue());
+				if (model.isActiveOperandSet() && model.getPendingBinaryOperation() == null) {
 					double res = btn.getOperator().applyAsDouble(model.getActiveOperand());
-					String s = Double.toString(res);
-					if (s.endsWith(".0")) s = s.substring(0, s.length()-2);
-					model.setValue(res);
-					model.freezeValue(s);
 					model.setActiveOperand(res);
 					model.clear();
-					//model.clearActiveOperand();
-				} catch (Exception e) {
-					
+
+					String s = Double.toString(res);
+					if (s.endsWith(".0")) s = s.substring(0, s.length()-2);
+					model.freezeValue(s);
+					return;
 				}
+
+				double res = btn.getOperator().applyAsDouble(model.getValue());
+				model.freezeValue(null);
+				model.setValue(res);
 			});
 			cb.addActionListener(btn);
 			cp.add(btn, new RCPosition(r, c));
@@ -187,7 +186,7 @@ public class Calculator extends JFrame {
 	 * Initializes the binary buttons.
 	 */
 	private void initBinaryButtons() {
-		String btnNames[] = new String[] {
+		String[] btnNames = new String[] {
 				"/", "*", "-", "+" 
 		};
 		
@@ -195,7 +194,7 @@ public class Calculator extends JFrame {
 				(a,b) -> a/b,
 				(a,b) -> a*b,
 				(a,b) -> a-b,
-				(a,b) -> a+b
+				Double::sum
 		};
 		
 		for (int i = 0; i < 4; i++) {
@@ -203,20 +202,14 @@ public class Calculator extends JFrame {
 			btn.setText(btnNames[i]);
 			btn.setBackground(btnColor);
 			final int op = i;
-			btn.addActionListener(l -> {
-				binaryButtonAction();
-				model.setPendingBinaryOperation(operators[op]);
-			});
+			btn.addActionListener(l -> binaryButtonAction(operators[op]));
 			cp.add(btn, new RCPosition(i+2, 6));
 		}
 		
 		BinaryButton btn = new BinaryButton(Math::pow, (x,n)->Math.pow(x, 1/n), "x^n", "x^(1/n)");
 		btn.setBackground(btnColor);
 		btn.setText("x^n");
-		btn.addActionListener(l -> {
-			binaryButtonAction();
-			model.setPendingBinaryOperation(btn.getOperator());
-		});
+		btn.addActionListener(l -> binaryButtonAction(btn.getOperator()));
 		cb.addActionListener(btn);
 		cp.add(btn, new RCPosition(5, 1));
 	}
@@ -224,24 +217,33 @@ public class Calculator extends JFrame {
 	/**
 	 * Initializes the binary buttons.
 	 */
-	private void binaryButtonAction() {
-		try {
+	private void binaryButtonAction(DoubleBinaryOperator op) {
+		if (model.isActiveOperandSet()) {
+			if (model.getPendingBinaryOperation() == null) {
+				model.setPendingBinaryOperation(op);
+				return;
+			}
+			
 			double res = model.getPendingBinaryOperation().applyAsDouble(model.getActiveOperand(), model.getValue());
+			
 			String s = Double.toString(res);
 			if (s.endsWith(".0")) s = s.substring(0, s.length()-2);
-			model.setValue(res);
-			model.freezeValue(s);
-		} catch (Exception e) { }
-		try {
-			model.setActiveOperand(model.getValue());
-			String s = Double.toString(model.getValue());
+			
+			model.setActiveOperand(res);
+			model.setPendingBinaryOperation(op);
 			model.clear();
-			if (s.endsWith(".0")) s = s.substring(0, s.length()-2);
-			if (s.length() > 0 && s.charAt(0) == '-')
-				model.swapSign();
 			model.freezeValue(s);
-		} catch (Exception e) {}
+			return;
+		} 
+		
+		model.setActiveOperand(model.getValue());
+		model.setPendingBinaryOperation(op);
+			
+		String s = Double.toString(model.getValue());
+		if (s.endsWith(".0")) s = s.substring(0, s.length()-2);
+			
 		model.clear();
+		model.freezeValue(s);
 	}
 	
 	/**
@@ -252,18 +254,14 @@ public class Calculator extends JFrame {
 		JButton clr = new JButton();
 		clr.setText("clr");
 		clr.setBackground(btnColor);
-		clr.addActionListener(l -> {
-			model.clear();
-		});
+		clr.addActionListener(l -> model.clear());
 		cp.add(clr, new RCPosition(1, 7));
 		
 		// Reset button
 		JButton reset = new JButton();
 		reset.setText("reset");
 		reset.setBackground(btnColor);
-		reset.addActionListener(l -> {
-			model.clearAll();
-		});
+		reset.addActionListener(l -> model.clearAll());
 		cp.add(reset, new RCPosition(2, 7));
 		
 		// Push button
@@ -272,8 +270,12 @@ public class Calculator extends JFrame {
 		push.setBackground(btnColor);
 		push.addActionListener(l -> {
 			try {
-				this.memory.push(model.getValue());
-			} catch (Exception e) {}
+				if (model.isActiveOperandSet() && model.getPendingBinaryOperation() == null) {
+					this.memory.push(model.getActiveOperand());
+				} else {
+					this.memory.push(model.getValue());
+				}
+			} catch (Exception e) {JOptionPane.showMessageDialog(null, "Nothing to push!");}
 		});
 		cp.add(push, new RCPosition(3, 7));
 		
@@ -284,6 +286,7 @@ public class Calculator extends JFrame {
 		pop.addActionListener(l -> {
 			try {
 				model.setValue(this.memory.pop());
+				model.freezeValue(null);
 			} catch (Exception e) {
 				JOptionPane.showMessageDialog(null, "The stack is empty!");
 			}
@@ -295,17 +298,19 @@ public class Calculator extends JFrame {
 		equals.setText("=");
 		equals.setBackground(btnColor);
 		equals.addActionListener(l -> {
-			try {
-				double res = model.getPendingBinaryOperation().applyAsDouble(model.getActiveOperand(), model.getValue());
-				String s = Double.toString(res);
-				if (s.endsWith(".0")) s = s.substring(0, s.length()-2);
-				model.setValue(res);
-				model.freezeValue(s);
-				//model.clearActiveOperand();
-				model.setActiveOperand(model.getValue());
-				model.setPendingBinaryOperation(null);
-				model.clear();
-			} catch (Exception e) {}
+			if (!model.isActiveOperandSet() || model.getPendingBinaryOperation() == null) {
+				return;
+			}
+
+			double res = model.getPendingBinaryOperation().applyAsDouble(model.getActiveOperand(), model.getValue());
+				
+			String s = Double.toString(res);
+			if (s.endsWith(".0")) s = s.substring(0, s.length()-2);
+				
+			model.freezeValue(s);
+			model.setActiveOperand(res);
+			model.setPendingBinaryOperation(null);
+			model.clear();
 		});
 
 		cp.add(equals, new RCPosition(1, 6));
@@ -315,7 +320,20 @@ public class Calculator extends JFrame {
 		sign.setText("+/-");
 		sign.setBackground(btnColor);
 		sign.addActionListener(l -> {
-			model.swapSign();
+			if (model.isActiveOperandSet()) {
+				model.setActiveOperand(-model.getActiveOperand());
+				
+				String s = Double.toString(model.getActiveOperand());
+				if (s.endsWith(".0")) s = s.substring(0, s.length()-2);
+				
+				model.freezeValue(s);
+			} else {
+				model.setValue(-model.getValue());
+				String s = Double.toString(model.getValue());
+				if (s.endsWith(".0")) s = s.substring(0, s.length()-2);
+				model.freezeValue(s);
+				//model.swapSign();
+			}
 		});
 		cp.add(sign, new RCPosition(5, 4));
 		
@@ -324,7 +342,11 @@ public class Calculator extends JFrame {
 		dot.setText(".");
 		dot.setBackground(btnColor);
 		dot.addActionListener(l -> {
-			model.insertDecimalPoint();
+			try {
+				model.insertDecimalPoint();
+			} catch (Exception e) {
+				//model.clearAll();
+			}
 		});
 		cp.add(dot, new RCPosition(5, 5));
 	}
@@ -334,8 +356,6 @@ public class Calculator extends JFrame {
 	 * @param args command line arguments // not used
 	 */
 	public static void main(String[] args) {
-		SwingUtilities.invokeLater(() -> {
-			new Calculator().setVisible(true);
-		});
+		SwingUtilities.invokeLater(() -> new Calculator().setVisible(true));
 	}
 }

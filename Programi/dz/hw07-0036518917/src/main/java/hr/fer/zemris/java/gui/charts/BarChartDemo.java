@@ -27,10 +27,8 @@ public class BarChartDemo extends JFrame {
 	private static final long serialVersionUID = 8001783544740936988L;
 
 	/** BarChart to be displayed **/
-	private BarChart barChart;
-	/** Label at the top of the window displaying file from which BarChart was created **/
-	private JLabel fileLabel;
-	
+	private final BarChart barChart;
+
 	/**
 	 * Constructor.
 	 */
@@ -53,7 +51,7 @@ public class BarChartDemo extends JFrame {
 		cp.setLayout(new BorderLayout());
 		
 		JPanel north = new JPanel();
-		fileLabel = new JLabel(fileName);
+		JLabel fileLabel = new JLabel(fileName);
 		fileLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
 		north.add(fileLabel);
 		cp.add(north, BorderLayout.NORTH);
@@ -74,9 +72,7 @@ public class BarChartDemo extends JFrame {
 		
 		BarChart barChart = parseFile(args[0]);
 		
-		SwingUtilities.invokeLater(() -> {
-			new BarChartDemo(barChart, args[0]).setVisible(true);
-		});
+		SwingUtilities.invokeLater(() -> new BarChartDemo(barChart, args[0]).setVisible(true));
 	}
 	
 	/**
@@ -97,7 +93,7 @@ public class BarChartDemo extends JFrame {
 		if (!Files.isRegularFile(path))
 			throw new IllegalArgumentException("Path is not a regular file!");
 		
-		List<String> lines = null;
+		List<String> lines;
 		try {
 			lines = Files.readAllLines(path);
 		} catch (IOException e) {
@@ -107,7 +103,7 @@ public class BarChartDemo extends JFrame {
 		if (lines.size() < 6)
 			throw new IllegalArgumentException("File must contain 6 rows, it had: " + lines.size());
 		
-		List<XYValue> values = null;
+		List<XYValue> values;
 		try {
 			values = Stream.of(lines.get(2).split(" "))
 					.map(v -> new XYValue(Integer.parseInt(v.substring(0, v.indexOf(','))), 

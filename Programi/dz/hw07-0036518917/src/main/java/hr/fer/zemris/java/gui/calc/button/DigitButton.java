@@ -13,7 +13,7 @@ public class DigitButton extends JButton {
 	private static final long serialVersionUID = -6268997809045536018L;
 	
 	/** Digit that this button represents **/
-	private int digit;
+	private final int digit;
 	
 	/**
 	 * Constructor which sets the digit.

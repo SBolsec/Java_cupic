@@ -10,17 +10,17 @@ import java.util.List;
  */
 public class BarChart {
 	/** List of XYValues **/
-	private List<XYValue> values;
+	private final List<XYValue> values;
 	/** Description of x-axis **/
-	private String xDesc;
+	private final String xDesc;
 	/** Description of y-axis **/
-	private String yDesc;
+	private final String yDesc;
 	/** Minimum y to show on y-axis **/
-	private int minY;
+	private final int minY;
 	/** Maximum y to show on x-axis **/
-	private int maxY;
+	private final int maxY;
 	/** Gap between two y's that are next to each other **/
-	private int gap;
+	private final int gap;
 	
 	/**
 	 * Constructor whihc checks the validity of the arguments

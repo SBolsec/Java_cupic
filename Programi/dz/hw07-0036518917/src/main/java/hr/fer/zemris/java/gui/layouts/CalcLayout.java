@@ -18,9 +18,9 @@ import java.util.function.Function;
  */
 public class CalcLayout implements LayoutManager2 {
 	/** Gap between rows and columns **/
-	private int gap;
+	private final int gap;
 	/** Components in this layout **/
-	private Map<Component, RCPosition> components;
+	private final Map<Component, RCPosition> components;
 	
 	/**
 	 * Default constructor, sets gap between rows and columns to 0.
@@ -31,7 +31,7 @@ public class CalcLayout implements LayoutManager2 {
 	
 	/**
 	 * Constructor which initializes the gap between rows and columns.
-	 * @param gap
+	 * @param gap gap between rows and columns
 	 */
 	public CalcLayout(int gap) {
 		super();
@@ -53,7 +53,7 @@ public class CalcLayout implements LayoutManager2 {
 	 */
 	@Override
 	public void addLayoutComponent(Component comp, Object constraints) {
-		RCPosition p = null;
+		RCPosition p;
 		
 		if (comp == null)
 			throw new NullPointerException("Component can not be null!");
@@ -69,10 +69,10 @@ public class CalcLayout implements LayoutManager2 {
 		} else {
 			throw new IllegalArgumentException("Constraints were neither a string nor RCPosition!");
 		}
-		
-		if (p == null) 
+
+		if (p == null)
 			throw new NullPointerException("RCPosition can not be null!");
-		
+
 		int r = p.getRow();
 		int c = p.getColumn();
 		
@@ -96,17 +96,17 @@ public class CalcLayout implements LayoutManager2 {
 
 	@Override
 	public Dimension preferredLayoutSize(Container parent) {
-		return calculateWidthAndHeight(c -> c.getPreferredSize(), parent.getInsets());
+		return calculateWidthAndHeight(Component::getPreferredSize, parent.getInsets());
 	}
 
 	@Override
 	public Dimension minimumLayoutSize(Container parent) {
-		return calculateWidthAndHeight(c -> c.getMinimumSize(), parent.getInsets());
+		return calculateWidthAndHeight(Component::getMinimumSize, parent.getInsets());
 	}
 	
 	@Override
 	public Dimension maximumLayoutSize(Container target) {
-		return calculateWidthAndHeight(c -> c.getMaximumSize(), target.getInsets());
+		return calculateWidthAndHeight(Component::getMaximumSize, target.getInsets());
 	}
 	
 	/**

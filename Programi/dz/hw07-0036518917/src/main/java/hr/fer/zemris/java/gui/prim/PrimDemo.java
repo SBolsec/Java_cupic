@@ -53,9 +53,7 @@ public class PrimDemo extends JFrame {
 		cp.add(p, BorderLayout.CENTER);
 		
 		JButton btn = new JButton("Sljedeći");
-		btn.addActionListener(l -> {
-			model.next();
-		});
+		btn.addActionListener(l -> model.next());
 		cp.add(btn, BorderLayout.SOUTH);
 	}
 	
@@ -64,8 +62,6 @@ public class PrimDemo extends JFrame {
 	 * @param args command line arguments // not used
 	 */
 	public static void main(String[] args) {
-		SwingUtilities.invokeLater(() -> {
-			new PrimDemo().setVisible(true);
-		});
+		SwingUtilities.invokeLater(() -> new PrimDemo().setVisible(true));
 	}
 }
