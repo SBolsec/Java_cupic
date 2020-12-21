@@ -59,23 +59,23 @@ public class MojProzor extends JFrame {
 					return;
 				}
 
-//				int rezultat = JOptionPane.showConfirmDialog(MojProzor.this,
-//						"Posotoji nesmiljeni sadržaj. Želite li ga snimiti?", "Upozorenje!",
-//						JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
-//				switch (rezultat) {
-//				case JOptionPane.CANCEL_OPTION:
-//					return;
-//				case JOptionPane.CANCEL_OPTION:
-//					return;
-//				case JOptionPane.YES_OPTION:
-//					// save();
-//					System.out.println("Snimam");
-//					dispose();
-//					return;
-//				case JOptionPane.NO_OPTION:
-//					dispose();
-//					return;
-//				}
+				// int rezultat = JOptionPane.showConfirmDialog(MojProzor.this,
+				// 		"Posotoji nesmiljeni sadržaj. Želite li ga snimiti?", "Upozorenje!",
+				// 		JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE);
+				// switch (rezultat) {
+				// case JOptionPane.CANCEL_OPTION:
+				// 	return;
+				// case JOptionPane.CANCEL_OPTION:
+				// 	return;
+				// case JOptionPane.YES_OPTION:
+				// 	// save();
+				// 	System.out.println("Snimam");
+				// 	dispose();
+				// 	return;
+				// case JOptionPane.NO_OPTION:
+				// 	dispose();
+				// 	return;
+				// }
 			}
 
 		};
