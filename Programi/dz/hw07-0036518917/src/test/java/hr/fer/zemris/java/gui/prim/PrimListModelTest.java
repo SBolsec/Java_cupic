@@ -2,29 +2,19 @@ package hr.fer.zemris.java.gui.prim;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
 
 public class PrimListModelTest {
-
-	private PrimListModel model;
-	
-	private static PrimListModel newPrimListModel() {
-		return new PrimListModel();
-	}
-	
-	@BeforeEach
-	public void setup() {
-		this.model = newPrimListModel();
-	}
 	
 	@Test
 	public void testNewModel() {
+		PrimListModel model = new PrimListModel();
 		assertEquals(1, model.getSize());
 		assertEquals(1, model.getElementAt(0));
 	}
 	
 	@Test
 	public void testNext() {
+		PrimListModel model = new PrimListModel();
 		model.next();
 		assertEquals(2, model.getElementAt(1));
 		model.next();

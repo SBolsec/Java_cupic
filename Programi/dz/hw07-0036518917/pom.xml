@@ -7,21 +7,8 @@
 	<groupId>hr.fer.oprpp1.jmbag0036518917</groupId>
 	<artifactId>hw07-0036518917</artifactId>
 	<version>1.0</version>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>14</source>
-                    <target>14</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
-
-    <name>Homework08</name>
+    <name>Homework07</name>
      
 	<properties>
 		<maven.compiler.source>15</maven.compiler.source>
