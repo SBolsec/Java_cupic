@@ -11,7 +11,7 @@ import java.nio.file.Path;
 import java.util.Iterator;
 
 import javax.swing.Action;
-import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
@@ -22,7 +22,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JToolBar;
-import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
@@ -31,6 +30,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 
 import hr.fer.oprpp1.hw08.jnotepadpp.document.DefaultMultipleDocumentModel;
+import hr.fer.oprpp1.hw08.jnotepadpp.document.MultipleDocumentModel;
 import hr.fer.oprpp1.hw08.jnotepadpp.document.SingleDocumentModel;
 import hr.fer.oprpp1.hw08.jnotepadpp.local.ILocalizationListener;
 import hr.fer.oprpp1.hw08.jnotepadpp.local.LocalizationProvider;
@@ -44,21 +44,23 @@ import hr.fer.oprpp1.hw08.jnotepadpp.local.swing.LocalizableAction;
  * @author sbolsec
  *
  */
-public class JNotepadpp extends LJFrame {
+public class JNotepadPP extends LJFrame {
 
 	/** Generated serial version UID **/
 	private static final long serialVersionUID = 2115546573199433581L;
 	/** Provides localization **/
 	private final FormLocalizationProvider flp = this.getFormLocalizationProvider();
 	/** Model for working with multiple documents, also adds support for tabs **/
-	private DefaultMultipleDocumentModel model = new DefaultMultipleDocumentModel();
+	private DefaultMultipleDocumentModel tabbedPane;
+	/** Model for working with multiple documents **/
+	private MultipleDocumentModel model;
 	/** Clipboard used by cut, copy and paste **/
 	private String clipboard = "";
 
 	/**
 	 * Constructor.
 	 */
-	public JNotepadpp() {
+	public JNotepadPP() {
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		setLocation(0, 0);
 		setSize(900, 600);
@@ -73,7 +75,8 @@ public class JNotepadpp extends LJFrame {
 			}
 		});
 
-		model.addChangeListener(new ChangeListener() {
+		// when user changes selected tab
+		tabbedPane.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				JTabbedPane tabbedPane = (JTabbedPane) e.getSource();
@@ -81,9 +84,11 @@ public class JNotepadpp extends LJFrame {
 
 				if (selectedIndex == -1) {
 					setTitle("JNotepad++");
+					enableOrDisableActions(false);
 					return;
 				}
 
+				enableOrDisableActions(true);
 				Path path = model.getDocument(selectedIndex).getFilePath();
 				String file = "";
 				if (path != null)
@@ -92,9 +97,12 @@ public class JNotepadpp extends LJFrame {
 			}
 		});
 
+		// when user changes language
 		flp.addLocalizationListener(new ILocalizationListener() {
 			@Override
 			public void localizationChanged() {
+				if (tabbedPane.getSelectedIndex() == -1)
+					return;
 				if (model.getCurrentDocument().getFilePath() == null) {
 					setTitle("(" + flp.getString("unnamedName") + ")" + "  -  JNotepad++");
 				}
@@ -107,32 +115,60 @@ public class JNotepadpp extends LJFrame {
 	 */
 	private void initGUI() {
 		getContentPane().setLayout(new BorderLayout());
+		
+		tabbedPane = new DefaultMultipleDocumentModel();
+		model = (MultipleDocumentModel) tabbedPane;
 
 		model.createNewDocument();
 		JScrollPane scrollPane = new JScrollPane(model.getCurrentDocument().getTextComponent());
 		String title = flp.getString("unnamedName");
-		Icon icon = null;
+		ImageIcon icon = new Util().getIcon("icons/greenDisk.png");
 		String tip = flp.getString("unnamedTooltip");
-		model.addTab(title, icon, scrollPane, tip);
+		tabbedPane.addTab(title, icon, scrollPane, tip);
+		
 		flp.addLocalizationListener(new ILocalizationListener() {
 			@Override
 			public void localizationChanged() {
+				if (tabbedPane.getSelectedIndex() == -1) {
+					return;
+				}
 				SingleDocumentModel doc = model.getDocument(0);
 				boolean isNull = doc.getFilePath() == null;
-				model.setTitleAt(0, isNull ? flp.getString("unnamedName") : doc.getFilePath().getFileName().toString());
-				model.setToolTipTextAt(0,
+				tabbedPane.setTitleAt(0, isNull ? flp.getString("unnamedName") : doc.getFilePath().getFileName().toString());
+				tabbedPane.setToolTipTextAt(0,
 						isNull ? flp.getString("unnamedTooltip") : doc.getFilePath().toAbsolutePath().toString());
 			}
 		});
 
-		add(model, BorderLayout.CENTER);
-		model.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+		add(tabbedPane, BorderLayout.CENTER);
+		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
 		createActions();
 		createMenus();
 		createToolbars();
 	}
 
+	/**
+	 * Enables or disables actions based on given boolean. Used when there are no
+	 * open tabs to disable certain actions.
+	 * 
+	 * @param status boolean which indicates whether the actions will be enabled or
+	 *               disabled
+	 */
+	private void enableOrDisableActions(boolean status) {
+		saveDocumentAction.setEnabled(status);
+		saveAsDocumentAction.setEnabled(status);
+		closeDocumentAction.setEnabled(status);
+		cutTextAction.setEnabled(status);
+		copyTextAction.setEnabled(status);
+		pasteTextAction.setEnabled(status);
+		statisticsAction.setEnabled(status);
+	}
+
+	/**
+	 * Checks for open unsaved documents before exiting the program. Asks user to
+	 * save each unsaved doucment.
+	 */
 	private void closeWindow() {
 		String[] options = new String[] { flp.getString("exitYes"), flp.getString("exitNo"),
 				flp.getString("exitCancel") };
@@ -151,7 +187,7 @@ public class JNotepadpp extends LJFrame {
 					file = flp.getString("unnamedName");
 				}
 
-				int result = JOptionPane.showOptionDialog(JNotepadpp.this, file + " " + message, title,
+				int result = JOptionPane.showOptionDialog(JNotepadPP.this, file + " " + message, title,
 						JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[0]);
 
 				switch (result) {
@@ -159,34 +195,7 @@ public class JNotepadpp extends LJFrame {
 					return;
 				case 0:
 					if (path == null) {
-						SingleDocumentModel doc = m;
-						Path openedFilePath;
-						JFileChooser jfc = new JFileChooser();
-						jfc.setDialogTitle("Save document as");
-						if (jfc.showSaveDialog(JNotepadpp.this) != JFileChooser.APPROVE_OPTION) {
-							JOptionPane.showMessageDialog(JNotepadpp.this, "Ništa nije snimljeno.", "Upozorenje",
-									JOptionPane.WARNING_MESSAGE);
-							return;
-						}
-						openedFilePath = jfc.getSelectedFile().toPath();
-
-						try {
-							model.saveDocument(doc, openedFilePath);
-							
-							int index = model.getSelectedIndex();
-							doc = model.getDocument(index);
-							model.setTitleAt(index, doc.getFilePath().getFileName().toString());
-							model.setToolTipTextAt(index, doc.getFilePath().toString());
-							setTitle(doc.getFilePath().toString() + "  -  JNotepad++");
-						} catch (Exception e1) {
-							JOptionPane.showMessageDialog(JNotepadpp.this,
-									"Pogreška prilikom zapisivanja datoteke " + openedFilePath.toFile().getAbsolutePath()
-											+ ".\nPažnja: nije jasno u kojem je stanju datoteka na disku!",
-									"Pogreška", JOptionPane.ERROR_MESSAGE);
-							return;
-						}
-						JOptionPane.showMessageDialog(JNotepadpp.this, "Datoteka je snimljena.", "Informacija",
-								JOptionPane.INFORMATION_MESSAGE);
+						saveDocument(m, null, true);
 						iter = model.iterator();
 					} else {
 						model.saveDocument(m, path);
@@ -202,8 +211,79 @@ public class JNotepadpp extends LJFrame {
 
 		dispose();
 	}
+	
+	/**
+	 * Saves the document to the disk
+	 * @param doc document to be saved
+	 * @param openedFilePath file path of document
+	 * @param shoDialog true if a file chooser needs to open to select file path
+	 */
+	private void saveDocument(SingleDocumentModel doc, Path openedFilePath, boolean shoDialog) {
+		if (openedFilePath == null) {
+			JFileChooser jfc = new JFileChooser();
+			jfc.setDialogTitle(flp.getString("dialogSaveAs"));
+			if (jfc.showSaveDialog(JNotepadPP.this) != JFileChooser.APPROVE_OPTION) {
+				String[] options = new String[] {flp.getString("dialogOK")};
+				JOptionPane.showOptionDialog(
+						JNotepadPP.this, flp.getString("dialogNothingSaved"), 
+						flp.getString("dialogWarning"), JOptionPane.OK_OPTION, 
+						JOptionPane.WARNING_MESSAGE, null, options, options[0]);
+				return;
+			}
+			openedFilePath = jfc.getSelectedFile().toPath();
+		}
 
-	private Action createBlankDocumentAction = new LocalizableAction("newDocument", flp) {
+		if (shoDialog && Files.exists(openedFilePath)) {
+			String[] options = new String[] { flp.getString("yes"), flp.getString("no"),
+					flp.getString("cancel") };
+			String message = flp.getString("dialogFileExists");
+			String title = flp.getString("exitTitle");
+
+			int result = JOptionPane.showOptionDialog(JNotepadPP.this, message, title, JOptionPane.DEFAULT_OPTION,
+					JOptionPane.WARNING_MESSAGE, null, options, options[0]);
+
+			switch (result) {
+			case JOptionPane.CLOSED_OPTION:
+				return;
+			case 0:
+				break;
+			case 1:
+				return;
+			case 2:
+				return;
+			}
+		}
+
+		try {
+			model.saveDocument(doc, openedFilePath);
+			doc = model.getCurrentDocument();
+			setTitle(doc.getFilePath().toString() + "  -  JNotepad++");
+		} catch (Exception e1) {
+			String[] options = new String[] {flp.getString("dialogOK")};
+			String message = String.format("%s %s.\n%s", 
+					flp.getString("dialogFileSaveFail1"), 
+					openedFilePath.toFile().getAbsolutePath(), 
+					flp.getString("dialogFileSaveFail2")
+			);
+			JOptionPane.showOptionDialog(
+					JNotepadPP.this, message, 
+					flp.getString("dialogInfo"), JOptionPane.OK_OPTION, 
+					JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+			return;
+		}
+		
+		String[] options = new String[] {flp.getString("dialogOK")};
+		JOptionPane.showOptionDialog(
+				JNotepadPP.this, flp.getString("dialogFileSaved"), 
+				flp.getString("dialogInfo"), JOptionPane.OK_OPTION, 
+				JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+	
+	}
+
+	/**
+	 * Action which creates new blank document.
+	 */
+	private Action createBlankDocumentAction = new LocalizableAction("newDocument", "descCreate", flp) {
 
 		private static final long serialVersionUID = 1L;
 
@@ -212,22 +292,25 @@ public class JNotepadpp extends LJFrame {
 			model.createNewDocument();
 			JScrollPane scrollPane = new JScrollPane(model.getCurrentDocument().getTextComponent());
 			String title = flp.getString("unnamedName");
-			Icon icon = null;
+			ImageIcon icon = new Util().getIcon("icons/greenDisk.png");
 			String tip = flp.getString("unnamedTooltip");
-			model.addTab(title, icon, scrollPane, tip);
+			tabbedPane.addTab(title, icon, scrollPane, tip);
 			flp.addLocalizationListener(new ILocalizationListener() {
 				@Override
 				public void localizationChanged() {
-					int index = model.getTabCount() - 1;
-					model.setTitleAt(index, flp.getString("unnamedName"));
-					model.setToolTipTextAt(index, flp.getString("unnamedTooltip"));
+					int index = tabbedPane.getTabCount() - 1;
+					tabbedPane.setTitleAt(index, flp.getString("unnamedName"));
+					tabbedPane.setToolTipTextAt(index, flp.getString("unnamedTooltip"));
 				}
 			});
-			model.setSelectedIndex(model.getNumberOfDocuments() - 1);
+			tabbedPane.setSelectedIndex(model.getNumberOfDocuments() - 1);
 		}
 	};
 
-	private Action openDocumentAction = new LocalizableAction("openDocument", flp) {
+	/**
+	 * Action which opens and loads a document.
+	 */
+	private Action openDocumentAction = new LocalizableAction("openDocument", "descOpen", flp) {
 
 		private static final long serialVersionUID = 1L;
 
@@ -235,13 +318,24 @@ public class JNotepadpp extends LJFrame {
 		public void actionPerformed(ActionEvent e) {
 			JFileChooser fc = new JFileChooser();
 			fc.setDialogTitle(flp.getString("openFile"));
-			if (fc.showOpenDialog(JNotepadpp.this) != JFileChooser.APPROVE_OPTION) {
+			if (fc.showOpenDialog(JNotepadPP.this) != JFileChooser.APPROVE_OPTION) {
 				return;
 			}
 			File fileName = fc.getSelectedFile();
 			Path filePath = fileName.toPath();
 			if (!Files.isReadable(filePath)) {
-				JOptionPane.showMessageDialog(JNotepadpp.this,
+				String[] options = new String[] {flp.getString("dialogOK")};
+				String message = String.format("%s %s %s", 
+						flp.getString("dialogFileNotExists1"), 
+						fileName.getAbsolutePath(),
+						flp.getString("dialogFileNotExists2")
+				);
+				JOptionPane.showOptionDialog(
+						JNotepadPP.this, message, 
+						flp.getString("dialogError"), JOptionPane.OK_OPTION, 
+						JOptionPane.ERROR_MESSAGE, null, options, options[0]);
+				
+				JOptionPane.showMessageDialog(JNotepadPP.this,
 						"Datoteka " + fileName.getAbsolutePath() + " ne postoji!", "Pogreška",
 						JOptionPane.ERROR_MESSAGE);
 				return;
@@ -249,93 +343,49 @@ public class JNotepadpp extends LJFrame {
 			try {
 				model.loadDocument(filePath);
 			} catch (Exception ex) {
-				JOptionPane.showMessageDialog(JNotepadpp.this,
-						"Pogreška prilikom čitanja datoteke " + fileName.getAbsolutePath() + ".", "Pogreška",
-						JOptionPane.ERROR_MESSAGE);
+				String[] options = new String[] {flp.getString("dialogOK")};
+				String message = String.format("%s %s.", flp.getString("dialogFileReadError"), fileName.getAbsolutePath());
+				JOptionPane.showOptionDialog(
+						JNotepadPP.this, message, 
+						flp.getString("dialogError"), JOptionPane.OK_OPTION, 
+						JOptionPane.ERROR_MESSAGE, null, options, options[0]);
 				return;
 			}
 		}
 	};
 
-	private Action saveDocumentAction = new LocalizableAction("saveDocument", flp) {
+	/**
+	 * Action which saves document.
+	 */
+	private Action saveDocumentAction = new LocalizableAction("saveDocument", "descSave", flp) {
 
 		private static final long serialVersionUID = 1L;
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			SingleDocumentModel doc = model.getCurrentDocument();
-			Path openedFilePath = doc.getFilePath();
-			if (openedFilePath == null) {
-				JFileChooser jfc = new JFileChooser();
-				jfc.setDialogTitle("Save document");
-				if (jfc.showSaveDialog(JNotepadpp.this) != JFileChooser.APPROVE_OPTION) {
-					JOptionPane.showMessageDialog(JNotepadpp.this, "Ništa nije snimljeno.", "Upozorenje",
-							JOptionPane.WARNING_MESSAGE);
-					return;
-				}
-				openedFilePath = jfc.getSelectedFile().toPath();
-			}
-
-			try {
-				model.saveDocument(doc, openedFilePath);
-				
-				int index = model.getSelectedIndex();
-				doc = model.getDocument(index);
-				model.setTitleAt(index, doc.getFilePath().getFileName().toString());
-				model.setToolTipTextAt(index, doc.getFilePath().toString());
-				setTitle(doc.getFilePath().toString() + "  -  JNotepad++");
-			} catch (Exception e1) {
-				JOptionPane.showMessageDialog(JNotepadpp.this,
-						"Pogreška prilikom zapisivanja datoteke " + openedFilePath.toFile().getAbsolutePath()
-								+ ".\nPažnja: nije jasno u kojem je stanju datoteka na disku!",
-						"Pogreška", JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-			JOptionPane.showMessageDialog(JNotepadpp.this, "Datoteka je snimljena.", "Informacija",
-					JOptionPane.INFORMATION_MESSAGE);
-
+			saveDocument(doc, doc.getFilePath(), doc.getFilePath() == null);
 		}
 	};
 
-	private Action saveAsDocumentAction = new LocalizableAction("saveAsDocument", flp) {
+	/**
+	 * Action which saves document but propmpts user for where to save it.
+	 */
+	private Action saveAsDocumentAction = new LocalizableAction("saveAsDocument", "descSaveAs", flp) {
 
 		private static final long serialVersionUID = 1L;
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			SingleDocumentModel doc = model.getCurrentDocument();
-			Path openedFilePath;
-			JFileChooser jfc = new JFileChooser();
-			jfc.setDialogTitle("Save document as");
-			if (jfc.showSaveDialog(JNotepadpp.this) != JFileChooser.APPROVE_OPTION) {
-				JOptionPane.showMessageDialog(JNotepadpp.this, "Ništa nije snimljeno.", "Upozorenje",
-						JOptionPane.WARNING_MESSAGE);
-				return;
-			}
-			openedFilePath = jfc.getSelectedFile().toPath();
-
-			try {
-				model.saveDocument(doc, openedFilePath);
-				
-				int index = model.getSelectedIndex();
-				doc = model.getDocument(index);
-				model.setTitleAt(index, doc.getFilePath().getFileName().toString());
-				model.setToolTipTextAt(index, doc.getFilePath().toString());
-				setTitle(doc.getFilePath().toString() + "  -  JNotepad++");
-			} catch (Exception e1) {
-				JOptionPane.showMessageDialog(JNotepadpp.this,
-						"Pogreška prilikom zapisivanja datoteke " + openedFilePath.toFile().getAbsolutePath()
-								+ ".\nPažnja: nije jasno u kojem je stanju datoteka na disku!",
-						"Pogreška", JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-			JOptionPane.showMessageDialog(JNotepadpp.this, "Datoteka je snimljena.", "Informacija",
-					JOptionPane.INFORMATION_MESSAGE);
-
+			saveDocument(model.getCurrentDocument(), null, true);
 		}
 	};
 
-	private Action closeDocument = new LocalizableAction("closeDocument", flp) {
+	/**
+	 * Action which closes currently selected document. Prompts user to save it
+	 * before closing if the document is unsaved.
+	 */
+	private Action closeDocumentAction = new LocalizableAction("closeDocument", "descClose", flp) {
 
 		private static final long serialVersionUID = 1L;
 
@@ -357,16 +407,16 @@ public class JNotepadpp extends LJFrame {
 				String message = flp.getString("exitMessage");
 				String title = flp.getString("exitTitle");
 
-				int result = JOptionPane.showOptionDialog(JNotepadpp.this, file + " " + message, title,
+				int result = JOptionPane.showOptionDialog(JNotepadPP.this, file + " " + message, title,
 						JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[0]);
 
 				switch (result) {
 				case JOptionPane.CLOSED_OPTION:
 					return;
 				case 0:
-					if (path == null)
-						path = Path.of(""); // TODO pitaj kroz dialog
-					model.saveDocument(m, path);
+					if (path == null) {
+						saveDocument(m, m.getFilePath(), m.getFilePath() == null);
+					}
 					break;
 				case 1:
 					break;
@@ -375,11 +425,27 @@ public class JNotepadpp extends LJFrame {
 				}
 			}
 
-			model.closeDocument(m);
+			model.closeDocument(model.getCurrentDocument());
 		}
 	};
 
-	private Action cutText = new LocalizableAction("cutText", flp) {
+	/**
+	 * Action which exits the program.
+	 */
+	private Action exitAction = new LocalizableAction("exit", "descExit", flp) {
+
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			closeWindow();
+		}
+	};
+
+	/**
+	 * Action whihc cuts selected text and stores it into clipboard.
+	 */
+	private Action cutTextAction = new LocalizableAction("cutText", "descCut", flp) {
 
 		private static final long serialVersionUID = 1L;
 
@@ -400,7 +466,10 @@ public class JNotepadpp extends LJFrame {
 		}
 	};
 
-	private Action copyText = new LocalizableAction("copyText", flp) {
+	/**
+	 * Action which copies selected text and stores it into clipboard.
+	 */
+	private Action copyTextAction = new LocalizableAction("copyText", "descCopy", flp) {
 
 		private static final long serialVersionUID = 1L;
 
@@ -420,7 +489,10 @@ public class JNotepadpp extends LJFrame {
 		}
 	};
 
-	private Action pasteText = new LocalizableAction("pasteText", flp) {
+	/**
+	 * Action which pastes text from the clipboard.
+	 */
+	private Action pasteTextAction = new LocalizableAction("pasteText", "descPaste", flp) {
 
 		private static final long serialVersionUID = 1L;
 
@@ -437,7 +509,10 @@ public class JNotepadpp extends LJFrame {
 		}
 	};
 
-	private Action statisticsAction = new LocalizableAction("stats", flp) {
+	/**
+	 * Action which shows statistical information about currently opened document.
+	 */
+	private Action statisticsAction = new LocalizableAction("stats", "descStats", flp) {
 
 		private static final long serialVersionUID = 1L;
 
@@ -464,8 +539,11 @@ public class JNotepadpp extends LJFrame {
 			String message = String.format("%s %d %s %d %s %d %s", s1, totalChars, s2, numOfNonBlank, s3, numOfLines,
 					s4);
 
-			JOptionPane.showMessageDialog(JNotepadpp.this, message, flp.getString("stats"),
-					JOptionPane.INFORMATION_MESSAGE);
+			String[] options = new String[] {flp.getString("dialogOK")};
+			JOptionPane.showOptionDialog(
+					JNotepadPP.this, message, 
+					flp.getString("stats"), JOptionPane.OK_OPTION, 
+					JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
 		}
 	};
 
@@ -473,56 +551,18 @@ public class JNotepadpp extends LJFrame {
 	 * Adds properties to actions.
 	 */
 	private void createActions() {
-		createBlankDocumentAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control n"));
 		createBlankDocumentAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_0);
-		createBlankDocumentAction.putValue(Action.SHORT_DESCRIPTION, flp.getString("descCreate"));
-
-		openDocumentAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control o"));
 		openDocumentAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_1);
-		openDocumentAction.putValue(Action.SHORT_DESCRIPTION, flp.getString("descOpen"));
-
-		saveDocumentAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control s"));
 		saveDocumentAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_2);
-		saveDocumentAction.putValue(Action.SHORT_DESCRIPTION, flp.getString("descSave"));
-
-		saveAsDocumentAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control shift s"));
 		saveAsDocumentAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_3);
-		saveAsDocumentAction.putValue(Action.SHORT_DESCRIPTION, flp.getString("descSaveAs"));
-
-		closeDocument.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control x"));
-		closeDocument.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_4);
-		closeDocument.putValue(Action.SHORT_DESCRIPTION, flp.getString("descClose"));
-
-		cutText.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control w"));
-		cutText.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_5);
-		cutText.putValue(Action.SHORT_DESCRIPTION, flp.getString("descCut"));
-
-		copyText.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control c"));
-		copyText.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_6);
-		copyText.putValue(Action.SHORT_DESCRIPTION, flp.getString("descCopy"));
-
-		pasteText.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control v"));
-		pasteText.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_7);
-		pasteText.putValue(Action.SHORT_DESCRIPTION, flp.getString("descPaste"));
-
-		statisticsAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control i"));
-		statisticsAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_8);
-		statisticsAction.putValue(Action.SHORT_DESCRIPTION, flp.getString("descStats"));
-
-		flp.addLocalizationListener(new ILocalizationListener() {
-			@Override
-			public void localizationChanged() {
-				createBlankDocumentAction.putValue(Action.SHORT_DESCRIPTION, flp.getString("descCreate"));
-				openDocumentAction.putValue(Action.SHORT_DESCRIPTION, flp.getString("descOpen"));
-				saveDocumentAction.putValue(Action.SHORT_DESCRIPTION, flp.getString("descSave"));
-				saveAsDocumentAction.putValue(Action.SHORT_DESCRIPTION, flp.getString("descSaveAs"));
-				closeDocument.putValue(Action.SHORT_DESCRIPTION, flp.getString("descClose"));
-				cutText.putValue(Action.SHORT_DESCRIPTION, flp.getString("descCut"));
-				copyText.putValue(Action.SHORT_DESCRIPTION, flp.getString("descCopy"));
-				pasteText.putValue(Action.SHORT_DESCRIPTION, flp.getString("descPaste"));
-				statisticsAction.putValue(Action.SHORT_DESCRIPTION, flp.getString("descCut"));
-			}
-		});
+		closeDocumentAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_4);
+		exitAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_5);
+		cutTextAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_6);
+		copyTextAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_7);
+		pasteTextAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_8);
+		statisticsAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_9);
+		
+		//TODO keyboard shortcuts
 	}
 
 	/**
@@ -538,14 +578,15 @@ public class JNotepadpp extends LJFrame {
 		fileMenu.add(new JMenuItem(openDocumentAction));
 		fileMenu.add(new JMenuItem(saveDocumentAction));
 		fileMenu.add(new JMenuItem(saveAsDocumentAction));
-		fileMenu.add(new JMenuItem(closeDocument));
+		fileMenu.add(new JMenuItem(closeDocumentAction));
+		fileMenu.add(new JMenuItem(exitAction));
 
 		JMenu editMenu = new JMenu(flp.getString("menuEdit"));
 		menuBar.add(editMenu);
 
-		editMenu.add(new JMenuItem(cutText));
-		editMenu.add(new JMenuItem(copyText));
-		editMenu.add(new JMenuItem(pasteText));
+		editMenu.add(new JMenuItem(cutTextAction));
+		editMenu.add(new JMenuItem(copyTextAction));
+		editMenu.add(new JMenuItem(pasteTextAction));
 
 		JMenu toolsMenu = new JMenu(flp.getString("menuTools"));
 		menuBar.add(toolsMenu);
@@ -576,7 +617,7 @@ public class JNotepadpp extends LJFrame {
 	private JMenu createLanguagesMenu() {
 		JMenu languageMenu = new JMenu(flp.getString("menuLang"));
 
-		JMenuItem hr = new JMenuItem(new LocalizableAction("langHr", flp) {
+		JMenuItem hr = new JMenuItem(new LocalizableAction("langHr", "langHr", flp) {
 
 			private static final long serialVersionUID = 1L;
 
@@ -587,7 +628,7 @@ public class JNotepadpp extends LJFrame {
 		});
 		languageMenu.add(hr);
 
-		JMenuItem en = new JMenuItem(new LocalizableAction("langEn", flp) {
+		JMenuItem en = new JMenuItem(new LocalizableAction("langEn", "langEn", flp) {
 
 			private static final long serialVersionUID = 1L;
 
@@ -598,7 +639,7 @@ public class JNotepadpp extends LJFrame {
 		});
 		languageMenu.add(en);
 
-		JMenuItem de = new JMenuItem(new LocalizableAction("langDe", flp) {
+		JMenuItem de = new JMenuItem(new LocalizableAction("langDe", "langDe", flp) {
 
 			private static final long serialVersionUID = 1L;
 
@@ -623,11 +664,12 @@ public class JNotepadpp extends LJFrame {
 		toolBar.add(new JButton(openDocumentAction));
 		toolBar.add(new JButton(saveDocumentAction));
 		toolBar.add(new JButton(saveAsDocumentAction));
-		toolBar.add(new JButton(closeDocument));
+		toolBar.add(new JButton(closeDocumentAction));
+		toolBar.add(new JButton(exitAction));
 		toolBar.addSeparator();
-		toolBar.add(new JButton(cutText));
-		toolBar.add(new JButton(copyText));
-		toolBar.add(new JButton(pasteText));
+		toolBar.add(new JButton(cutTextAction));
+		toolBar.add(new JButton(copyTextAction));
+		toolBar.add(new JButton(pasteTextAction));
 		toolBar.addSeparator();
 		toolBar.add(new JButton(statisticsAction));
 
@@ -642,7 +684,7 @@ public class JNotepadpp extends LJFrame {
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> {
 			LocalizationProvider.getInstance().setLanguage("en");
-			new JNotepadpp().setVisible(true);
+			new JNotepadPP().setVisible(true);
 		});
 	}
 }
