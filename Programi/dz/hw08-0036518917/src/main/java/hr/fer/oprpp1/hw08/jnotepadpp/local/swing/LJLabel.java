@@ -9,7 +9,7 @@ public class LJLabel extends JLabel {
 
 	private static final long serialVersionUID = 1L;
 	
-	String key;
+	private String key;
 	
 	private ILocalizationListener listener = new ILocalizationListener() {
 		@Override

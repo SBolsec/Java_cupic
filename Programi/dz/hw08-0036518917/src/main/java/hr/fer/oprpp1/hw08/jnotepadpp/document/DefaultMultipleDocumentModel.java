@@ -50,7 +50,7 @@ public class DefaultMultipleDocumentModel extends JTabbedPane implements Multipl
 		
 		@Override
 		public void documentFilePathUpdated(SingleDocumentModel model) {
-			
+			//TODO
 		}
 	};
 	
