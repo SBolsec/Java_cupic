@@ -36,6 +36,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.WindowConstants;
@@ -123,7 +124,19 @@ public class JNotepadPP extends LJFrame {
 				try {
 					model.getDocument(previousTabIndex).getTextComponent().removeCaretListener(caretListener);
 				} catch (Exception ex) {}
-				model.getDocument(currentTabIndex).getTextComponent().addCaretListener(caretListener);
+				SingleDocumentModel doc = model.getDocument(currentTabIndex);
+				doc.getTextComponent().addCaretListener(caretListener);
+				caretListener.caretUpdate(new CaretEvent(model.getDocument(currentTabIndex).getTextComponent()) {
+					private static final long serialVersionUID = 1L;
+					@Override
+					public int getDot() {
+						return doc.getTextComponent().getCaret().getDot();
+					}
+					@Override
+					public int getMark() {
+						return doc.getTextComponent().getCaret().getMark();
+					}
+				});
 
 				enableOrDisableActions(true);
 				Path path = model.getDocument(currentTabIndex).getFilePath();
@@ -428,6 +441,8 @@ public class JNotepadPP extends LJFrame {
 				}
 			});
 			tabbedPane.setSelectedIndex(model.getNumberOfDocuments() - 1);
+			enableOrDisableTextSelection(false);
+			if (clipboard.equals("")) pasteTextAction.setEnabled(false);
 		}
 	};
 
@@ -475,6 +490,9 @@ public class JNotepadPP extends LJFrame {
 						JOptionPane.ERROR_MESSAGE, null, options, options[0]);
 				return;
 			}
+			
+			enableOrDisableTextSelection(false);
+			if (clipboard.equals("")) pasteTextAction.setEnabled(false);
 		}
 	};
 
@@ -587,6 +605,7 @@ public class JNotepadPP extends LJFrame {
 			} catch (BadLocationException e1) {
 				e1.printStackTrace();
 			}
+			pasteTextAction.setEnabled(true);
 		}
 	};
 
@@ -610,6 +629,7 @@ public class JNotepadPP extends LJFrame {
 			} catch (BadLocationException e1) {
 				e1.printStackTrace();
 			}
+			pasteTextAction.setEnabled(true);
 		}
 	};
 
@@ -712,7 +732,7 @@ public class JNotepadPP extends LJFrame {
 					if (Character.isUpperCase(chars[i])) {
 						chars[i] = Character.toLowerCase(chars[i]);
 					} else if (Character.isLowerCase(chars[i])) {
-						chars[i] = Character.toLowerCase(chars[i]);
+						chars[i] = Character.toUpperCase(chars[i]);
 					}
 				}
 				return new String(chars);
@@ -735,7 +755,7 @@ public class JNotepadPP extends LJFrame {
 			String text = func.apply(doc.getText(offset, len));
 			
 			doc.remove(offset, len);
-			doc.insertString(editor.getCaret().getDot(), text, null);
+			doc.insertString(offset, text, null);
 		} catch (BadLocationException e1) {
 			e1.printStackTrace();
 		}
@@ -787,8 +807,9 @@ public class JNotepadPP extends LJFrame {
 	};
 	
 	/**
-	 * 
-	 * @param comp 
+	 * Transfors a stream of lines into another stream of lines
+	 * using given function.
+	 * @param func function which transforms stream of lines into different stream of lines
 	 */
 	public void transformLines(Function<Stream<String>, Stream<String>> func) {
 		JTextArea editor = model.getCurrentDocument().getTextComponent();
@@ -837,18 +858,42 @@ public class JNotepadPP extends LJFrame {
 	 * Adds properties to actions.
 	 */
 	private void createActions() {
-		createBlankDocumentAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_0);
-		openDocumentAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_1);
-		saveDocumentAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_2);
-		saveAsDocumentAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_3);
-		closeDocumentAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_4);
-		exitAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_5);
-		cutTextAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_6);
-		copyTextAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_7);
-		pasteTextAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_8);
-		statisticsAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_9);
+		enableOrDisableTextSelection(false);
+		pasteTextAction.setEnabled(false);
 		
-		//TODO keyboard shortcuts
+		createBlankDocumentAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control N"));
+		openDocumentAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control O"));
+		saveDocumentAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control S"));
+		saveAsDocumentAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control alt S"));
+		closeDocumentAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control W"));
+		exitAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("alt F4"));
+		cutTextAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control X"));
+		copyTextAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control C"));
+		pasteTextAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control V"));
+		statisticsAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control I"));
+		uppercaseAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control alt U"));
+		lowercaseAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control alt L"));
+		invertCaseAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control alt I"));
+		sortAscendingAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control alt A"));
+		sortDescendingAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control alt D"));
+		uniqueAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control Q"));
+		
+		createBlankDocumentAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_N);
+		openDocumentAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_O);
+		saveDocumentAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_S);
+		saveAsDocumentAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_S);
+		closeDocumentAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_W);
+		exitAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_F4);
+		cutTextAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_X);
+		copyTextAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_C);
+		pasteTextAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_V);
+		statisticsAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_I);
+		uppercaseAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_U);
+		lowercaseAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_L);
+		invertCaseAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_I);
+		sortAscendingAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_A);
+		sortDescendingAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_D);
+		uniqueAction.putValue(Action.MNEMONIC_KEY, KeyEvent.VK_Q);
 	}
 
 	/**
