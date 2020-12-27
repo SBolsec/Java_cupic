@@ -155,6 +155,7 @@ public class JNotepadPP extends LJFrame {
 					return;
 				if (model.getCurrentDocument().getFilePath() == null) {
 					setTitle("(" + flp.getString("unnamedName") + ")" + "  -  JNotepad++");
+					tabbedPane.setTitleAt(tabbedPane.getSelectedIndex(), flp.getString("unnamedName"));
 				}
 			}
 		});
