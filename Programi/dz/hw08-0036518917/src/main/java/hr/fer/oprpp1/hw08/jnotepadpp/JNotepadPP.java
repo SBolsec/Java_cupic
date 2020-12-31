@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 
 import javax.swing.Action;
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -32,7 +31,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JToolBar;
@@ -42,13 +40,11 @@ import javax.swing.Timer;
 import javax.swing.WindowConstants;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Caret;
 import javax.swing.text.Document;
 
-import hr.fer.oprpp1.hw08.jnotepadpp.document.DefaultMultipleDocumentModel;
+import hr.fer.oprpp1.hw08.jnotepadpp.document.MultipleDocumentListener;
 import hr.fer.oprpp1.hw08.jnotepadpp.document.MultipleDocumentModel;
 import hr.fer.oprpp1.hw08.jnotepadpp.document.SingleDocumentModel;
 import hr.fer.oprpp1.hw08.jnotepadpp.local.ILocalizationListener;
@@ -81,10 +77,6 @@ public class JNotepadPP extends LJFrame {
 	private LJStatusLength length;
 	/** Part of status bar, dispplays info about caret **/
 	private LJStatusCarretInfo info;
-	/** Current tab index **/
-	private int currentTabIndex = 0;
-	/** Previous tab index **/
-	private int previousTabIndex = 0;
 	/** Timer which updates the date and time in the status bar **/
 	private Timer timer;
 
@@ -106,40 +98,57 @@ public class JNotepadPP extends LJFrame {
 			}
 		});
 
-		// when user changes selected tab
-		tabbedPane.addChangeListener(new ChangeListener() {
+		tabbedPane.addMultipleDocumentListener(new MultipleDocumentListener() {
 			@Override
-			public void stateChanged(ChangeEvent e) {
-				JTabbedPane tabbedPane = (JTabbedPane) e.getSource();
-
-				previousTabIndex = currentTabIndex;
-				currentTabIndex = tabbedPane.getSelectedIndex();
-				
-				if (currentTabIndex == -1) {
+			public void documentRemoved(SingleDocumentModel model) {
+				// If current document is empty localize it
+				int index = tabbedPane.getSelectedIndex();
+				if (index >= 0 && tabbedPane.getCurrentDocument().getFilePath() == null) {
+					tabbedPane.setTitleAt(index, flp.getString("unnamedName"));
+					tabbedPane.setToolTipTextAt(index, flp.getString("unnamedTooltip"));
+				}
+			}
+			@Override
+			public void documentAdded(SingleDocumentModel model) {
+				// If current document is empty localize it
+				int index = tabbedPane.getSelectedIndex();
+				if (index >= 0 && tabbedPane.getCurrentDocument().getFilePath() == null) {
+					tabbedPane.setTitleAt(index, flp.getString("unnamedName"));
+					tabbedPane.setToolTipTextAt(index, flp.getString("unnamedTooltip"));
+				}
+			}
+			@Override
+			public void currentDocumentChanged(SingleDocumentModel previousModel, SingleDocumentModel currentModel) {
+				// If all documents have been closed
+				if (currentModel == null) {
 					setTitle("JNotepad++");
 					enableOrDisableActions(false);
+					info.setValues(-1, -1, 0);
+					length.setLength(0);
+					enableOrDisableTextSelection(true);
 					return;
 				}
 				
-				try {
-					model.getDocument(previousTabIndex).getTextComponent().removeCaretListener(caretListener);
-				} catch (Exception ex) {}
-				SingleDocumentModel doc = model.getDocument(currentTabIndex);
-				doc.getTextComponent().addCaretListener(caretListener);
-				caretListener.caretUpdate(new CaretEvent(model.getDocument(currentTabIndex).getTextComponent()) {
+				// Update caret listener for status bar
+				if (previousModel != null)
+					previousModel.getTextComponent().removeCaretListener(caretListener);
+				currentModel.getTextComponent().addCaretListener(caretListener);
+				
+				caretListener.caretUpdate(new CaretEvent(currentModel.getTextComponent()) {
 					private static final long serialVersionUID = 1L;
 					@Override
 					public int getDot() {
-						return doc.getTextComponent().getCaret().getDot();
+						return currentModel.getTextComponent().getCaret().getDot();
 					}
 					@Override
 					public int getMark() {
-						return doc.getTextComponent().getCaret().getMark();
+						return currentModel.getTextComponent().getCaret().getMark();
 					}
 				});
-
+				
+				// Enable actions and update title
 				enableOrDisableActions(true);
-				Path path = model.getDocument(currentTabIndex).getFilePath();
+				Path path = currentModel.getFilePath();
 				String file = "";
 				if (path != null)
 					file = path.toString();
@@ -147,7 +156,7 @@ public class JNotepadPP extends LJFrame {
 			}
 		});
 
-		// when user changes language
+		// When user changes language update frame title and tab title and tooltip
 		flp.addLocalizationListener(new ILocalizationListener() {
 			@Override
 			public void localizationChanged() {
@@ -156,6 +165,12 @@ public class JNotepadPP extends LJFrame {
 				if (model.getCurrentDocument().getFilePath() == null) {
 					setTitle("(" + flp.getString("unnamedName") + ")" + "  -  JNotepad++");
 					tabbedPane.setTitleAt(tabbedPane.getSelectedIndex(), flp.getString("unnamedName"));
+				}
+				for (int i = 0, n = tabbedPane.getTabCount(); i < n; i++) {
+					if (model.getDocument(i).getFilePath() == null) {
+						tabbedPane.setTitleAt(i, flp.getString("unnamedName"));
+						tabbedPane.setToolTipTextAt(i, flp.getString("unnamedTooltip"));
+					}
 				}
 			}
 		});
@@ -175,11 +190,6 @@ public class JNotepadPP extends LJFrame {
 		model = (MultipleDocumentModel) tabbedPane;
 
 		model.createNewDocument();
-		JScrollPane scrollPane = new JScrollPane(model.getCurrentDocument().getTextComponent());
-		String title = flp.getString("unnamedName");
-		ImageIcon icon = new Util().getIcon("icons/greenDisk.png");
-		String tip = flp.getString("unnamedTooltip");
-		tabbedPane.addTab(title, icon, scrollPane, tip);
 		
 		flp.addLocalizationListener(new ILocalizationListener() {
 			@Override
@@ -394,8 +404,8 @@ public class JNotepadPP extends LJFrame {
 
 		try {
 			model.saveDocument(doc, openedFilePath);
-			doc = model.getCurrentDocument();
-			setTitle(doc.getFilePath().toString() + "  -  JNotepad++");
+//			doc = model.getCurrentDocument();
+//			setTitle(doc.getFilePath().toString() + "  -  JNotepad++");
 		} catch (Exception e1) {
 			String[] options = new String[] {flp.getString("dialogOK")};
 			String message = String.format("%s %s.\n%s", 
@@ -428,20 +438,7 @@ public class JNotepadPP extends LJFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			model.createNewDocument();
-			JScrollPane scrollPane = new JScrollPane(model.getCurrentDocument().getTextComponent());
-			String title = flp.getString("unnamedName");
-			ImageIcon icon = new Util().getIcon("icons/greenDisk.png");
-			String tip = flp.getString("unnamedTooltip");
-			tabbedPane.addTab(title, icon, scrollPane, tip);
-			flp.addLocalizationListener(new ILocalizationListener() {
-				@Override
-				public void localizationChanged() {
-					int index = tabbedPane.getTabCount() - 1;
-					tabbedPane.setTitleAt(index, flp.getString("unnamedName"));
-					tabbedPane.setToolTipTextAt(index, flp.getString("unnamedTooltip"));
-				}
-			});
-			tabbedPane.setSelectedIndex(model.getNumberOfDocuments() - 1);
+					
 			enableOrDisableTextSelection(false);
 			if (clipboard.equals("")) pasteTextAction.setEnabled(false);
 		}

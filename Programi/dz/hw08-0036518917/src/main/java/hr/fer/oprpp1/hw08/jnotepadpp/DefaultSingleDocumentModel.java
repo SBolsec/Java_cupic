@@ -1,4 +1,4 @@
-package hr.fer.oprpp1.hw08.jnotepadpp.document;
+package hr.fer.oprpp1.hw08.jnotepadpp;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -7,6 +7,9 @@ import java.util.List;
 import javax.swing.JTextArea;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+
+import hr.fer.oprpp1.hw08.jnotepadpp.document.SingleDocumentListener;
+import hr.fer.oprpp1.hw08.jnotepadpp.document.SingleDocumentModel;
 
 /**
  * Default implementation of the <code>SingleDocumentModel</code> interface.
