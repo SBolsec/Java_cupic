@@ -865,9 +865,9 @@ public class JNotepadPP extends LJFrame {
 		saveAsDocumentAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control alt S"));
 		closeDocumentAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control W"));
 		exitAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("alt F4"));
-		cutTextAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control X"));
-		copyTextAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control C"));
-		pasteTextAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control V"));
+		cutTextAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control alt X"));
+		copyTextAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control alt C"));
+		pasteTextAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control alt V"));
 		statisticsAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control I"));
 		uppercaseAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control alt U"));
 		lowercaseAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke("control alt L"));

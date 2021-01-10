@@ -95,6 +95,7 @@ public class DefaultMultipleDocumentModel extends JTabbedPane implements Multipl
 				}
 				final SingleDocumentModel a = previuos;
 				final SingleDocumentModel b = current;
+				currentDocument = b;
 				
 				fire(l -> l.currentDocumentChanged(a, b));
 			}
@@ -120,7 +121,7 @@ public class DefaultMultipleDocumentModel extends JTabbedPane implements Multipl
 		JScrollPane scrollPane = new JScrollPane(document.getTextComponent());
 		String title = "unnamed";
 		String tip = "Unnamed document";
-		addTab(title, icon, scrollPane, tip);
+		addTab(title, iconModified, scrollPane, tip);
 		setSelectedIndex(documents.size()-1);
 		
 		// Notify registered listeners that a document has been added
