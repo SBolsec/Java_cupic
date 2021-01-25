@@ -404,8 +404,6 @@ public class JNotepadPP extends LJFrame {
 
 		try {
 			model.saveDocument(doc, openedFilePath);
-//			doc = model.getCurrentDocument();
-//			setTitle(doc.getFilePath().toString() + "  -  JNotepad++");
 		} catch (Exception e1) {
 			String[] options = new String[] {flp.getString("dialogOK")};
 			String message = String.format("%s %s.\n%s", 
@@ -583,7 +581,7 @@ public class JNotepadPP extends LJFrame {
 	};
 
 	/**
-	 * Action whihc cuts selected text and stores it into clipboard.
+	 * Action which cuts selected text and stores it into clipboard.
 	 */
 	private Action cutTextAction = new LocalizableAction("cutText", "descCut", flp) {
 
